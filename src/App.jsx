@@ -66,15 +66,17 @@ function App() {
                 InputProps={{
                   style: {
                     backgroundColor: "white", // Set the background color
-                    borderRadius: "4px", // Add slight rounding to corners
+                    borderRadius: "10px", // Add slight rounding to corners
                     padding: "6px 12px",
                     fontFamily: 'sans-serif',
+        
                   },
                 }}
                 sx={{
-                  width: "400px", // Increase the width
-                  border: "1px solid #ccc", // Optional: Add a border
-                  boxShadow: "100 1px 4px rgba(0, 0, 0, 0.2)", // Optional: Add shadow for depth
+                  width: "500px", // Increase the width
+                  border: "1px solid blue", // Optional: Add a border
+                  boxShadow: "100 1px 4px rgba(0, 0, 0, 0.2)", 
+                  borderRadius:'10px',// Optional: Add shadow for depth
                   "&:hover": {
                     borderColor: "#888", // Change border color on hover
                   },
