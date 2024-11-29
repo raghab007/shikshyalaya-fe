@@ -1,5 +1,9 @@
 import { Link } from "react-router-dom";
 import { Button } from "@mui/material";
+import homeImage from '../assets/istockphoto-1919863292-1024x1024.jpg';
+
+
+
 
 export default function Home() {
   return (
@@ -70,7 +74,7 @@ export default function Home() {
         <div className="image-container">
           <img
             className="home-image"
-            src="src/assets/istockphoto-1919863292-1024x1024.jpg"
+            src={homeImage}
             alt="Learning"
           />
         </div>
