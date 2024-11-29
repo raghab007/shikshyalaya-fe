@@ -2,92 +2,83 @@ import { Link } from "react-router-dom";
 import { Button } from "@mui/material";
 import homeImage from '../assets/istockphoto-1919863292-1024x1024.jpg';
 
-
-
-
 export default function Home() {
+  const styles = {
+    homeContainer: {
+      display: 'flex',
+      justifyContent: 'space-around',
+      alignItems: 'center',
+      height: '100vh',
+      padding: '0 20px',
+      backgroundColor: '#eef2f7',
+      boxSizing: 'border-box',
+    },
+    imageContainer: {
+      flex: 1,
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    homeImage: {
+      maxWidth: '100%',
+      height: 'auto',
+      borderRadius: '15px',
+      boxShadow: '0px 6px 20px rgba(0, 0, 0, 0.2)',
+    },
+    textContainer: {
+      flex: 1,
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'flex-start',
+      justifyContent: 'center',
+      padding: '20px',
+      marginLeft: '40px',
+    },
+    heading: {
+      fontSize: '3.5rem',
+      fontWeight: 'bold',
+      color: '#2c3e50',
+      marginBottom: '20px',
+    },
+    subheading: {
+      fontSize: '1.5rem',
+      color: '#34495e',
+      marginBottom: '30px',
+    },
+    quote: {
+      fontSize: '1.2rem',
+      fontStyle: 'italic',
+      color: '#7f8c8d',
+      marginBottom: '30px',
+    },
+    linkButton: {
+      textDecoration: 'none',
+    },
+  };
+
   return (
-    <>
-      <style>
-        {`
-          .home-container {
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            height: 100vh;
-            padding: 0 20px;
-            background-color: #f4f6f9;
-            box-sizing: border-box;
-          }
-
-          .image-container {
-            flex: 1;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-          }
-
-          .home-image {
-            max-width: 100%;
-            height: auto;
-            border-radius: 10px;
-            box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
-          }
-
-          .text-container {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-            justify-content: center;
-            padding: 20px;
-          }
-
-          .heading {
-            font-size: 3rem;
-            font-weight: bold;
-            color: #333;
-            margin-bottom: 15px;
-          }
-
-          .subheading {
-            font-size: 1.25rem;
-            color: #555;
-            margin-bottom: 25px;
-          }
-
-          .btn-courses {
-            background-color: #3f51b5;
-            color: white;
-            padding: 12px 25px;
-            font-size: 1.1rem;
-            border-radius: 5px;
-            transition: background-color 0.3s ease;
-          }
-
-          .btn-courses:hover {
-            background-color: #283593;
-          }
-        `}
-      </style>
-      <div className="home-container">
-        <div className="image-container">
-          <img
-            className="home-image"
-            src={homeImage}
-            alt="Learning"
-          />
-        </div>
-        <div style={{marginLeft:'40px'}} className="text-container">
-          <h1 className="heading">Welcome to Sikshyalaya</h1>
-          <p className="subheading">A Place of Learning</p>
-          <Link to="/courses">
-            <Button className="btn-courses" variant="text">
-              Courses
-            </Button>
-          </Link>
-        </div>
+    <div style={styles.homeContainer}>
+      <div style={styles.imageContainer}>
+        <img
+          style={styles.homeImage}
+          src={homeImage}
+          alt="Learning"
+        />
       </div>
-    </>
+      <div style={styles.textContainer}>
+        <h1 style={styles.heading}>Welcome to Sikshyalaya</h1>
+        <p style={styles.subheading}>
+          "Empowering Knowledge, One Click at a Time"
+        </p>
+        <p style={styles.quote}>
+          "An investment in knowledge pays the best interest." - Benjamin Franklin
+        </p>
+        <Link to="/courses" style={styles.linkButton}>
+          <Button variant="contained" color="info">
+            Explore Courses
+          </Button>
+        </Link>
+      </div>
+    </div>
   );
 }
