@@ -1,7 +1,11 @@
 import { Box, TextField, Button, Typography } from '@mui/material';
+import axios from 'axios';
 import { Link } from 'react-router-dom';
 
 export default function Signup() {
+    function signup(){
+        axios.post('https://google.com')
+    }
     return (
         <>
             <Box
@@ -74,7 +78,8 @@ export default function Signup() {
                     required
                 />
 
-                <Button  color="success" type="submit" variant="contained">
+                <Button  onClick={signup}
+                  color="success" type="submit" variant="contained">
                     Register
                 </Button>
                

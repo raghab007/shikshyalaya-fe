@@ -5,7 +5,7 @@ function AboutUs() {
     <div style={styles.container}>
       
       <section style={styles.section}>
-        <h2 style={styles.subHeading}>Welcome to Sicshalaya</h2>
+        <h2 style={styles.subHeading}>Welcome to Sikshyalaya</h2>
         <p style={styles.text}>
           We are a cutting-edge e-learning platform dedicated to providing 
           affordable, high-quality courses to learners worldwide. Whether you want 

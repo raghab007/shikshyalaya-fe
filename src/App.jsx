@@ -9,6 +9,7 @@ import Footer from "./pages/Footer";
 import { useRef, useState } from "react";
 import RecipeReviewCard from "./components/Something";
 import Logo from './assets/logo2.png';  // Assuming the logo image is saved here
+import DashboardLayoutBasic from "./pages/Admin";
 
 function App() {
   return (
@@ -43,18 +44,28 @@ function App() {
                   e.target.style.transform = "scale(1)"; // Reset scale on mouse out
                 }}
               />
-              <h1
-                style={{
-                  color: "#1976d2", // Primary color
-                  fontSize: "2rem", // Increased font size for better visibility
-                  fontWeight: "bold", // Make it bold
-                  margin: 0,
-                  letterSpacing: "1px", // Slight space between letters for a cleaner look
-                  textShadow: "2px 2px 4px rgba(0, 0, 0, 0.3)", // Add shadow for depth
-                }}
-              >
-                Sikshyalaya
-              </h1>
+             
+             <h1
+  style={{
+    color: "#1976d2", // Primary color
+    fontSize: "2rem", // Increased font size for better visibility
+    fontWeight: "bold", // Make it bold
+    margin: 0,
+    letterSpacing: "1px", // Slight space between letters for a cleaner look
+    textShadow: "2px 2px 4px rgba(0, 0, 0, 0.3)", // Add shadow for depth
+  }}
+>
+  <Link
+    to={"/"}
+    style={{
+      textDecoration: "none", // Remove the underline
+      color: "#1976d2", // Ensure the link color is the same as the text color
+    }}
+  >
+    Sikshyalaya
+  </Link>
+</h1>
+
             </div>
 
             {/* Search Bar */}
@@ -77,9 +88,7 @@ function App() {
                   border: "1px solid blue", // Optional: Add a border
                   boxShadow: "100 1px 4px rgba(0, 0, 0, 0.2)", 
                   borderRadius:'10px',// Optional: Add shadow for depth
-                  "&:hover": {
-                    borderColor: "#888", // Change border color on hover
-                  },
+        
                 }}
                 inputProps={{
                   style: {
@@ -103,28 +112,28 @@ function App() {
                 justifyContent: "space-between",
               }}
             >
-              <Link to={"/"}>
-                <Button variant="text" className="btn nav">
+              <Link  to={"/"}>
+                <Button variant="text" className="btn nav"  >
                   Home
                 </Button>
               </Link>
               <Link to={"/courses"}>
-                <Button variant="text" className="btn nav">
+                <Button variant="text" className="btn nav"  >
                   Courses
                 </Button>
               </Link>
               <Link to={"/about-us"}>
-                <Button variant="text" className="btn nav">
+                <Button variant="text" className="btn nav" >
                   About Us
                 </Button>
               </Link>
               <Link to={"/login"}>
-                <Button variant="text" className="btn nav">
+                <Button variant="text" className="btn nav" >
                   Login
                 </Button>
               </Link>
               <Link to={"/signup"}>
-                <Button variant="text" className="btn nav">
+                <Button variant="text" className="btn nav"  >
                   Signup
                 </Button>
               </Link>
@@ -137,6 +146,8 @@ function App() {
             <Route path="/signup" element={<Signup />}></Route>
             <Route path="/about-us" element={<AboutUs />}></Route>
             <Route path="/courses" element={<Course />}></Route>
+            <Route path="/admin" element={<DashboardLayoutBasic></DashboardLayoutBasic>}></Route>
+
           </Routes>
         </BrowserRouter>
       </div>
