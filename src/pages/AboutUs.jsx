@@ -15,7 +15,7 @@ function AboutUs() {
 
       <section style={styles.section}>
         <h2 style={styles.subHeading}>Our Mission</h2>
-        <p style={styles.text}>
+        <p style={styles.text}> 
           Our mission is to make education accessible and empower individuals to 
           achieve their goals through knowledge and learning.
         </p>

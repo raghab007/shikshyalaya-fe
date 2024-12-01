@@ -64,8 +64,7 @@ function App() {
   >
     Sikshyalaya
   </Link>
-</h1>
-
+  </h1>
             </div>
 
             {/* Search Bar */}
