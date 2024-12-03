@@ -1,11 +1,59 @@
-import { Box, TextField, Button, Typography } from '@mui/material';
+import { Box, TextField, Button, Typography, Snackbar, Alert } from '@mui/material';
 import axios from 'axios';
+import { useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 
 export default function Signup() {
-    function signup(){
-        axios.post('https://google.com')
+    const userName = useRef(null);
+    const firstName = useRef(null);
+    const lastName = useRef(null);
+    const password = useRef(null);
+    const email = useRef(null);
+    const contactNumber = useRef(null);
+    const [openSnackbar, setOpenSnackbar] = useState(false);
+    const [snackbarMessage, setSnackbarMessage] = useState('');
+    const [snackbarSeverity, setSnackbarSeverity] = useState('success');
+
+    function signup(e) {
+        e.preventDefault();
+        let user = {
+            userName: userName.current.value,
+            firstName: firstName.current.value,
+            lastName: lastName.current.value,
+            password: password.current.value,
+            email: email.current.value,
+            contactNumber: contactNumber.current.value
+        }
+        console.log(user)
+        console.log(JSON.stringify(user));
+
+        async function hello() {
+            try {
+                const value = await axios.post('http://localhost:8085/public/signup', user, {
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                console.log(value.data);
+
+                if (value.data === true) {
+                    setSnackbarMessage('User registered successfully');
+                    setSnackbarSeverity('success');
+                } else {
+                    setSnackbarMessage('User not registered');
+                    setSnackbarSeverity('error');
+                }
+            } catch (error) {
+                setSnackbarMessage('Error occurred during registration');
+                setSnackbarSeverity('error');
+            } finally {
+                setOpenSnackbar(true);
+            }
+        }
+        hello();
     }
+
     return (
         <>
             <Box
@@ -33,6 +81,7 @@ export default function Signup() {
                     variant="outlined"
                     size="small" // Smaller input size
                     required
+                    inputRef={userName}
                 />
 
                 <TextField
@@ -41,6 +90,7 @@ export default function Signup() {
                     variant="outlined"
                     size="small"
                     required
+                    inputRef={firstName}
                 />
 
                 <TextField
@@ -49,6 +99,7 @@ export default function Signup() {
                     variant="outlined"
                     size="small"
                     required
+                    inputRef={lastName}
                 />
 
                 <TextField
@@ -58,6 +109,7 @@ export default function Signup() {
                     variant="outlined"
                     size="small"
                     required
+                    inputRef={password}
                 />
 
                 <TextField
@@ -67,6 +119,7 @@ export default function Signup() {
                     variant="outlined"
                     size="small"
                     required
+                    inputRef={email}
                 />
 
                 <TextField
@@ -76,20 +129,33 @@ export default function Signup() {
                     variant="outlined"
                     size="small"
                     required
+                    inputRef={contactNumber}
                 />
 
-                <Button  onClick={signup}
-                  color="success" type="submit" variant="contained">
+                <Button onClick={signup} color="success" type="submit" variant="contained">
                     Register
                 </Button>
-               
-                <div style={{margin:'auto'}}>
-                      <p style={{marginTop:'0px'}}>Already have an account?</p>
-                    <Link style={{marginLeft:'30px'}} to={"/login"}><Button variant="text" className="btn nav">Login</Button></Link>
+
+                <div style={{ margin: 'auto' }}>
+                    <p style={{ marginTop: '0px' }}>Already have an account?</p>
+                    <Link style={{ marginLeft: '30px' }} to={"/login"}><Button variant="text" className="btn nav">Login</Button></Link>
                 </div>
-              
-                
             </Box>
+
+            {/* Snackbar for success or error messages */}
+            <Snackbar
+                open={openSnackbar}
+                autoHideDuration={6000}
+                onClose={() => setOpenSnackbar(false)}
+            >
+                <Alert
+                    onClose={() => setOpenSnackbar(false)}
+                    severity={snackbarSeverity}
+                    sx={{ width: '100%' }}
+                >
+                    {snackbarMessage}
+                </Alert>
+            </Snackbar>
         </>
     );
 }
