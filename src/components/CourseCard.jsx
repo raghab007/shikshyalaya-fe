@@ -6,6 +6,7 @@ import CardContent from '@mui/joy/CardContent';
 import IconButton from '@mui/joy/IconButton';
 import Typography from '@mui/joy/Typography';
 import BookmarkAdd from '@mui/icons-material/BookmarkAddOutlined';
+import { Link } from 'react-router-dom';
 
 export default function BasicCard({price,description,title,imageSrc}) {
   return (
@@ -35,6 +36,7 @@ export default function BasicCard({price,description,title,imageSrc}) {
           <Typography level="body-xs">Total price:</Typography>
           <Typography sx={{ fontSize: 'lg', fontWeight: 'lg' }}>Rs {price}</Typography>
         </div>
+        <Link to={"/coursedetails"} style={{marginLeft:'100px'}} >
         <Button
           variant="solid"
           size="md"
@@ -44,6 +46,7 @@ export default function BasicCard({price,description,title,imageSrc}) {
         >
         View Course
         </Button>
+        </Link>
       </CardContent>
       
       {/* Add to Cart Button */}
@@ -55,7 +58,8 @@ export default function BasicCard({price,description,title,imageSrc}) {
           aria-label="Add to Cart"
           sx={{ width: '100%', fontWeight: 600 }}
         >
-          Add to Cart
+           Add to Cart
+          
         </Button>
       </CardContent>
     </Card>

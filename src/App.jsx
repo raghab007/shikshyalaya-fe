@@ -10,10 +10,12 @@ import { useRef, useState } from "react";
 import RecipeReviewCard from "./components/Something";
 import Logo from './assets/logo2.png';  // Assuming the logo image is saved here
 import DashboardLayoutBasic from "./pages/Admin";
+import CourseDetails from "./pages/CourseDetails";
 
 function App() {
+  const [isAdmin,setIsAdmin] = useState(true);
   return (
-    <>
+    <><div>
       <div style={{ marginBottom: "100px" }}>
         <BrowserRouter>
           <div
@@ -46,15 +48,15 @@ function App() {
               />
              
              <h1
-  style={{
-    color: "#1976d2", // Primary color
-    fontSize: "2rem", // Increased font size for better visibility
-    fontWeight: "bold", // Make it bold
-    margin: 0,
-    letterSpacing: "1px", // Slight space between letters for a cleaner look
-    textShadow: "2px 2px 4px rgba(0, 0, 0, 0.3)", // Add shadow for depth
-  }}
->
+          style={{
+            color: "#1976d2", // Primary color
+            fontSize: "2rem", // Increased font size for better visibility
+            fontWeight: "bold", // Make it bold
+            margin: 0,
+            letterSpacing: "1px", // Slight space between letters for a cleaner look
+            textShadow: "2px 2px 4px rgba(0, 0, 0, 0.3)", // Add shadow for depth
+          }}
+        >
   <Link
     to={"/"}
     style={{
@@ -79,7 +81,6 @@ function App() {
                     borderRadius: "10px", // Add slight rounding to corners
                     padding: "6px 12px",
                     fontFamily: 'sans-serif',
-        
                   },
                 }}
                 sx={{
@@ -87,19 +88,9 @@ function App() {
                   border: "1px solid blue", // Optional: Add a border
                   boxShadow: "100 1px 4px rgba(0, 0, 0, 0.2)", 
                   borderRadius:'10px',// Optional: Add shadow for depth
-        
                 }}
-                inputProps={{
-                  style: {
-                    color: "#333", // Dark text color for search text
-                  },
-                }}
+                
                 // Add placeholder text styling
-                inputProps={{
-                  style: {
-                    color: "#1976d2", // Make the placeholder text visible in the primary color
-                  },
-                }}
               />
             </div>
 
@@ -146,16 +137,18 @@ function App() {
             <Route path="/about-us" element={<AboutUs />}></Route>
             <Route path="/courses" element={<Course />}></Route>
             <Route path="/admin" element={<DashboardLayoutBasic></DashboardLayoutBasic>}></Route>
+            <Route path="/coursedetails" element={<CourseDetails></CourseDetails>}></Route>
 
           </Routes>
         </BrowserRouter>
       </div>
-
       {/* Footer */}
       <div style={{ height: "250px", backgroundColor: "#1976d2" }}>
         <Footer />
       </div>
+      </div>
     </>
+
   );
 }
 
