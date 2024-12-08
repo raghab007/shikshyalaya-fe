@@ -1,4 +1,4 @@
-import { Box, TextField, Button, Typography, Snackbar, Alert } from '@mui/material';
+import { Box, TextField, Button, Typography, Snackbar, Alert, CircularProgress } from '@mui/material';
 import axios from 'axios';
 import { useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
@@ -13,9 +13,29 @@ export default function Signup() {
     const [openSnackbar, setOpenSnackbar] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState('');
     const [snackbarSeverity, setSnackbarSeverity] = useState('success');
+    const [loading, setLoading] = useState(false); // State for loading
 
     function signup(e) {
         e.preventDefault();
+        setLoading(true); // Start loading when submitting the form
+
+        // Validation for empty fields
+        if (
+            !userName.current.value.trim() ||
+            !firstName.current.value.trim() ||
+            !lastName.current.value.trim() ||
+            !password.current.value.trim() ||
+            !email.current.value.trim() ||
+            !contactNumber.current.value.trim()
+        ) {
+            setSnackbarMessage('All fields are required');
+            setSnackbarSeverity('error');
+            setOpenSnackbar(true);
+            setLoading(false); // Stop loading
+            return; // Stop further execution
+        }
+
+        // Proceed with the API call
         let user = {
             userName: userName.current.value,
             firstName: firstName.current.value,
@@ -23,9 +43,7 @@ export default function Signup() {
             password: password.current.value,
             email: email.current.value,
             contactNumber: contactNumber.current.value
-        }
-        console.log(user)
-        console.log(JSON.stringify(user));
+        };
 
         async function hello() {
             try {
@@ -41,13 +59,14 @@ export default function Signup() {
                     setSnackbarMessage('User registered successfully');
                     setSnackbarSeverity('success');
                 } else {
-                    setSnackbarMessage('User not registered');
+                    setSnackbarMessage('User already exists');
                     setSnackbarSeverity('error');
                 }
             } catch (error) {
                 setSnackbarMessage('Error occurred during registration');
                 setSnackbarSeverity('error');
             } finally {
+                setLoading(false); // Stop loading after response
                 setOpenSnackbar(true);
             }
         }
@@ -62,13 +81,13 @@ export default function Signup() {
                     display: 'flex',
                     flexDirection: 'column',
                     gap: 2,
-                    width: '300px', // Adjusted width
+                    width: '300px',
                     margin: 'auto',
                     marginTop: 4,
-                    padding: 2, // Reduced padding
+                    padding: 2,
                     border: '1px solid #ccc',
                     borderRadius: 1,
-                    boxShadow: '0 2px 8px rgba(0,0,0,0.1)', // Optional shadow for better aesthetics
+                    boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
                 }}
             >
                 <Typography variant="h6" align="center" gutterBottom>
@@ -79,9 +98,15 @@ export default function Signup() {
                     label="Username"
                     name="username"
                     variant="outlined"
-                    size="small" // Smaller input size
+                    size="small"
                     required
                     inputRef={userName}
+                    InputProps={{
+                        style: { fontSize: '14px', opacity: 0.8 },
+                    }}
+                    InputLabelProps={{
+                        style: { fontSize: '14px', opacity: 0.7 },
+                    }}
                 />
 
                 <TextField
@@ -91,6 +116,12 @@ export default function Signup() {
                     size="small"
                     required
                     inputRef={firstName}
+                    InputProps={{
+                        style: { fontSize: '14px', opacity: 0.8 },
+                    }}
+                    InputLabelProps={{
+                        style: { fontSize: '14px', opacity: 0.7 },
+                    }}
                 />
 
                 <TextField
@@ -100,6 +131,12 @@ export default function Signup() {
                     size="small"
                     required
                     inputRef={lastName}
+                    InputProps={{
+                        style: { fontSize: '14px', opacity: 0.8 },
+                    }}
+                    InputLabelProps={{
+                        style: { fontSize: '14px', opacity: 0.7 },
+                    }}
                 />
 
                 <TextField
@@ -110,6 +147,12 @@ export default function Signup() {
                     size="small"
                     required
                     inputRef={password}
+                    InputProps={{
+                        style: { fontSize: '14px', opacity: 0.8 },
+                    }}
+                    InputLabelProps={{
+                        style: { fontSize: '14px', opacity: 0.7 },
+                    }}
                 />
 
                 <TextField
@@ -120,6 +163,12 @@ export default function Signup() {
                     size="small"
                     required
                     inputRef={email}
+                    InputProps={{
+                        style: { fontSize: '14px', opacity: 0.8 },
+                    }}
+                    InputLabelProps={{
+                        style: { fontSize: '14px', opacity: 0.7 },
+                    }}
                 />
 
                 <TextField
@@ -130,15 +179,23 @@ export default function Signup() {
                     size="small"
                     required
                     inputRef={contactNumber}
+                    InputProps={{
+                        style: { fontSize: '14px', opacity: 0.8 },
+                    }}
+                    InputLabelProps={{
+                        style: { fontSize: '14px', opacity: 0.7 },
+                    }}
                 />
 
-                <Button onClick={signup} color="success" type="submit" variant="contained">
-                    Register
+                <Button onClick={signup} color="success" type="submit" variant="contained" disabled={loading}>
+                    {loading ? <CircularProgress size={24} color="inherit" /> : 'Register'}
                 </Button>
 
                 <div style={{ margin: 'auto' }}>
                     <p style={{ marginTop: '0px' }}>Already have an account?</p>
-                    <Link style={{ marginLeft: '30px' }} to={"/login"}><Button variant="text" className="btn nav">Login</Button></Link>
+                    <Link style={{ marginLeft: '30px' }} to={"/login"}>
+                        <Button variant="text" className="btn nav">Login</Button>
+                    </Link>
                 </div>
             </Box>
 

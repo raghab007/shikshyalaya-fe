@@ -1,7 +1,9 @@
 import { Link } from "react-router-dom";
-import { Button, Typography, Card, CardMedia, CardContent, Grid, Box } from "@mui/material";
-import reactImage from "../assets/react.png";
+import { Button, Typography, Card, CardMedia, CardContent, Grid, Box, Container } from "@mui/material";
 import homeImage from "../assets/istockphoto-1919863292-1024x1024.jpg";
+import reactImage from "../assets/react.png";
+import jsImage from  "../assets/istockphoto-1919863292-1024x1024.jpg";
+// import springImage from "";
 
 export default function Home() {
   const styles = {
@@ -89,12 +91,36 @@ export default function Home() {
       boxShadow: "0px 6px 20px rgba(0, 0, 0, 0.1)",
       textAlign: "center",
     },
+    footer: {
+      backgroundColor: "#2c3e50",
+      color: "#ffffff",
+      width: "100%",
+      padding: "20px 0",
+      marginTop: "40px",
+    },
+    footerLinks: {
+      color: "#ffffff",
+      textDecoration: "none",
+      margin: "0 10px",
+    },
   };
 
   const popularCourses = [
-    { title: "React for Beginners", image: "https://via.placeholder.com/300x200", description: "Learn the basics of React and build dynamic UIs." },
-    { title: "Java Spring Boot", image: "https://via.placeholder.com/300x200", description: "Master backend development with Spring Boot." },
-    { title: "Data Structures & Algorithms", image: "https://via.placeholder.com/300x200", description: "Strengthen your problem-solving skills." },
+    {
+      title: "React for Beginners",
+      image: reactImage,
+      description: "Learn the basics of React and build dynamic UIs.",
+    },
+    {
+      title: "Java Spring Boot",
+      
+      description: "Master backend development with Spring Boot.",
+    },
+    {
+      title: "JavaScript Essentials",
+      image: jsImage,
+      description: "Understand the fundamentals of JavaScript for web development.",
+    },
   ];
 
   return (
@@ -106,9 +132,7 @@ export default function Home() {
         </div>
         <div style={styles.textContainer}>
           <h1 style={styles.heading}>Welcome to Sikshyalaya</h1>
-          <p style={styles.subheading}>
-            "Empowering Knowledge, One Click at a Time"
-          </p>
+          <p style={styles.subheading}>"Empowering Knowledge, One Click at a Time"</p>
           <p style={styles.quote}>
             "An investment in knowledge pays the best interest." - Benjamin Franklin
           </p>
@@ -127,12 +151,7 @@ export default function Home() {
           {popularCourses.map((course, index) => (
             <Grid item key={index}>
               <Card style={styles.courseCard}>
-                <CardMedia
-                  component="img"
-                  style={styles.courseMedia}
-                  image={course}
-                  alt={course.title}
-                />
+                <CardMedia component="img" style={styles.courseMedia} image={course.image} alt={course.title} />
                 <CardContent>
                   <Typography gutterBottom variant="h6" component="div">
                     {course.title}

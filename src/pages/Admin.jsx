@@ -1,58 +1,50 @@
 import * as React from 'react';
 import { extendTheme, styled } from '@mui/material/styles';
-import DashboardIcon from '@mui/icons-material/Dashboard';
-import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
-import BarChartIcon from '@mui/icons-material/BarChart';
-import DescriptionIcon from '@mui/icons-material/Description';
-import LayersIcon from '@mui/icons-material/Layers';
+import SchoolIcon from '@mui/icons-material/School'; // Icon for Courses
+import GroupIcon from '@mui/icons-material/Group'; // Icon for Users
+import PersonIcon from '@mui/icons-material/Person'; // Icon for Instructors
 import { AppProvider } from '@toolpad/core/AppProvider';
 import { DashboardLayout } from '@toolpad/core/DashboardLayout';
 import { PageContainer } from '@toolpad/core/PageContainer';
 import Grid from '@mui/material/Grid2';
 
+// Customized styling to replace Toolpad branding with Shicshyalaya text
+const CustomDashboardLayout = styled(DashboardLayout)(({ theme }) => ({
+  // Hide the Toolpad logo and branding
+  '& .Toolpad-Branding': {
+    display: 'none', // Hide the Toolpad logo and text
+  },
+  '& .Toolpad-Header': {
+    display: 'none', // Hide the header if Toolpad branding is part of the header
+  },
+  '& .Shicshyalaya-Branding': {
+    display: 'flex',
+    alignItems: 'center',
+    fontSize: '24px',
+    fontWeight: 'bold',
+    color: theme.palette.primary.main,
+  },
+}));
+
 const NAVIGATION = [
   {
     kind: 'header',
-    title: 'Main items',
+    title: 'E-Learning Management',
   },
   {
-    segment: 'dashboard',
-    title: 'Dashboard',
-    icon: <DashboardIcon />,
+    segment: 'courses',
+    title: 'Courses',
+    icon: <SchoolIcon />,
   },
   {
-    segment: 'orders',
-    title: 'Orders',
-    icon: <ShoppingCartIcon />,
+    segment: 'users',
+    title: 'Users',
+    icon: <GroupIcon />,
   },
   {
-    kind: 'divider',
-  },
-  {
-    kind: 'header',
-    title: 'Analytics',
-  },
-  {
-    segment: 'reports',
-    title: 'Reports',
-    icon: <BarChartIcon />,
-    children: [
-      {
-        segment: 'sales',
-        title: 'Sales',
-        icon: <DescriptionIcon />,
-      },
-      {
-        segment: 'traffic',
-        title: 'Traffic',
-        icon: <DescriptionIcon />,
-      },
-    ],
-  },
-  {
-    segment: 'integrations',
-    title: 'Integrations',
-    icon: <LayersIcon />,
+    segment: 'instructors',
+    title: 'Instructors',
+    icon: <PersonIcon />,
   },
 ];
 
@@ -91,13 +83,47 @@ const Skeleton = styled('div')(({ theme, height }) => ({
   content: '" "',
 }));
 
-export default function DashboardLayoutBasic(props) {
+export default function ELearningDashboard(props) {
   const { window } = props;
-
-  const router = useDemoRouter('/dashboard');
-
-  // Remove this const when copying and pasting into your project.
+  const router = useDemoRouter('/courses');
   const demoWindow = window ? window() : undefined;
+
+  // Function to render content based on active tab
+  const renderContent = (activeTab) => {
+    switch (activeTab) {
+      case 'courses':
+        return (
+          <>
+            <h2>Courses</h2>
+            <Skeleton height={200} />
+            <p>Here you can manage and view available courses for students.</p>
+          </>
+        );
+      case 'users':
+        return (
+          <>
+            <h2>Users</h2>
+            <Skeleton height={200} />
+            <p>View and manage the users (students) who have registered on the platform.</p>
+          </>
+        );
+      case 'instructors':
+        return (
+          <>
+            <h2>Instructors</h2>
+            <Skeleton height={200} />
+            <p>Manage and view the instructors who create and manage courses on the platform.</p>
+          </>
+        );
+      default:
+        return (
+          <>
+            <h2>Welcome</h2>
+            <p>Select a section to manage.</p>
+          </>
+        );
+    }
+  };
 
   return (
     <AppProvider
@@ -106,45 +132,19 @@ export default function DashboardLayoutBasic(props) {
       theme={demoTheme}
       window={demoWindow}
     >
-      <DashboardLayout>
+      <CustomDashboardLayout>
+        <div className="Shicshyalaya-Branding">
+          Shicshyalaya
+        </div>
         <PageContainer>
           <Grid container spacing={1}>
-            <Grid size={5} />
             <Grid size={12}>
-              <Skeleton height={14} />
-            </Grid>
-            <Grid size={12}>
-              <Skeleton height={14} />
-            </Grid>
-            <Grid size={4}>
-              <Skeleton height={100} />
-            </Grid>
-            <Grid size={8}>
-              <Skeleton height={100} />
-            </Grid>
-
-            <Grid size={12}>
-              <Skeleton height={150} />
-            </Grid>
-            <Grid size={12}>
-              <Skeleton height={14} />
-            </Grid>
-
-            <Grid size={3}>
-              <Skeleton height={100} />
-            </Grid>
-            <Grid size={3}>
-              <Skeleton height={100} />
-            </Grid>
-            <Grid size={3}>
-              <Skeleton height={100} />
-            </Grid>
-            <Grid size={3}>
-              <Skeleton height={100} />
+              {/* Render content based on the current active tab */}
+              {renderContent(router.pathname.replace('/', ''))}
             </Grid>
           </Grid>
         </PageContainer>
-      </DashboardLayout>
+      </CustomDashboardLayout>
     </AppProvider>
   );
 }

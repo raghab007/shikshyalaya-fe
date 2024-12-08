@@ -1,4 +1,4 @@
-import { BrowserRouter, Link, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Link, Route, Routes, useLocation } from "react-router-dom";
 import Signup from "./pages/Signup";
 import Login from "./pages/Login";
 import Home from "./pages/Home";
@@ -6,150 +6,148 @@ import AboutUs from "./pages/AboutUs";
 import { Button, TextField } from "@mui/material";
 import Course from "./pages/Course";
 import Footer from "./pages/Footer";
-import { useRef, useState } from "react";
-import RecipeReviewCard from "./components/Something";
-import Logo from './assets/logo2.png';  // Assuming the logo image is saved here
+import { useState } from "react";
+import Logo from "./assets/logo2.png"; // Assuming the logo image is saved here
 import DashboardLayoutBasic from "./pages/Admin";
 import CourseDetails from "./pages/CourseDetails";
+import ForgotPassword from "./pages/Forgetpassword";
+import "./App.css";
 
-function App() {
-  const [isAdmin,setIsAdmin] = useState(true);
+function Navbar() {
   return (
-    <><div>
-      <div style={{ marginBottom: "100px" }}>
-        <BrowserRouter>
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              font: "white",
-              padding: "20px 50px",
-            }}
-          >
-            {/* Logo and Title */}
-            <div style={{ display: "flex", alignItems: "center" }}>
-              <img
-                src={Logo} // Add your logo image here
-                alt="Sikshyalaya Logo"
-                style={{
-                  width: "60px", // Increased logo size
-                  height: "60px",
-                  marginRight: "15px", // More space between logo and text
-                  transition: "transform 0.3s ease-in-out", 
-                  borderRadius: '15px' // Smooth scaling on hover
-                }}
-                onMouseOver={(e) => {
-                  e.target.style.transform = "scale(1.1)"; // Scale up on hover
-                }}
-                onMouseOut={(e) => {
-                  e.target.style.transform = "scale(1)"; // Reset scale on mouse out
-                }}
-              />
-             
-             <h1
+    <div
+      style={{
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "center",
+        padding: "20px 50px",
+        backgroundColor: "#e3f2fd",
+      }}
+    >
+      {/* Logo and Title */}
+      <div style={{ display: "flex", alignItems: "center" }}>
+        <img
+          src={Logo}
+          alt="Sikshyalaya Logo"
           style={{
-            color: "#1976d2", // Primary color
-            fontSize: "2rem", // Increased font size for better visibility
-            fontWeight: "bold", // Make it bold
+            width: "60px",
+            height: "60px",
+            marginRight: "15px",
+            transition: "transform 0.3s ease-in-out",
+            borderRadius: "15px",
+          }}
+          onMouseOver={(e) => {
+            e.target.style.transform = "scale(1.1)";
+          }}
+          onMouseOut={(e) => {
+            e.target.style.transform = "scale(1)";
+          }}
+        />
+        <h1
+          style={{
+            color: "#1976d2",
+            fontSize: "2rem",
+            fontWeight: "bold",
             margin: 0,
-            letterSpacing: "1px", // Slight space between letters for a cleaner look
-            textShadow: "2px 2px 4px rgba(0, 0, 0, 0.3)", // Add shadow for depth
+            letterSpacing: "1px",
+            textShadow: "2px 2px 4px rgba(0, 0, 0, 0.3)",
           }}
         >
-  <Link
-    to={"/"}
-    style={{
-      textDecoration: "none", // Remove the underline
-      color: "#1976d2", // Ensure the link color is the same as the text color
-    }}
-  >
-    Sikshyalaya
-  </Link>
-  </h1>
-            </div>
-
-            {/* Search Bar */}
-            <div style={{ width: "65%", display: "flex", justifyContent: "center" }}>
-              <TextField
-                variant="standard"
-                placeholder="Search courses"
-                type="search"
-                InputProps={{
-                  style: {
-                    backgroundColor: "white", // Set the background color
-                    borderRadius: "10px", // Add slight rounding to corners
-                    padding: "6px 12px",
-                    fontFamily: 'sans-serif',
-                  },
-                }}
-                sx={{
-                  width: "500px", // Increase the width
-                  border: "1px solid blue", // Optional: Add a border
-                  boxShadow: "100 1px 4px rgba(0, 0, 0, 0.2)", 
-                  borderRadius:'10px',// Optional: Add shadow for depth
-                }}
-                
-                // Add placeholder text styling
-              />
-            </div>
-
-            {/* Navigation Links */}
-            <div
-              style={{
-                width: "40%",
-                display: "flex",
-                justifyContent: "space-between",
-              }}
-            >
-              <Link  to={"/"}>
-                <Button variant="text" className="btn nav"  >
-                  Home
-                </Button>
-              </Link>
-              <Link to={"/courses"}>
-                <Button variant="text" className="btn nav"  >
-                  Courses
-                </Button>
-              </Link>
-              <Link to={"/about-us"}>
-                <Button variant="text" className="btn nav" >
-                  About Us
-                </Button>
-              </Link>
-              <Link to={"/login"}>
-                <Button variant="text" className="btn nav" >
-                  Login
-                </Button>
-              </Link>
-              <Link to={"/signup"}>
-                <Button variant="text" className="btn nav"  >
-                  Signup
-                </Button>
-              </Link>
-            </div>
-          </div>
-
-          <Routes>
-            <Route path="/" element={<Home />}></Route>
-            <Route path="/login" element={<Login />}></Route>
-            <Route path="/signup" element={<Signup />}></Route>
-            <Route path="/about-us" element={<AboutUs />}></Route>
-            <Route path="/courses" element={<Course />}></Route>
-            <Route path="/admin" element={<DashboardLayoutBasic></DashboardLayoutBasic>}></Route>
-            <Route path="/coursedetails" element={<CourseDetails></CourseDetails>}></Route>
-
-          </Routes>
-        </BrowserRouter>
+          <Link to={"/"} style={{ textDecoration: "none", color: "#1976d2" }}>
+            Sikshyalaya
+          </Link>
+        </h1>
       </div>
-      {/* Footer */}
-      <div style={{ height: "250px", backgroundColor: "#1976d2" }}>
-        <Footer />
-      </div>
-      </div>
-    </>
 
+      {/* Search Bar */}
+      <div style={{ width: "65%", display: "flex", justifyContent: "center" }}>
+        <TextField
+          variant="standard"
+          placeholder="Search courses"
+          type="search"
+          InputProps={{
+            style: {
+              backgroundColor: "white",
+              borderRadius: "10px",
+              padding: "6px 12px",
+            },
+          }}
+          sx={{
+            width: "500px",
+            border: "1px solid #1976d2",
+            boxShadow: "1px 1px 4px rgba(0, 0, 0, 0.2)",
+          }}
+        />
+      </div>
+
+      {/* Navigation Links */}
+      <div style={{ width: "40%", display: "flex", justifyContent: "space-between" }}>
+        <Link to={"/"} style={{ textDecoration: "none" }}>
+          <Button variant="text" className="btn nav">
+            Home
+          </Button>
+        </Link>
+        <Link to={"/courses"} style={{ textDecoration: "none" }}>
+          <Button variant="text" className="btn nav">
+            Courses
+          </Button>
+        </Link>
+        <Link to={"/about-us"} style={{ textDecoration: "none" }}>
+          <Button variant="text" className="btn nav">
+            About Us
+          </Button>
+        </Link>
+        <Link to={"/login"} style={{ textDecoration: "none" }}>
+          <Button variant="text" className="btn nav">
+            Login
+          </Button>
+        </Link>
+        <Link to={"/signup"} style={{ textDecoration: "none" }}>
+          <Button variant="text" className="btn nav">
+            Signup
+          </Button>
+        </Link>
+      </div>
+    </div>
   );
 }
 
-export default App;
+function App() {
+  const location = useLocation();
+
+  // Determine whether to render the Navbar and Footer
+  const isAdminRoute = location.pathname.startsWith("/admin");
+
+  return (
+    <>
+      <div>
+        {!isAdminRoute && <Navbar />} {/* Render Navbar only if not in Admin */}
+        <div style={{ marginBottom: !isAdminRoute ? "100px" : "0" }}>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<Signup />} />
+            <Route path="/about-us" element={<AboutUs />} />
+            <Route path="/courses" element={<Course />} />
+            <Route path="/admin" element={<DashboardLayoutBasic />} />
+            <Route path="/coursedetails" element={<CourseDetails />} />
+            <Route path="/forgotpassword" element={<ForgotPassword />} />
+          </Routes>
+        </div>
+        {!isAdminRoute && (
+          <div style={{ height: "150px", backgroundColor: "#282c34" }}>
+            <Footer />
+          </div>
+        )} {/* Render Footer only if not in Admin */}
+      </div>
+    </>
+  );
+}
+
+export default function RootApp() {
+  return (
+    <BrowserRouter>
+      <App />
+    </BrowserRouter>
+  );
+}

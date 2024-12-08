@@ -1,5 +1,5 @@
 import React from "react";
-import { Button, TextField, Typography, Box } from "@mui/material";
+import { Button, TextField, Typography, Box, Link as MuiLink } from "@mui/material";
 import { Link } from "react-router-dom";
 import axios from "axios";
 
@@ -37,6 +37,7 @@ export default function Login() {
                 Login
             </Typography>
 
+            {/* Email and Password Fields */}
             <TextField
                 label="Email"
                 type="email"
@@ -60,10 +61,18 @@ export default function Login() {
                 Login
             </Button>
 
+            {/* Sign Up Section */}
             <Box sx={linkStyle}>
                 <Typography variant="body2">Don't have an account?</Typography>
                 <Link to="/signup">
                     <Button variant="text">Sign Up</Button>
+                </Link>
+            </Box>
+
+            {/* Forgot Password Section */}
+            <Box sx={{ textAlign: "center", marginTop: "10px" }}>
+                <Link  to="/forgotpassword" underline="hover" color="secondary">
+                    Forgot Password?
                 </Link>
             </Box>
         </Box>
