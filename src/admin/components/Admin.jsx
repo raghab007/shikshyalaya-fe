@@ -1,7 +1,4 @@
 export default function Admin(){
-    return (
-        <div>
-            <h1>This is admin panel</h1>
-        </div>
-    )
+
+  return <h1>This is a admin page</h1>
 }

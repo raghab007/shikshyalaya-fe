@@ -1,7 +1,7 @@
-import { Box, TextField, Button, Typography, Snackbar, Alert, CircularProgress } from '@mui/material';
-import axios from 'axios';
-import { useRef, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useRef, useState } from "react";
+import axios from "axios";
+import { Link } from "react-router-dom";
+import { Button } from "@mui/material";
 
 export default function Signup() {
     const userName = useRef(null);
@@ -10,209 +10,174 @@ export default function Signup() {
     const password = useRef(null);
     const email = useRef(null);
     const contactNumber = useRef(null);
-    const [openSnackbar, setOpenSnackbar] = useState(false);
-    const [snackbarMessage, setSnackbarMessage] = useState('');
-    const [snackbarSeverity, setSnackbarSeverity] = useState('success');
-    const [loading, setLoading] = useState(false); // State for loading
+    const role = useRef(null);
+    const age = useRef(null);
+    const address = useRef(null);
+    // const [openSnackbar, setOpenSnackbar] = useState(false);
+    // const [snackbarMessage, setSnackbarMessage] = useState("");
+    // const [snackbarSeverity, setSnackbarSeverity] = useState("success");
+    // const [loading, setLoading] = useState(false);
 
     function signup(e) {
         e.preventDefault();
-        setLoading(true); // Start loading when submitting the form
+        // setLoading(true);
 
-        // Validation for empty fields
-        if (
-            !userName.current.value.trim() ||
-            !firstName.current.value.trim() ||
-            !lastName.current.value.trim() ||
-            !password.current.value.trim() ||
-            !email.current.value.trim() ||
-            !contactNumber.current.value.trim()
-        ) {
-            setSnackbarMessage('All fields are required');
-            setSnackbarSeverity('error');
-            setOpenSnackbar(true);
-            setLoading(false); // Stop loading
-            return; // Stop further execution
-        }
+        // // Validation for empty fields
+        // if (
+        //     !userName.current.value.trim() ||
+        //     !firstName.current.value.trim() ||
+        //     !lastName.current.value.trim() ||
+        //     !password.current.value.trim() ||
+        //     !email.current.value.trim() ||
+        //     !contactNumber.current.value.trim() ||
+        //     !role.current.value
+        // ) {
+        //     setSnackbarMessage("All fields are required, including role");
+        //     setSnackbarSeverity("error");
+        //     setOpenSnackbar(true);
+        //     setLoading(false);
+        //     return;
+        // }
 
-        // Proceed with the API call
-        let user = {
+        // API call
+        const user = {
             userName: userName.current.value,
             firstName: firstName.current.value,
             lastName: lastName.current.value,
             password: password.current.value,
             email: email.current.value,
-            contactNumber: contactNumber.current.value
+            contactNumber: contactNumber.current.value,
+            role: role.current.value,
+            age:age.current.value,
+            address:address.current.value
         };
 
-        async function hello() {
+        async function registerUser() {
             try {
-                const value = await axios.post('http://localhost:8085/public/signup', user, {
+                const response = await axios.post("http://localhost:3000/register", user, {
                     headers: {
-                        'Content-Type': 'application/json'
-                    }
+                        "Content-Type": "application/json",
+                    },
                 });
 
-                console.log(value.data);
-
-                if (value.data === true) {
-                    setSnackbarMessage('User registered successfully');
-                    setSnackbarSeverity('success');
+                console.log(response)
+                
+                if (response.data.message === "true") {
+                    alert("User registered successfully");
+                    
                 } else {
-                    setSnackbarMessage('User already exists');
-                    setSnackbarSeverity('error');
+                  alert("User already exists");
+                  
                 }
             } catch (error) {
-                setSnackbarMessage('Error occurred during registration');
-                setSnackbarSeverity('error');
+                alert("Error occurred during registration");
+               
             } finally {
-                setLoading(false); // Stop loading after response
-                setOpenSnackbar(true);
+                // setLoading(false);
+                // setOpenSnackbar(true);
             }
         }
-        hello();
+
+        registerUser();
     }
 
     return (
-        <>
-            <Box
-                component="form"
-                sx={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: 2,
-                    width: '300px',
-                    margin: 'auto',
-                    marginTop: 4,
-                    padding: 2,
-                    border: '1px solid #ccc',
-                    borderRadius: 1,
-                    boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-                }}
+        <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 ">
+            <form
+                onSubmit={signup}
+                className="bg-white p-6  wrounded-2xl shadow-lg w-81 border border-gray-300"
             >
-                <Typography variant="h6" align="center" gutterBottom>
-                    Sign Up
-                </Typography>
+                <h2 className="text-center text-2xl font-semibold mb-4">Sign Up</h2>
 
-                <TextField
-                    label="Username"
-                    name="username"
-                    variant="outlined"
-                    size="small"
+                {/* Input Fields */}
+                <input
+                    type="text"
+                    placeholder="Username"
+                    ref={userName}
+                    className="w-full p-2 mb-3 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                     required
-                    inputRef={userName}
-                    InputProps={{
-                        style: { fontSize: '14px', opacity: 0.8 },
-                    }}
-                    InputLabelProps={{
-                        style: { fontSize: '14px', opacity: 0.7 },
-                    }}
                 />
-
-                <TextField
-                    label="First Name"
-                    name="firstname"
-                    variant="outlined"
-                    size="small"
+                <div className="flex">
+                <input
+                    type="text"
+                    placeholder="First Name"
+                    ref={firstName}
+                    className="w-full p-2 mb-3 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                     required
-                    inputRef={firstName}
-                    InputProps={{
-                        style: { fontSize: '14px', opacity: 0.8 },
-                    }}
-                    InputLabelProps={{
-                        style: { fontSize: '14px', opacity: 0.7 },
-                    }}
                 />
-
-                <TextField
-                    label="Last Name"
-                    name="lastname"
-                    variant="outlined"
-                    size="small"
+                <input
+                    type="text"
+                    placeholder="Last Name"
+                    ref={lastName}
+                    className="w-full p-2 mb-3 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                     required
-                    inputRef={lastName}
-                    InputProps={{
-                        style: { fontSize: '14px', opacity: 0.8 },
-                    }}
-                    InputLabelProps={{
-                        style: { fontSize: '14px', opacity: 0.7 },
-                    }}
                 />
-
-                <TextField
-                    label="Password"
-                    name="password"
-                    type="password"
-                    variant="outlined"
-                    size="small"
-                    required
-                    inputRef={password}
-                    InputProps={{
-                        style: { fontSize: '14px', opacity: 0.8 },
-                    }}
-                    InputLabelProps={{
-                        style: { fontSize: '14px', opacity: 0.7 },
-                    }}
-                />
-
-                <TextField
-                    label="Email"
-                    name="email"
-                    type="email"
-                    variant="outlined"
-                    size="small"
-                    required
-                    inputRef={email}
-                    InputProps={{
-                        style: { fontSize: '14px', opacity: 0.8 },
-                    }}
-                    InputLabelProps={{
-                        style: { fontSize: '14px', opacity: 0.7 },
-                    }}
-                />
-
-                <TextField
-                    label="Contact Number"
-                    name="number"
-                    type="number"
-                    variant="outlined"
-                    size="small"
-                    required
-                    inputRef={contactNumber}
-                    InputProps={{
-                        style: { fontSize: '14px', opacity: 0.8 },
-                    }}
-                    InputLabelProps={{
-                        style: { fontSize: '14px', opacity: 0.7 },
-                    }}
-                />
-
-                <Button onClick={signup} color="success" type="submit" variant="contained" disabled={loading}>
-                    {loading ? <CircularProgress size={24} color="inherit" /> : 'Register'}
-                </Button>
-
-                <div style={{ margin: 'auto' }}>
-                    <p style={{ marginTop: '0px' }}>Already have an account?</p>
-                    <Link style={{ marginLeft: '30px' }} to={"/login"}>
-                        <Button variant="text" className="btn nav">Login</Button>
-                    </Link>
                 </div>
-            </Box>
 
-            {/* Snackbar for success or error messages */}
-            <Snackbar
-                open={openSnackbar}
-                autoHideDuration={6000}
-                onClose={() => setOpenSnackbar(false)}
-            >
-                <Alert
-                    onClose={() => setOpenSnackbar(false)}
-                    severity={snackbarSeverity}
-                    sx={{ width: '100%' }}
+                <input
+                    type="number"
+                    placeholder="age"
+                    ref={age}
+                    className="w-full p-2 mb-3 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    required
+                />
+
+                <input
+                    type="address"
+                    placeholder="Enter address"
+                    ref={address}
+                    className="w-full p-2 mb-3 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    required
+                />
+                <input
+                    type="password"
+                    placeholder="Password"
+                    ref={password}
+                    className="w-full p-2 mb-3 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    required
+                />
+                <input
+                    type="email"
+                    placeholder="Email"
+                    ref={email}
+                    className="w-full p-2 mb-3 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    required
+                />
+                <input
+                    type="tel"
+                    placeholder="Contact Number"
+                    ref={contactNumber}
+                    className="w-full p-2 mb-4 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    required
+                />
+
+                {/* Role Dropdown */}
+                <select
+                    ref={role}
+                    className="w-full p-2 mb-4 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    required
                 >
-                    {snackbarMessage}
-                </Alert>
-            </Snackbar>
-        </>
+                    <option value="" disabled selected>
+                        Select Role
+                    </option>
+                    <option value="USER">User</option>
+                    <option value="INSTRUCTOR">Instructor</option>
+                </select>
+
+                {/* Submit Button */}
+               <Button className="ml-2" onClick={signup}>Signup</Button>
+            
+
+                {/* Login Redirect */}
+                <p className="text-center mt-4 text-sm">
+                    Already have an account?{" "}
+                    <Link to="/login" className="text-blue-500 hover:underline">
+                        Login
+                    </Link>
+                </p>
+            </form>
+
+           
+        </div>
     );
 }
