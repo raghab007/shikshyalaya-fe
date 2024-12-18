@@ -1,9 +1,16 @@
 import { Link } from "react-router-dom";
+import { useState } from "react";
 import homeImage from "../assets/istockphoto-1919863292-1024x1024.jpg";
 import reactImage from "../assets/react.png";
 import jsImage from "../assets/istockphoto-1919863292-1024x1024.jpg";
 
 export default function Home() {
+  const [activeQuestion, setActiveQuestion] = useState(null);
+
+  const toggleAnswer = (index) => {
+    setActiveQuestion(activeQuestion === index ? null : index);
+  };
+
   const popularCourses = [
     {
       title: "React for Beginners",
@@ -23,8 +30,8 @@ export default function Home() {
   ];
 
   return (
-    <div className="bg-gray-50">
-      
+    <div className="bg-gray-50 font-sans">
+      {/* Hero Section */}
       <div className="flex flex-col md:flex-row items-center justify-between bg-blue-100 p-8 shadow-lg rounded-lg">
         {/* Image */}
         <div className="flex-1 flex justify-center">
@@ -53,37 +60,6 @@ export default function Home() {
           </Link>
         </div>
       </div>
-
-      {/* Popular Courses Section
-      <div className="py-12">
-        <h2 className="text-3xl font-bold text-center text-gray-800 mb-6">
-          Popular Courses
-        </h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 px-6">
-          {popularCourses.map((course, index) => (
-            <div
-              key={index}
-              className="bg-white rounded-lg shadow-md overflow-hidden transition-transform transform hover:scale-105"
-            >
-              {course.image && (
-                <img
-                  src={course.image}
-                  alt={course.title}
-                  className="h-48 w-full object-cover rounded-t-lg"
-                />
-              )}
-              <div className="p-4">
-                <h3 className="text-xl font-semibold text-gray-800">
-                  {course.title}
-                </h3>
-                <p className="text-gray-600 mt-2 text-sm">
-                  {course.description}
-                </p>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div> */}
 
       {/* Why Choose Us Section */}
       <div className="bg-blue-50 py-12 px-6">
@@ -118,8 +94,69 @@ export default function Home() {
           </div>
         </div>
       </div>
+
+      {/* Question and Answer Section */}
+      <div className="bg-gray-50 py-12 px-6">
+        <div className="max-w-4xl mx-auto">
+          <h2 className="text-3xl font-bold text-gray-800 mb-6 text-center">
+            Frequently Asked Questions
+          </h2>
+          <div className="space-y-6">
+            <div className="bg-white p-6 rounded-lg shadow-md">
+              <h3
+                className="text-xl font-semibold text-blue-800 cursor-pointer"
+                onClick={() => toggleAnswer(0)}
+              >
+                What is Sikshyalaya?
+              </h3>
+              {activeQuestion === 0 && (
+                <p className="text-gray-700 mt-2">
+                  Sikshyalaya is an e-learning platform that connects students with expert tutors worldwide, offering industry-relevant courses at affordable prices.
+                </p>
+              )}
+            </div>
+            <div className="bg-white p-6 rounded-lg shadow-md">
+              <h3
+                className="text-xl font-semibold text-blue-800 cursor-pointer"
+                onClick={() => toggleAnswer(1)}
+              >
+                How do I enroll in a course?
+              </h3>
+              {activeQuestion === 1 && (
+                <p className="text-gray-700 mt-2">
+                  Simply create an account, browse our course catalog, select your preferred course, and click "Enroll" to start learning.
+                </p>
+              )}
+            </div>
+            <div className="bg-white p-6 rounded-lg shadow-md">
+              <h3
+                className="text-xl font-semibold text-blue-800 cursor-pointer"
+                onClick={() => toggleAnswer(2)}
+              >
+                Are there any free courses available?
+              </h3>
+              {activeQuestion === 2 && (
+                <p className="text-gray-700 mt-2">
+                  Yes, we offer a variety of free courses to help you get started on your learning journey.
+                </p>
+              )}
+            </div>
+            <div className="bg-white p-6 rounded-lg shadow-md">
+              <h3
+                className="text-xl font-semibold text-blue-800 cursor-pointer"
+                onClick={() => toggleAnswer(3)}
+              >
+                Can I access courses on mobile devices?
+              </h3>
+              {activeQuestion === 3 && (
+                <p className="text-gray-700 mt-2">
+                  Yes, our platform is fully responsive and accessible on smartphones, tablets, and desktop devices.
+                </p>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
-
-

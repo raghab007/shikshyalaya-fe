@@ -1,7 +1,6 @@
-import { useRef, useState } from "react";
+import { useRef } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
-import { Button } from "@mui/material";
 
 export default function Signup() {
     const userName = useRef(null);
@@ -13,33 +12,10 @@ export default function Signup() {
     const role = useRef(null);
     const age = useRef(null);
     const address = useRef(null);
-    // const [openSnackbar, setOpenSnackbar] = useState(false);
-    // const [snackbarMessage, setSnackbarMessage] = useState("");
-    // const [snackbarSeverity, setSnackbarSeverity] = useState("success");
-    // const [loading, setLoading] = useState(false);
 
-    function signup(e) {
+    async function signup(e) {
         e.preventDefault();
-        // setLoading(true);
 
-        // // Validation for empty fields
-        // if (
-        //     !userName.current.value.trim() ||
-        //     !firstName.current.value.trim() ||
-        //     !lastName.current.value.trim() ||
-        //     !password.current.value.trim() ||
-        //     !email.current.value.trim() ||
-        //     !contactNumber.current.value.trim() ||
-        //     !role.current.value
-        // ) {
-        //     setSnackbarMessage("All fields are required, including role");
-        //     setSnackbarSeverity("error");
-        //     setOpenSnackbar(true);
-        //     setLoading(false);
-        //     return;
-        // }
-
-        // API call
         const user = {
             userName: userName.current.value,
             firstName: firstName.current.value,
@@ -48,113 +24,111 @@ export default function Signup() {
             email: email.current.value,
             contactNumber: contactNumber.current.value,
             role: role.current.value,
-            age:age.current.value,
-            address:address.current.value
+            age: age.current.value,
+            address: address.current.value,
         };
 
-        async function registerUser() {
-            try {
-                const response = await axios.post("http://localhost:3000/register", user, {
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                });
+        try {
+            const response = await axios.post("http://localhost:3000/register", user, {
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            });
 
-                console.log(response)
-                
-                if (response.data.message === "true") {
-                    alert("User registered successfully");
-                    
-                } else {
-                  alert("User already exists");
-                  
-                }
-            } catch (error) {
-                alert("Error occurred during registration");
-               
-            } finally {
-                // setLoading(false);
-                // setOpenSnackbar(true);
+            if (response.data.message === "true") {
+                alert("User registered successfully");
+            } else {
+                alert("User already exists");
             }
+        } catch (error) {
+            alert("Error occurred during registration");
         }
-
-        registerUser();
     }
 
     return (
-        <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 ">
+        <div className="flex items-center justify-center min-h-screen bg-gray-100">
             <form
                 onSubmit={signup}
-                className="bg-white p-6  wrounded-2xl shadow-lg w-81 border border-gray-300"
+                className="w-full max-w-sm bg-white p-6 rounded-lg shadow-md"
             >
-                <h2 className="text-center text-2xl font-semibold mb-4">Sign Up</h2>
+                <h2 className="text-xl font-semibold text-center mb-4">Sign Up</h2>
 
-                {/* Input Fields */}
+                {/* Username */}
                 <input
                     type="text"
                     placeholder="Username"
                     ref={userName}
-                    className="w-full p-2 mb-3 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full p-2 mb-3 border rounded focus:ring-2 focus:ring-blue-500 text-sm"
                     required
                 />
-                <div className="flex">
-                <input
-                    type="text"
-                    placeholder="First Name"
-                    ref={firstName}
-                    className="w-full p-2 mb-3 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    required
-                />
-                <input
-                    type="text"
-                    placeholder="Last Name"
-                    ref={lastName}
-                    className="w-full p-2 mb-3 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    required
-                />
+
+                {/* First and Last Name */}
+                <div className="flex gap-2">
+                    <input
+                        type="text"
+                        placeholder="First Name"
+                        ref={firstName}
+                        className="w-1/2 p-2 mb-3 border rounded focus:ring-2 focus:ring-blue-500 text-sm"
+                        required
+                    />
+                    <input
+                        type="text"
+                        placeholder="Last Name"
+                        ref={lastName}
+                        className="w-1/2 p-2 mb-3 border rounded focus:ring-2 focus:ring-blue-500 text-sm"
+                        required
+                    />
                 </div>
 
+                {/* Age */}
                 <input
                     type="number"
-                    placeholder="age"
+                    placeholder="Age"
                     ref={age}
-                    className="w-full p-2 mb-3 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full p-2 mb-3 border rounded focus:ring-2 focus:ring-blue-500 text-sm"
                     required
                 />
 
+                {/* Address */}
                 <input
-                    type="address"
-                    placeholder="Enter address"
+                    type="text"
+                    placeholder="Address"
                     ref={address}
-                    className="w-full p-2 mb-3 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full p-2 mb-3 border rounded focus:ring-2 focus:ring-blue-500 text-sm"
                     required
                 />
+
+                {/* Password */}
                 <input
                     type="password"
                     placeholder="Password"
                     ref={password}
-                    className="w-full p-2 mb-3 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full p-2 mb-3 border rounded focus:ring-2 focus:ring-blue-500 text-sm"
                     required
                 />
+
+                {/* Email */}
                 <input
                     type="email"
                     placeholder="Email"
                     ref={email}
-                    className="w-full p-2 mb-3 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full p-2 mb-3 border rounded focus:ring-2 focus:ring-blue-500 text-sm"
                     required
                 />
+
+                {/* Contact Number */}
                 <input
                     type="tel"
                     placeholder="Contact Number"
                     ref={contactNumber}
-                    className="w-full p-2 mb-4 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full p-2 mb-3 border rounded focus:ring-2 focus:ring-blue-500 text-sm"
                     required
                 />
 
-                {/* Role Dropdown */}
+                {/* Role Selection */}
                 <select
                     ref={role}
-                    className="w-full p-2 mb-4 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full p-2 mb-4 border rounded focus:ring-2 focus:ring-blue-500 text-sm"
                     required
                 >
                     <option value="" disabled selected>
@@ -165,19 +139,21 @@ export default function Signup() {
                 </select>
 
                 {/* Submit Button */}
-               <Button className="ml-2" onClick={signup}>Signup</Button>
-            
+                <button
+                    type="submit"
+                    className="w-full bg-blue-500 text-white py-2 rounded text-sm hover:bg-blue-600 transition"
+                >
+                    Sign Up
+                </button>
 
                 {/* Login Redirect */}
-                <p className="text-center mt-4 text-sm">
+                <p className="text-center mt-3 text-xs text-gray-600">
                     Already have an account?{" "}
                     <Link to="/login" className="text-blue-500 hover:underline">
                         Login
                     </Link>
                 </p>
             </form>
-
-           
         </div>
     );
 }
