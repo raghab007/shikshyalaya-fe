@@ -5,9 +5,9 @@ import BasicCard from "../components/course/CourseCard";
 export default function Course() {
   const [courses, setCourses] = useState([]);
   const [error, setError] = useState(false);
-  const [currentPage, setCurrentPage] = useState(1); // Current page
-  const [totalPages, setTotalPages] = useState(1); // Total pages
-  const [itemsPerPage] = useState(6); // Courses per page
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [itemsPerPage] = useState(6);
 
   useEffect(() => {
     async function getCourses() {
@@ -20,7 +20,7 @@ export default function Course() {
           )}`,
         }));
         setCourses(updatedCourses);
-        setTotalPages(Math.ceil(updatedCourses.length / itemsPerPage)); // Calculate total pages
+        setTotalPages(Math.ceil(updatedCourses.length / itemsPerPage));
       } catch (error) {
         setError(true);
       }
@@ -28,27 +28,16 @@ export default function Course() {
     getCourses();
   }, []);
 
-  // Calculate the courses to display for the current page
   const indexOfLastCourse = currentPage * itemsPerPage;
   const indexOfFirstCourse = indexOfLastCourse - itemsPerPage;
   const currentCourses = courses.slice(indexOfFirstCourse, indexOfLastCourse);
 
-  // Pagination handler
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
 
-  if (error) {
-    return (
-      <h1 className="font-bold text-red-500 text-4xl text-center mt-20">
-        Server Error
-      </h1>
-    );
-  }
-
   return (
     <div className="p-6">
-      {/* Page Header */}
       <div className="text-center mb-10">
         <h1 className="text-3xl font-bold text-gray-800">Our Courses</h1>
         <p className="text-gray-500 mt-2">
@@ -56,38 +45,96 @@ export default function Course() {
         </p>
       </div>
 
-      {/* Content Wrapper */}
       <div className="flex flex-col md:flex-row gap-8">
         {/* Filtering Section */}
-        <div className="w-full md:w-1/4 bg-gray-50 p-4 rounded-md shadow-sm">
-          <h2 className="text-xl font-semibold text-gray-700 mb-4">
+        <div className="w-full md:w-1/4 bg-white p-6 rounded-lg shadow-md">
+          <h2 className="text-xl font-semibold text-gray-700 mb-6 border-b pb-2">
             Filter Courses
           </h2>
-          <div className="space-y-4">
+          <div className="space-y-6">
+            {/* Category Filter */}
             <div>
-              <label className="block text-gray-600 font-medium mb-1">
+              <label className="block text-gray-600 font-medium mb-2">
                 Category
               </label>
-              <select className="w-full border border-gray-300 rounded-md p-2 focus:ring-2 focus:ring-blue-400">
+              <select
+                className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-400"
+                onChange={(e) =>
+                  console.log("Selected category:", e.target.value)
+                }
+              >
                 <option value="">All Categories</option>
                 <option value="programming">Programming</option>
                 <option value="design">Design</option>
                 <option value="business">Business</option>
               </select>
             </div>
+
+            {/* Price Filter */}
             <div>
-              <label className="block text-gray-600 font-medium mb-1">
+              <label className="block text-gray-600 font-medium mb-2">
                 Price Range
               </label>
-              <input
-                type="range"
-                min="1000"
-                max="5000"
-                className="w-full"
-                defaultValue="2500"
-              />
-              <div className="text-sm text-gray-500 mt-1">Up to $2500</div>
+              <div className="flex items-center space-x-2">
+                <input
+                  type="number"
+                  placeholder="Min"
+                  className="w-1/2 border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-400"
+                  onChange={(e) =>
+                    console.log("Min price:", e.target.value)
+                  }
+                />
+                <input
+                  type="number"
+                  placeholder="Max"
+                  className="w-1/2 border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-400"
+                  onChange={(e) =>
+                    console.log("Max price:", e.target.value)
+                  }
+                />
+              </div>
             </div>
+
+            {/* Difficulty Filter */}
+            <div>
+              <label className="block text-gray-600 font-medium mb-2">
+                Difficulty
+              </label>
+              <div className="flex items-center space-x-4">
+                {["Beginner", "Intermediate", "Advanced"].map((level) => (
+                  <label key={level} className="inline-flex items-center">
+                    <input
+                      type="checkbox"
+                      value={level.toLowerCase()}
+                      className="form-checkbox h-5 w-5 text-blue-600"
+                      onChange={(e) =>
+                        console.log("Selected difficulty:", e.target.value)
+                      }
+                    />
+                    <span className="ml-2 text-gray-700">{level}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+
+            {/* Duration Filter */}
+            <div>
+              <label className="block text-gray-600 font-medium mb-2">
+                Duration
+              </label>
+              <select
+                className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-400"
+                onChange={(e) =>
+                  console.log("Selected duration:", e.target.value)
+                }
+              >
+                <option value="">Any Duration</option>
+                <option value="short">Less than 1 hour</option>
+                <option value="medium">1 to 3 hours</option>
+                <option value="long">More than 3 hours</option>
+              </select>
+            </div>
+
             <button className="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600">
               Apply Filters
             </button>
@@ -96,7 +143,7 @@ export default function Course() {
 
         {/* Courses Section */}
         <div className="w-full md:w-3/4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {currentCourses.length === 0 ? (
+          {currentCourses.length === 0 || error ? (
             <p className="col-span-full text-center text-gray-600">
               No courses available at the moment.
             </p>

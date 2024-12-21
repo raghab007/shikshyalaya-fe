@@ -71,37 +71,36 @@ function Users() {
 }
 
 
+
+
 function Courses() {  
- 
-    const [courses,setCourses] = useState(null);
-    const [isLoading,setIsLoading] = useState(true);
-    const [isError,setIsError] = useState(false)
-  useEffect(function(){
-    async function getAllCourses(){
-      try{
-      const response = await axios.get('http://localhost:3000/courses')
-      setIsLoading(false);
-      }catch(error){
-        setIsError(true)
+  const [courses, setCourses] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isError, setIsError] = useState(false);
+
+  useEffect(() => {
+    async function getAllCourses() {
+      try {
+        const response = await axios.get('http://localhost:3000/courses');
+        console.log(response.data.courses); // Make sure response contains an array of courses
+        setCourses(response.data.courses); // Store courses data
+        setIsLoading(false);
+      } catch (error) {
+        setIsError(true);
       }
-     }
-     getAllCourses();
-  },[courses]);
+    }
 
-  if(isError){
-    return (
-      <h1>Server error</h1>
-    )
+    getAllCourses();
+  }, []); // Use empty dependency array to fetch only once on component mount
+
+  if (isError) {
+    return <h1>Server error</h1>;
   }
 
-  if(isLoading){
-    return (
-      <h1>
-        loading courses...
-      </h1>
-    )
+  if (isLoading) {
+    return <h1>Loading courses...</h1>;
   }
-   
+
   return (
     <div>
       <h3 className="text-xl font-semibold mb-4">Course Management</h3>
@@ -110,31 +109,30 @@ function Courses() {
           <tr className="bg-gray-100">
             <th className="border border-gray-300 px-4 py-2">ID</th>
             <th className="border border-gray-300 px-4 py-2">Name</th>
-            <th className="border border-gray-300 px-4 py-2">Category</th>
-            <th className="border border-gray-300 px-4 py-2">Duration</th>
+            <th className="border border-gray-300 px-4 py-2">Description</th>
+            <th className="border border-gray-300 px-4 py-2">Price</th>
             <th className="border border-gray-300 px-4 py-2">Actions</th>
           </tr>
         </thead>
         <tbody>
-        <tr className="hover:bg-gray-50">
-            <td className="border border-gray-300 px-4 py-2">1</td>
-            <td className="border border-gray-300 px-4 py-2">Introduction to Java</td>
-            <td className="border border-gray-300 px-4 py-2">Programming</td>
-            <td className="border border-gray-300 px-4 py-2">4 Weeks</td>
-            <td className="border border-gray-300 px-4 py-2 space-x-2">
-              <button className="text-blue-500">Edit</button>
-              <button className="text-red-500">Delete</button>
-            </td>
-          </tr>
-      
-
-
-
-         
+          {courses.map((course) => (
+            <tr key={course.id} className="hover:bg-gray-50">
+              <td className="border border-gray-300 px-4 py-2">{course.id}</td>
+              <td className="border border-gray-300 px-4 py-2">{course.name}</td>
+              <td className="border border-gray-300 px-4 py-2">{course.description}</td>
+              <td className="border border-gray-300 px-4 py-2">{course.price}</td>
+              <td className="border border-gray-300 px-4 py-2 space-x-2">
+                <button className="text-blue-500">Edit</button>
+                <button className="text-red-500">Delete</button>
+              </td>
+            </tr>
+          ))}
         </tbody>
       </table>
     </div>
   );
 }
+
+
 
 export default Admin;
