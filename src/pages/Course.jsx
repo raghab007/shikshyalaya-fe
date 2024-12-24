@@ -100,7 +100,7 @@ export default function Course() {
               <label className="block text-gray-600 font-medium mb-2">
                 Difficulty
               </label>
-              <div className="flex items-center space-x-4">
+              <div className="flex itemx s-center space-x-4">
                 {["Beginner", "Intermediate", "Advanced"].map((level) => (
                   <label key={level} className="inline-flex items-center">
                     <input
