@@ -1,27 +1,48 @@
-import React, { useRef } from "react";
-import { Link } from "react-router-dom";
+import React, { useEffect, useRef } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import userState from "../store/atoms/user.js";
 import axios from "axios";
+import { useRecoilState } from "recoil";
 
 export default function Login() {
   const userName = useRef(null);
   const password = useRef(null);
-
+  const [state, setUserState] = useRecoilState(userState);
+  console.log(state);
+  const navigate = useNavigate();
+  useEffect(function () {
+    if (state) {
+      navigate("/")
+    }
+  }, [])
+  // Handle login logic
   async function handleLogin() {
     const user = {
       userName: userName.current.value,
       password: password.current.value,
     };
 
-    const response = await axios.post("http://localhost:3000/login", user, {
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+    try {
+      const response = await axios.post("http://localhost:8085/login", user, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
 
-    if (response.data.token) {
-      localStorage.setItem("token", response.data.token);
-    } else {
-      alert("Invalid credentials");
+      console.log(response.data);
+      if (response.data) {
+        // Store token in localStorage
+        localStorage.setItem("token", response.data);
+        // Update the Recoil state to true indicating the user is logged in
+        setUserState(true);
+        alert("Login successful");
+        navigate("/");
+      } else {
+        alert("Invalid credentials");
+      }
+    } catch (err) {
+      console.log(err);
+      alert("Server error. Please try again later.");
     }
   }
 
@@ -29,7 +50,7 @@ export default function Login() {
     <div className="flex items-center justify-center min-h-screen bg-gradient-to-r from-green-400 to-blue-500">
       {/* Login Form */}
       <div className="w-96 p-8 bg-white shadow-lg rounded-lg">
-        <h2 className="text-center text-3xl font-bold text-gray-800 mb-6">Welcome to LearnNow</h2>
+        <h2 className="text-center text-3xl font-bold text-gray-800 mb-6">Welcome to LearnNow {state ? "true" : "false"}</h2>
         <h3 className="text-center text-lg text-gray-600 mb-6">Login to Continue Learning</h3>
 
         {/* Username Field */}

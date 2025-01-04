@@ -7,4 +7,4 @@ function Students(){
 }
 
 
-export {Students}
+export default Students

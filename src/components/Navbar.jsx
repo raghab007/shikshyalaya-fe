@@ -1,14 +1,22 @@
 import { Link, NavLink } from "react-router-dom";
 import { useState } from "react";
-import { FiSearch, FiMenu, FiX } from "react-icons/fi";
+import { FiSearch, FiMenu, FiX, FiUser } from "react-icons/fi";
 import Logo from "../assets/logo2.png";
+import { useRecoilState } from "recoil";
+import userState from "../store/atoms/user";
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [state] = useRecoilState(userState);
 
+  const isLogin = state; // Check if user is logged in
+  const username = "User"; // Static username for now
+  console.log(isLogin)
   return (
     <nav className="sticky top-0 z-50 bg-white shadow-lg border-b border-gray-200">
+
+      {/* Navbar Container */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center py-4">
           {/* Logo and Title */}
@@ -20,7 +28,7 @@ export default function Navbar() {
             />
             <h1 className="text-2xl font-bold text-blue-600 tracking-wide">
               <Link to="/" className="no-underline text-blue-600 hover:underline">
-                Sikshyalaya
+                Sikshyalaya {state ? "true" : "false"}
               </Link>
             </h1>
           </div>
@@ -40,8 +48,14 @@ export default function Navbar() {
             <NavLinkItem to="/" label="Home" />
             <NavLinkItem to="/courses" label="Courses" />
             <NavLinkItem to="/about-us" label="About Us" />
-            <LinkButton to="/login" label="Login" primary />
-            <LinkButton to="/signup" label="Signup" />
+            {!isLogin ? (
+              <>
+                <LinkButton to="/login" label="Login" primary />
+                <LinkButton to="/signup" label="Signup" />
+              </>
+            ) : (
+              <UserProfile username={username} />
+            )}
           </div>
 
           {/* Mobile Icons */}
@@ -83,8 +97,14 @@ export default function Navbar() {
             <NavLinkItem to="/" label="Home" />
             <NavLinkItem to="/courses" label="Courses" />
             <NavLinkItem to="/about-us" label="About Us" />
-            <LinkButton to="/login" label="Login" primary />
-            <LinkButton to="/signup" label="Signup" />
+            {!isLogin ? (
+              <>
+                <LinkButton to="/login" label="Login" primary />
+                <LinkButton to="/signup" label="Signup" />
+              </>
+            ) : (
+              <UserProfile username={username} />
+            )}
           </ul>
         </div>
       )}
@@ -97,8 +117,7 @@ function NavLinkItem({ to, label }) {
     <NavLink
       to={to}
       className={({ isActive }) =>
-        `text-sm font-medium ${
-          isActive ? "text-blue-600 font-bold" : "text-gray-700"
+        `text-sm font-medium ${isActive ? "text-blue-600 font-bold" : "text-gray-700"
         } hover:text-blue-600 transition duration-300 ease-in-out`
       }
     >
@@ -116,5 +135,20 @@ function LinkButton({ to, label, primary }) {
     <Link to={to} className="no-underline">
       <button className={buttonClass}>{label}</button>
     </Link>
+  );
+}
+
+function UserProfile({ username }) {
+  return (
+    <div className="flex items-center space-x-2">
+      <FiUser size={24} className="text-gray-600" />
+      <span className="text-sm font-medium text-gray-700">{username}</span>
+      <Link
+        to="/profile"
+        className="px-3 py-1 text-sm text-white bg-blue-600 rounded-full hover:bg-blue-700 transition"
+      >
+        Profile
+      </Link>
+    </div>
   );
 }

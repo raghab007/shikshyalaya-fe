@@ -1,48 +1,28 @@
-import { Routes, Link, Route, BrowserRouter, Router } from 'react-router-dom';
-import { Settings } from './Settings';
+import { Routes, Link, Route } from 'react-router-dom';
 import Dashboard from './Dashboard';
-import { UserInformation } from './Settings';
-import { Courses } from './Courses';
-import { Students } from './Students';
+import Students from './Students';
+import Settings, { UserInformation } from './Settings';
+import Courses from './Courses';
+import CourseDetails from './CourseDetail';
+import { FaTachometerAlt, FaBook, FaUserGraduate, FaCog, FaUsers, FaSignOutAlt, FaChartLine } from 'react-icons/fa';
+import AddCourse from './AddCourse';
 
 function Instructor() {
     return (
         <>
-            <div className="p-5 bg-gray-100">
-                <h1 className="font-bold text-3xl text-center text-gray-800 mb-6">Welcome to the User Dashboard</h1>
+            <div className="p-5 bg-blue-50 min-h-screen">
+                <h1 className="font-bold text-3xl text-center text-blue-800 mb-6">Welcome to the Instructor Dashboard</h1>
                 <div className="flex">
+
                     {/* Sidebar */}
-                    <div className="flex flex-col h-screen w-1/5 space-y-4 bg-gray-200 p-6 rounded-lg shadow-lg">
-                        <Link
-                            className="px-4 py-3 rounded-xl border border-neutral-400 text-gray-700 bg-white hover:bg-gray-100 hover:text-black transition duration-200"
-                            to="/instructor/dashboard"
-                        >
-                            Dashboard
-                        </Link>
-                        <Link
-                            className="px-4 py-3 rounded-xl border border-neutral-400 text-gray-700 bg-white hover:bg-gray-100 hover:text-black transition duration-200"
-                            to="/instructor/courses"
-                        >
-                            Courses
-                        </Link>
-                        <Link
-                            className="px-4 py-3 rounded-xl border border-neutral-400 text-gray-700 bg-white hover:bg-gray-100 hover:text-black transition duration-200"
-                            to="/instructor/students"
-                        >
-                            Students
-                        </Link>
-                        <Link
-                            className="px-4 py-3 rounded-xl border border-neutral-400 text-gray-700 bg-white hover:bg-gray-100 hover:text-black transition duration-200"
-                            to="/instructor/settings"
-                        >
-                            Settings
-                        </Link>
-                        <Link
-                            className="px-4 py-3 rounded-xl border border-neutral-400 text-gray-700 bg-white hover:bg-gray-100 hover:text-black transition duration-200"
-                            to="/instructor/users"
-                        >
-                            Users
-                        </Link>
+                    <div className="flex flex-col h-screen w-64 space-y-4 bg-blue-100 p-6 rounded-lg shadow-lg">
+                        <NavItem to="/instructor/dashboard" icon={<FaTachometerAlt />} label="Dashboard" />
+                        <NavItem to="/instructor/courses" icon={<FaBook />} label="Courses" />
+                        <NavItem to="/instructor/students" icon={<FaUserGraduate />} label="Students" />
+                        <NavItem to="/instructor/settings" icon={<FaCog />} label="Settings" />
+                        <NavItem to="/instructor/users" icon={<FaUsers />} label="Users" />
+                        <NavItem to="/instructor/reports" icon={<FaChartLine />} label="Reports" />
+                        <NavItem to="/instructor/logout" icon={<FaSignOutAlt />} label="Logout" />
                     </div>
 
                     {/* Content */}
@@ -53,6 +33,13 @@ function Instructor() {
                             <Route path="/instructor/users" element={<Users />} />
                             <Route path="/instructor/students" element={<Students />} />
                             <Route path="/instructor/settings" element={<Settings />} />
+                            <Route path="/instructor/settings/user-information" element={<UserInformation />} />
+                            <Route path="/instructor/settings/payment-methods" element={<h1>Payment Methods</h1>} />
+                            <Route path="/instructor/courses/course-details/:courseId" element={<CourseDetails />} />
+                            <Route path="/instructor/reports" element={<h1>Reports Section</h1>} />
+                            <Route path="/instructor/logout" element={<h1>Logging out...</h1>} />
+                            <Route path="/instructor/add-course" element={<AddCourse />} />
+                            <Route path="*" element={<h1>Not found</h1>} />
                         </Routes>
                     </div>
                 </div>
@@ -61,46 +48,21 @@ function Instructor() {
     );
 }
 
-
+function NavItem({ to, icon, label }) {
+    return (
+        <Link
+            className="flex items-center px-4 py-3 rounded-xl text-blue-800 bg-blue-200 hover:bg-blue-300 hover:text-blue-900 transition duration-200"
+            to={to}
+        >
+            {icon} <span className="ml-3">{label}</span>
+        </Link>
+    );
+}
 
 function Users() {
     return (
         <>
             <h1 className="text-2xl font-semibold text-gray-700">This is Users</h1>
-        </>
-    );
-}
-
-
-export function UserInformation() {
-    return (
-        <>
-            <h1 className="text-2xl font-semibold text-gray-700">This is User Information</h1>
-        </>
-    );
-}
-
-
-
-function Courses() {
-    return (
-        <>
-            <h1 className="text-2xl font-semibold text-gray-700">This is Courses</h1>
-            <form action="">
-                <input type="text" placeholder='coursename' />
-                <input type="text" placeholder='course description' />
-                <input type="number" placeholder='course price' />
-                <input type="number" placeholder='course duration' />
-                <button type='submit'>Add Course</button>                  
-            </form>
-        </>
-    );
-}
-
-function Students() {
-    return (
-        <>
-            <h1 className="text-2xl font-semibold text-gray-700">This is Students</h1>
         </>
     );
 }

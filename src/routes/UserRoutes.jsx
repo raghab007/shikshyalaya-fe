@@ -7,16 +7,16 @@ import Course from "../pages/Course";
 import CourseDetails from "../components/course/CourseDetails";
 import ForgotPassword from "../pages/Forgetpassword";
 
-export default function UserRoutes(){
-        return (
-            <Routes>
-                  <Route path="/" element={<Home />} />
-                <Route path="/login" element={<Login />} />
-                <Route path="/signup" element={<Signup />} />
-                <Route path="/about-us" element={<AboutUs />} />
-                <Route path="/courses" element={<Course />} />
-                 <Route path="/coursedetails" element={<CourseDetails />} />
-                <Route path="/forgotpassword" element={<ForgotPassword />} />
-            </Routes>
-        )
+export default function UserRoutes() {
+    return (
+        <Routes>
+            <Route path="/" Component={Home} />
+            <Route path="/login" Component={Login} />
+            <Route path="/signup" element={<Signup />} />
+            <Route path="/about-us" element={<AboutUs />} />
+            <Route path="/courses" element={<Course />} />
+            <Route path="/coursedetails" element={<CourseDetails />} />
+            <Route path="/forgotpassword" element={<ForgotPassword />} />
+        </Routes>
+    )
 }

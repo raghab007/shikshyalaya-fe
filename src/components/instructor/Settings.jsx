@@ -1,4 +1,6 @@
-function Settings() {
+import { Link, Route, Routes } from "react-router-dom";
+
+export default function Settings() {
     return (
         <>
             <div className="p-8">
@@ -46,15 +48,21 @@ function Settings() {
                         <h2 className="text-lg font-semibold text-gray-700">Logout</h2>
                         <p className="text-sm text-gray-500">Sign out of your account.</p>
                     </Link>
-                     <Routes>
-                        <Route path="/instructor/settings/user-information" element={<UserInformation />} />
-                    </Routes>
-                  
+
+
                 </div>
-               
+
             </div>
         </>
     );
 }
 
-export {Settings}
+
+export function UserInformation() {
+    return (
+        <>
+            <h1>User information</h1>
+        </>
+    )
+}
+
