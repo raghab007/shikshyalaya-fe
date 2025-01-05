@@ -12,8 +12,9 @@ export default function Course() {
   useEffect(() => {
     async function getCourses() {
       try {
-        const response = await axios.get("http://localhost:3000/courses");
-        const updatedCourses = response.data.courses.map((course) => ({
+        const response = await axios.get("http://localhost:8085/courses");
+        console.log("Response Data:", response.data); // Check the structure of the response data
+        const updatedCourses = response.data.map((course) => ({
           ...course,
           imageSrc: `https://picsum.photos/200/300?random=${Math.floor(
             Math.random() * 1000
@@ -23,6 +24,7 @@ export default function Course() {
         setTotalPages(Math.ceil(updatedCourses.length / itemsPerPage));
       } catch (error) {
         setError(true);
+        console.error("Error fetching courses:", error);
       }
     }
     getCourses();
@@ -100,7 +102,7 @@ export default function Course() {
               <label className="block text-gray-600 font-medium mb-2">
                 Difficulty
               </label>
-              <div className="flex itemx s-center space-x-4">
+              <div className="flex items-center space-x-4">
                 {["Beginner", "Intermediate", "Advanced"].map((level) => (
                   <label key={level} className="inline-flex items-center">
                     <input
@@ -151,8 +153,8 @@ export default function Course() {
             currentCourses.map((course) => (
               <BasicCard
                 key={course.id}
-                price={course.price}
-                description={course.description}
+                price={course.coursePrice}
+                description={course.courseDescription}
                 title={course.title}
                 imageSrc={course.imageSrc}
               />
@@ -169,11 +171,10 @@ export default function Course() {
               <li key={pageNumber}>
                 <button
                   onClick={() => handlePageChange(pageNumber)}
-                  className={`px-4 py-2 border rounded-md ${
-                    currentPage === pageNumber
-                      ? "bg-blue-500 text-white"
-                      : "bg-white text-gray-700 border-gray-300 hover:bg-gray-100"
-                  }`}
+                  className={`px-4 py-2 border rounded-md ${currentPage === pageNumber
+                    ? "bg-blue-500 text-white"
+                    : "bg-white text-gray-700 border-gray-300 hover:bg-gray-100"
+                    }`}
                 >
                   {pageNumber}
                 </button>

@@ -8,7 +8,7 @@ export default function Login() {
   const userName = useRef(null);
   const password = useRef(null);
   const [state, setUserState] = useRecoilState(userState);
-  console.log(state);
+  // const [profile, setProfile] = useRecoilState(userProfileState);
   const navigate = useNavigate();
   useEffect(function () {
     if (state) {
