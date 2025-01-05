@@ -4,3 +4,7 @@
 2. npm install
 4. npm run dev
 
+
+requirements for the project
+1.  node js (latest)
+   
