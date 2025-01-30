@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-export default function BasicCard({ price, description, title, imageSrc }) {
+export default function BasicCard({courseId, price, description, title, imageSrc }) {
   return (
     <div className="w-80 bg-white rounded-lg shadow-md hover:shadow-lg overflow-hidden relative flex flex-col h-full transition-transform transform hover:scale-105">
       {/* Image */}
@@ -44,7 +44,7 @@ export default function BasicCard({ price, description, title, imageSrc }) {
           <p className="text-xs text-gray-500">Total Price:</p>
           <p className="text-lg font-bold text-gray-800">Rs {price}</p>
         </div>
-        <Link to="/coursedetails">
+        <Link to={"/coursedetails/"+courseId}>
           <button
             className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 transition"
           >

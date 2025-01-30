@@ -16,7 +16,7 @@ export default function UserRoutes() {
             <Route path="/signup" element={<Signup />} />
             <Route path="/about-us" element={<AboutUs />} />
             <Route path="/courses" element={<Course />} />
-            <Route path="/coursedetails" element={<CourseDetails />} />
+            <Route path="/coursedetails/:courseId" element={<CourseDetails />} />
             <Route path="/forgotpassword" element={<ForgotPassword />} />
             <Route path="/profile" element={<UserProfile />} />
         </Routes>

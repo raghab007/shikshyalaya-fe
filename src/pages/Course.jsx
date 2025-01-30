@@ -13,7 +13,6 @@ export default function Course() {
     async function getCourses() {
       try {
         const response = await axios.get("http://localhost:8085/courses");
-        console.log("Response Data:", response.data); // Check the structure of the response data
         const updatedCourses = response.data.map((course) => ({
           ...course,
           imageSrc: `https://picsum.photos/200/300?random=${Math.floor(
@@ -145,22 +144,25 @@ export default function Course() {
 
         {/* Courses Section */}
         <div className="w-full md:w-3/4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {currentCourses.length === 0 || error ? (
-            <p className="col-span-full text-center text-gray-600">
-              No courses available at the moment.
-            </p>
-          ) : (
-            currentCourses.map((course) => (
-              <BasicCard
-                key={course.id}
-                price={course.coursePrice}
-                description={course.courseDescription}
-                title={course.title}
-                imageSrc={course.imageSrc}
-              />
-            ))
-          )}
-        </div>
+  {currentCourses.length === 0 || error ? (
+    <p className="col-span-full text-center text-gray-600">
+      No courses available at the moment.
+    </p>
+  ) : (
+    currentCourses.map((course) => (
+      <div className="flex justify-center" key={course.courseID}>
+        <BasicCard
+          courseId={course.courseID}
+          price={course.coursePrice}
+          description={course.courseDescription}
+          title={course.title}
+          imageSrc={course.imageSrc}
+        />
+      </div>
+    ))
+  )}
+</div>
+
       </div>
 
       {/* Pagination Section */}

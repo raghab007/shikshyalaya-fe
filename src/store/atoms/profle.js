@@ -1,17 +1,6 @@
-// import axios from "axios";
+import axios from "axios";
 import { atom, useRecoilState } from "recoil";
-// const token = localStorage.getItem("token");
 
-// async function getData() {
-//     const response = await axios.get("http://localhost:8085/user", {
-//         headers: {
-//             Authorization: `Bearer ${token}`,
-
-//         }
-//     });
-//     const data = response;
-//     return data;
-// }
 const userProfileState = atom({
     key: "userProfileState",
     default: {
@@ -22,13 +11,6 @@ const userProfileState = atom({
         contactNumber: null
     }
 })
-
-
-// async function getUserProfile() {
-//     const data = await getData();
-//     console.log(data);
-// }
-// //await getUserProfile();
 
 
 export default userProfileState;

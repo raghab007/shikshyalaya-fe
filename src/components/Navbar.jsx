@@ -28,7 +28,7 @@ export default function Navbar() {
             />
             <h1 className="text-2xl font-bold text-blue-600 tracking-wide">
               <Link to="/" className="no-underline text-blue-600 hover:underline">
-                Sikshyalaya {state ? "true" : "false"}
+                Sikshyalaya
               </Link>
             </h1>
           </div>
