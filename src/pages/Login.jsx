@@ -8,14 +8,14 @@ export default function Login() {
   const userName = useRef(null);
   const password = useRef(null);
   const [state, setUserState] = useRecoilState(userState);
-  // const [profile, setProfile] = useRecoilState(userProfileState);
   const navigate = useNavigate();
-  useEffect(function () {
+
+  useEffect(() => {
     if (state) {
-      navigate("/")
+      navigate("/");
     }
-  }, [])
-  // Handle login logic
+  }, [state, navigate]);
+
   async function handleLogin() {
     const user = {
       userName: userName.current.value,
@@ -29,11 +29,8 @@ export default function Login() {
         },
       });
 
-      console.log(response.data);
       if (response.data) {
-        // Store token in localStorage
         localStorage.setItem("token", response.data);
-        // Update the Recoil state to true indicating the user is logged in
         setUserState(true);
         alert("Login successful");
         navigate("/");
@@ -47,51 +44,63 @@ export default function Login() {
   }
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gradient-to-r from-green-400 to-blue-500">
+    <div className="flex items-center justify-center min-h-screen bg-gradient-to-r from-green-400 to-blue-500 p-4">
       {/* Login Form */}
-      <div className="w-96 p-8 bg-white shadow-lg rounded-lg">
-        <h2 className="text-center text-3xl font-bold text-gray-800 mb-6">Welcome to LearnNow</h2>
-        <h3 className="text-center text-lg text-gray-600 mb-6">Login to Continue Learning</h3>
+      <div className="w-full max-w-md p-8 bg-white shadow-2xl rounded-xl">
+        <h2 className="text-center text-4xl font-bold text-gray-800 mb-2">Welcome to LearnNow</h2>
+        <h3 className="text-center text-lg text-gray-600 mb-8">Login to Continue Learning</h3>
 
         {/* Username Field */}
-        <input
-          type="text"
-          placeholder="Username"
-          className="w-full px-4 py-3 border border-gray-300 rounded-lg mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          required
-          ref={userName}
-        />
+        <div className="mb-6">
+          <label htmlFor="username" className="block text-sm font-medium text-gray-700 mb-1">
+            Username
+          </label>
+          <input
+            type="text"
+            id="username"
+            placeholder="Enter your username"
+            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+            required
+            ref={userName}
+          />
+        </div>
 
         {/* Password Field */}
-        <input
-          type="password"
-          placeholder="Password"
-          className="w-full px-4 py-3 border border-gray-300 rounded-lg mb-6 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          required
-          ref={password}
-        />
+        <div className="mb-8">
+          <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
+            Password
+          </label>
+          <input
+            type="password"
+            id="password"
+            placeholder="Enter your password"
+            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+            required
+            ref={password}
+          />
+        </div>
 
         {/* Login Button */}
         <button
           onClick={handleLogin}
-          className="w-full py-3 bg-blue-500 text-white font-semibold rounded-lg hover:bg-blue-600 transition duration-200"
+          className="w-full py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition duration-200 transform hover:scale-105 active:scale-95"
         >
           Log In
         </button>
 
         {/* Sign Up Link */}
-        <div className="text-center mt-4">
-          <p className="text-sm">
+        <div className="text-center mt-6">
+          <p className="text-sm text-gray-600">
             Don't have an account?{" "}
-            <Link to="/signup" className="text-blue-500 hover:underline">
+            <Link to="/signup" className="text-blue-600 hover:underline font-medium">
               Sign Up
             </Link>
           </p>
         </div>
 
         {/* Forgot Password Link */}
-        <div className="text-center mt-2">
-          <Link to="/forgotpassword" className="text-blue-500 hover:underline text-sm">
+        <div className="text-center mt-4">
+          <Link to="/forgotpassword" className="text-sm text-blue-600 hover:underline font-medium">
             Forgot Password?
           </Link>
         </div>

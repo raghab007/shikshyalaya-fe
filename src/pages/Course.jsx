@@ -5,6 +5,7 @@ import BasicCard from "../components/course/CourseCard";
 export default function Course() {
   const [courses, setCourses] = useState([]);
   const [error, setError] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [itemsPerPage] = useState(6);
@@ -24,6 +25,8 @@ export default function Course() {
       } catch (error) {
         setError(true);
         console.error("Error fetching courses:", error);
+      } finally {
+        setLoading(false);
       }
     }
     getCourses();
@@ -38,17 +41,17 @@ export default function Course() {
   };
 
   return (
-    <div className="p-6">
+    <div className="p-6 bg-gray-50 min-h-screen">
       <div className="text-center mb-10">
-        <h1 className="text-3xl font-bold text-gray-800">Our Courses</h1>
+        <h1 className="text-4xl font-bold text-gray-800">Our Courses</h1>
         <p className="text-gray-500 mt-2">
           Explore a variety of courses to enhance your skills.
         </p>
       </div>
 
-      <div className="flex flex-col md:flex-row gap-8">
+      <div className="flex flex-col md:flex-row gap-8 max-w-7xl mx-auto">
         {/* Filtering Section */}
-        <div className="w-full md:w-1/4 bg-white p-6 rounded-lg shadow-md">
+        <div className="w-full md:w-1/4 bg-white p-6 rounded-xl shadow-lg">
           <h2 className="text-xl font-semibold text-gray-700 mb-6 border-b pb-2">
             Filter Courses
           </h2>
@@ -136,33 +139,42 @@ export default function Course() {
               </select>
             </div>
 
-            <button className="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600">
+            <button className="w-full bg-gradient-to-r from-blue-500 to-blue-600 text-white py-2 rounded-lg hover:from-blue-600 hover:to-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 transition">
               Apply Filters
             </button>
           </div>
         </div>
 
         {/* Courses Section */}
-        <div className="w-full md:w-3/4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-  {currentCourses.length === 0 || error ? (
-    <p className="col-span-full text-center text-gray-600">
-      No courses available at the moment.
-    </p>
-  ) : (
-    currentCourses.map((course) => (
-      <div className="flex justify-center" key={course.courseID}>
-        <BasicCard
-          courseId={course.courseID}
-          price={course.coursePrice}
-          description={course.courseDescription}
-          title={course.title}
-          imageSrc={course.imageSrc}
-        />
-      </div>
-    ))
-  )}
-</div>
-
+        <div className="w-full md:w-3/4">
+          {loading ? (
+            <div className="flex justify-center items-center h-64">
+              <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+            </div>
+          ) : error ? (
+            <p className="text-center text-red-500">
+              Failed to load courses. Please try again later.
+            </p>
+          ) : currentCourses.length === 0 ? (
+            <p className="text-center text-gray-600">
+              No courses available at the moment.
+            </p>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {currentCourses.map((course) => (
+                <div className="flex justify-center" key={course.courseID}>
+                  <BasicCard
+                    courseId={course.courseID}
+                    price={course.coursePrice}
+                    description={course.courseDescription}
+                    title={course.title}
+                    imageSrc={course.imageSrc}
+                  />
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Pagination Section */}
@@ -173,7 +185,7 @@ export default function Course() {
               <li key={pageNumber}>
                 <button
                   onClick={() => handlePageChange(pageNumber)}
-                  className={`px-4 py-2 border rounded-md ${currentPage === pageNumber
+                  className={`px-4 py-2 border rounded-md transition ${currentPage === pageNumber
                     ? "bg-blue-500 text-white"
                     : "bg-white text-gray-700 border-gray-300 hover:bg-gray-100"
                     }`}
