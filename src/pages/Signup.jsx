@@ -46,11 +46,14 @@ export default function Signup() {
   }
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500">
+    <div className="flex items-center justify-center min-h-screen bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 relative overflow-hidden">
+      {/* Blurred Overlay */}
+      <div className="absolute inset-0 bg-black bg-opacity-30 backdrop-blur-sm z-10"></div>
+
       {/* Signup Form */}
       <form
         onSubmit={signup}
-        className="w-full max-w-md bg-white p-8 rounded-lg shadow-lg"
+        className="w-full max-w-sm bg-white p-8 rounded-lg shadow-2xl relative z-20"
       >
         <h2 className="text-2xl font-semibold text-center mb-6 text-gray-800">Sign Up</h2>
 

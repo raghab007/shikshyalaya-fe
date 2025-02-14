@@ -10,12 +10,15 @@ import AddCourse from './AddCourse';
 function Instructor() {
     return (
         <>
-            <div className="p-5 bg-blue-50 min-h-screen">
+            <div className="p-5 bg-gray-50 min-h-screen">
                 <h1 className="font-bold text-3xl text-center text-blue-800 mb-6">Welcome to the Instructor Dashboard</h1>
                 <div className="flex">
 
                     {/* Sidebar */}
-                    <div className="flex flex-col h-screen w-64 space-y-4 bg-blue-100 p-6 rounded-lg shadow-lg">
+                    <div className="flex-shrink-0 w-64 h-screen space-y-4 bg-blue-800 p-6 rounded-lg shadow-lg">
+                        <div className="flex items-center justify-center mb-8">
+                            <h2 className="text-white text-2xl font-bold">EduTrack</h2>
+                        </div>
                         <NavItem to="/instructor/dashboard" icon={<FaTachometerAlt />} label="Dashboard" />
                         <NavItem to="/instructor/courses" icon={<FaBook />} label="Courses" />
                         <NavItem to="/instructor/students" icon={<FaUserGraduate />} label="Students" />
@@ -26,7 +29,7 @@ function Instructor() {
                     </div>
 
                     {/* Content */}
-                    <div className="flex-grow p-8 bg-white rounded-lg shadow-lg ml-6">
+                    <div className="flex-grow p-8 bg-white rounded-lg shadow-lg ml-6 overflow-auto">
                         <Routes>
                             <Route path="/instructor/dashboard" element={<Dashboard />} />
                             <Route path="/instructor/courses" element={<Courses />} />
@@ -51,7 +54,7 @@ function Instructor() {
 function NavItem({ to, icon, label }) {
     return (
         <Link
-            className="flex items-center px-4 py-3 rounded-xl text-blue-800 bg-blue-200 hover:bg-blue-300 hover:text-blue-900 transition duration-200"
+            className="flex items-center px-4 py-3 rounded-xl text-white hover:bg-blue-700 hover:text-white transition duration-200"
             to={to}
         >
             {icon} <span className="ml-3">{label}</span>
