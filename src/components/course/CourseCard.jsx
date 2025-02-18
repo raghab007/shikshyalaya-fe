@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 
 export default function BasicCard({ courseId, price, description, title, imageSrc }) {
+
   return (
     <div className="w-80 bg-white rounded-xl shadow-lg hover:shadow-2xl overflow-hidden relative flex flex-col h-full transition-transform transform hover:scale-105 hover:border-blue-500 border-2 border-transparent">
       {/* Image */}

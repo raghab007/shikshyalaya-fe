@@ -1,16 +1,26 @@
 import { Button } from "@mui/material";
+import axios from "axios";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
 function Courses() {
-    // Mock course data
-    const courses = [
-        { id: 1, name: "Course1", price: 200, description: "Spring Boot", title: "Java with Spring Boot" },
-        { id: 2, name: "Course2", price: 250, description: "React Basics", title: "Learn React JS" },
-        { id: 3, name: "Course3", price: 300, description: "Python", title: "Advanced Python Programming" },
-        { id: 4, name: "Course4", price: 150, description: "Data Structures", title: "Intro to Data Structures" },
-        { id: 5, name: "Course5", price: 350, description: "Machine Learning", title: "ML for Beginners" },
-        { id: 6, name: "Course6", price: 400, description: "AI", title: "AI in Practice" },
-    ];
+    const [courses, setCourses] = useState(null);
+
+    useEffect(() => {
+        const getCourses = async () => {
+            const response = await axios.get("http://localhost:8085/courses");
+            console.log(courses)
+            setCourses(response.data);
+            console.log("courses:"+courses);
+        
+        };
+
+        getCourses();
+    }, []);
+
+    if (courses == null) {
+        return <h1>Loading...</h1>;
+    }
 
     return (
         <main className="p-6 bg-gray-50 min-h-screen">
@@ -21,20 +31,25 @@ function Courses() {
                     color="primary"
                     component={Link}
                     to="/instructor/add-course"
-                    style={{ backgroundColor: "#2563eb", color: "#fff", padding: '12px 24px', fontSize: '16px' }}
+                    style={{
+                        backgroundColor: "#2563eb", 
+                        color: "#fff", 
+                        padding: '12px 24px', 
+                        fontSize: '16px'
+                    }}
                 >
                     Add New Course
                 </Button>
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 px-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 px-8">
                 {courses.length > 0 ? (
                     courses.map((course) => (
                         <Course
-                            key={course.id}
-                            title={course.title}
-                            description={course.description}
-                            price={course.price}
+                            key={course.courseID}
+                            title={course.courseName}
+                            price={course.coursePrice}
                             id={course.id}
+                            imageUrl={course.imageUrl}  // Assuming the course has an imageUrl
                         />
                     ))
                 ) : (
@@ -47,20 +62,29 @@ function Courses() {
     );
 }
 
-function Course({ title, description, price, id }) {
+function Course({ title, price, id, imageUrl }) {
     return (
-        <div className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 overflow-hidden">
-            <div className="bg-gradient-to-r from-blue-500 to-blue-600 h-48 flex items-center justify-center">
-                <span className="text-white text-2xl font-bold">Course Image</span>
+        <div className="bg-white rounded-xl shadow-lg hover:shadow-2xl transition-shadow duration-300 overflow-hidden transform hover:-translate-y-1 hover:scale-105 transition-transform duration-300">
+            <div className="relative h-48 bg-gray-100 overflow-hidden">
+                {imageUrl ? (
+                    <img
+                        src={imageUrl}
+                        alt="Course"
+                        className="object-cover w-full h-full"
+                    />
+                ) : (
+                    <span className="text-white text-xl font-bold absolute inset-0 flex items-center justify-center bg-opacity-50 bg-gray-800">
+                        No Image Available
+                    </span>
+                )}
             </div>
-            <div className="p-6">
-                <h2 className="text-2xl font-bold text-gray-900 mb-3">{title}</h2>
-                <p className="text-gray-600 mb-4">{description}</p>
-                <div className="flex justify-between items-center">
-                    <span className="text-xl font-semibold text-blue-600">${price}</span>
+            <div className="p-6 flex flex-col h-full">
+                <h2 className="text-xl font-semibold text-gray-900 mb-3 line-clamp-2">{title}</h2>
+                <div className="flex items-center justify-between mb-4">
+                    <span className="text-sm font-medium text-blue-600">${price}</span>
                     <Link
                         to={`/instructor/courses/course-details/${id}`}
-                        className="text-blue-500 hover:text-blue-700 font-semibold transition-colors duration-300"
+                        className="px-4 py-2 bg-blue-600 text-white text-sm font-semibold rounded-lg hover:bg-blue-700 transition-colors duration-300"
                     >
                         Manage Course
                     </Link>

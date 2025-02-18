@@ -1,6 +1,5 @@
-import { useState } from "react";
+import { useState  } from "react";
 import { Link } from "react-router-dom";
-
 export default function Home() {
   const [openIndex, setOpenIndex] = useState(null);
 
@@ -27,7 +26,7 @@ export default function Home() {
     <div className="bg-gray-50 flex flex-col min-h-screen">
       <main>
         {/* Hero Section */}
-        <div className="w-full min-h-[70vh] bg-blue-200 flex flex-col items-center justify-center p-12  shadow-md">
+        <div className="w-full min-h-[70vh] bg-blue-200 flex flex-col items-center justify-center p-12 shadow-md">
           <h1 className="text-6xl font-extrabold text-gray-900 text-center leading-tight">
             Unlock Your Potential with Sikshyalaya
           </h1>
@@ -78,48 +77,51 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Why Choose Us Section */}
+        {/* Instructor Spotlight Section */}
         <div className="bg-blue-100 py-12 px-6">
-          <div className="max-w-4xl mx-auto text-center">
-            <h2 className="text-4xl font-bold text-gray-800 mb-4">Why Choose Sikshyalaya?</h2>
-            <p className="text-gray-700 text-lg leading-relaxed">
-              - Expert Tutors from Around the World <br />
-              - Affordable and Accessible Courses <br />
-              - Comprehensive and Industry-Relevant Content <br />
-              - Learn at Your Own Pace with Flexible Timelines
-            </p>
-          </div>
-        </div>
-
-        {/* Testimonials Section */}
-        <div className="bg-gray-50 py-12 px-6">
-          <h2 className="text-4xl font-bold text-center text-gray-800 mb-8">What Learners Say</h2>
+          <h2 className="text-4xl font-bold text-center text-gray-800 mb-8">Meet Our Expert Instructors</h2>
           <div className="max-w-6xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-            {[
-              {
-                name: "John Doe",
-                feedback:
-                  "The courses are excellent! I've gained so much knowledge and improved my skills.",
-              },
-              {
-                name: "Jane Smith",
-                feedback:
-                  "The flexibility and quality of courses make Sikshyalaya stand out. Highly recommend!",
-              },
-              {
-                name: "Sam Wilson",
-                feedback:
-                  "Affordable pricing and amazing content. I'm loving the learning experience!",
-              },
-            ].map((testimonial, index) => (
+            {[ 
+              { name: "Alice Johnson", bio: "Senior Developer with 10+ years in tech.", imageUrl: "/images/instructor1.jpg" },
+              { name: "Michael Brown", bio: "Expert in Business Strategy and Marketing.", imageUrl: "/images/instructor2.jpg" },
+              { name: "Emily Davis", bio: "Professional Photographer and Content Creator.", imageUrl: "/images/instructor3.jpg" }
+            ].map((instructor, index) => (
               <div
                 key={index}
                 className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition"
               >
-                <p className="text-gray-600 italic">"{testimonial.feedback}"</p>
-                <h3 className="mt-4 font-bold text-gray-800">- {testimonial.name}</h3>
+                <img src={instructor.imageUrl} alt={instructor.name} className="w-full h-48 object-cover rounded-lg" />
+                <h3 className="mt-4 font-bold text-gray-800">{instructor.name}</h3>
+                <p className="mt-2 text-gray-600">{instructor.bio}</p>
               </div>
             ))}
+          </div>
+        </div>
+
+        {/* Course Preview Video Section */}
+        <div className="bg-gray-50 py-12 px-6">
+          <h2 className="text-4xl font-bold text-center text-gray-800 mb-8">Get a Sneak Peek</h2>
+          <div className="max-w-4xl mx-auto text-center">
+            <video className="w-full h-72 object-cover rounded-lg" controls>
+              <source src="/videos/course-preview.mp4" type="video/mp4" />
+              Your browser does not support the video tag.
+            </video>
+          </div>
+        </div>
+
+        {/* Social Media Links Section */}
+        <div className="bg-blue-50 py-12 px-6">
+          <h2 className="text-4xl font-bold text-center text-gray-800 mb-6">Follow Us</h2>
+          <div className="flex justify-center gap-6">
+            <a href="https://facebook.com/sikshyalaya" className="text-blue-600 hover:text-blue-700">
+              Facebook
+            </a>
+            <a href="https://twitter.com/sikshyalaya" className="text-blue-400 hover:text-blue-500">
+              Twitter
+            </a>
+            <a href="https://linkedin.com/company/sikshyalaya" className="text-blue-800 hover:text-blue-900">
+              LinkedIn
+            </a>
           </div>
         </div>
 

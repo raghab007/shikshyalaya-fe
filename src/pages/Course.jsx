@@ -14,12 +14,14 @@ export default function Course() {
     async function getCourses() {
       try {
         const response = await axios.get("http://localhost:8085/courses");
-        const updatedCourses = response.data.map((course) => ({
-          ...course,
-          imageSrc: `https://picsum.photos/200/300?random=${Math.floor(
-            Math.random() * 1000
-          )}`,
-        }));
+        const updatedCourses = response.data
+        // map((course) => ({
+        //    ...course,
+        //   imageSrc: `https://picsum.photos/200/300?random=${Math.floor(
+        //      Math.random() * 1000
+        //    )}`,
+        //  }));
+        console.log(response.data)
         setCourses(updatedCourses);
         setTotalPages(Math.ceil(updatedCourses.length / itemsPerPage));
       } catch (error) {
@@ -122,7 +124,7 @@ export default function Course() {
             </div>
 
             {/* Duration Filter */}
-            <div>
+            <div>   
               <label className="block text-gray-600 font-medium mb-2">
                 Duration
               </label>
@@ -168,7 +170,7 @@ export default function Course() {
                     price={course.coursePrice}
                     description={course.courseDescription}
                     title={course.title}
-                    imageSrc={course.imageSrc}
+                    imageSrc={course.imageUrl}
                   />
                 </div>
               ))}
