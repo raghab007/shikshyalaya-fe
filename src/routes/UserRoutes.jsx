@@ -7,6 +7,7 @@ import Course from "../pages/Course";
 import CourseDetails from "../components/course/CourseDetails";
 import ForgotPassword from "../pages/Forgetpassword";
 import UserProfile from "../pages/UserProfile";
+import ChangePassword from "../components/ChangePassword";
 
 export default function UserRoutes() {
     return (
@@ -19,6 +20,7 @@ export default function UserRoutes() {
             <Route path="/coursedetails/:courseId" element={<CourseDetails />} />
             <Route path="/forgotpassword" element={<ForgotPassword />} />
             <Route path="/profile" element={<UserProfile />} />
+            <Route path="/changepassword" element={<ChangePassword/>}></Route>
         </Routes>
     )
 }

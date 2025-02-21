@@ -98,7 +98,7 @@ const UserProfile = () => {
                         </li>
                         <li className="flex items-center space-x-3">
                             <FaLock className="text-blue-500" />
-                            <a href="#" className="text-gray-700 hover:underline">
+                            <a href="/changepassword" className="text-gray-700 hover:underline">
                                 Change Password
                             </a>
                         </li>

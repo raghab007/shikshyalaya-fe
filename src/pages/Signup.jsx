@@ -1,6 +1,6 @@
 import { useRef } from "react";
 import axios from "axios";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export default function Signup() {
   const userName = useRef(null);
@@ -12,10 +12,9 @@ export default function Signup() {
   const role = useRef(null);
   const age = useRef(null);
   const address = useRef(null);
-
+  const navigate = useNavigate()
   async function signup(e) {
     e.preventDefault();
-
     const user = {
       userName: userName.current.value,
       firstName: firstName.current.value,
@@ -29,14 +28,24 @@ export default function Signup() {
     };
 
     try {
-      const response = await axios.post("http://localhost:3000/register", user, {
+      const response = await axios.post("http://localhost:8085/signup", user, {
         headers: {
           "Content-Type": "application/json",
         },
       });
 
-      if (response.data.message === "true") {
+      if (response.data == true) {
         alert("User registered successfully");
+        userName.current.value="";
+        firstName.current.value="";
+        lastName.current.value="";
+        password.current.value="";
+        email.current.value="";
+        contactNumber.current.value="";
+        role.current.value = "";
+        age.current.value = "";
+        address.current.value = "";
+        navigate('/login')
       } else {
         alert("User already exists");
       }
