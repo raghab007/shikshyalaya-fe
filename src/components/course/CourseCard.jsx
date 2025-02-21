@@ -8,7 +8,7 @@ export default function BasicCard({ courseId, price, description, title, imageSr
       {/* Image */}
       <div className="bg-gray-100 h-48 w-full relative">
          <img
-          src={"http://localhost:8085/images/course/image.png"}
+          src={"http://localhost:8085"+imageSrc}
           alt={title}
           className="object-cover w-full h-full"
         /> 
