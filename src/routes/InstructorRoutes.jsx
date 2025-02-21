@@ -1,18 +1,19 @@
 import { Route ,Routes} from "react-router-dom";
-import Instructor from "../components/instructor/Instructor";
 import Dashboard from "../components/instructor/Dashboard";
 import Courses from "../components/instructor/Courses";
 import Students from "../components/instructor/Students";
 import Settings from "../components/instructor/Settings";
+import InstructorLayout from "../components/instructor/Instructorlayout";
 
 const InstructorRoutes = ()=>{
 
    return( <Routes>
-                <Route path="/instructor" element={<Instructor></Instructor>}></Route>
-                <Route path="/instructor/dashboard" element={<Dashboard />} />
-                <Route path="/instructor/courses" element={<Courses />} />
-                <Route path="/instructor/users" element={<Users />} />
-                <Route path="/instructor/students" element={<Students />} />
+                <Route path="/instructor" element={<InstructorLayout></InstructorLayout>}>
+                    <Route path="dashboard" element={<Dashboard />} />
+                    <Route path="courses" element={<Courses />} />
+                    <Route path="users" element={<Users />} />
+                    <Route path="students" element={<Students />} />
+                </Route>
                 <Route path="/instructor/settings" element={<Settings />} />
                 <Route path="/instructor/settings/payment-methods" element={<h1>Payment Methods</h1>} />
                 <Route path="/instructor/reports" element={<h1>Reports Section</h1>} />

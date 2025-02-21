@@ -1,4 +1,4 @@
-import { Routes, Link, Route } from 'react-router-dom';
+import { Routes, Link, Route ,Outlet} from 'react-router-dom';
 import Dashboard from './Dashboard';
 import Students from './Students';
 import Settings, { UserInformation } from './Settings';
@@ -7,7 +7,7 @@ import CourseDetails from './CourseDetail';
 import { FaTachometerAlt, FaBook, FaUserGraduate, FaCog, FaUsers, FaSignOutAlt, FaChartLine } from 'react-icons/fa';
 import AddCourse from './AddCourse';
 
-function Instructor() {
+function InstructorLayout() {
     return (
         <div className="flex min-h-screen bg-gray-100">
             {/* Sidebar */}
@@ -29,7 +29,7 @@ function Instructor() {
             {/* Main Content */}
             <div className="flex-grow p-8 overflow-auto">
                 <div className="bg-white rounded-lg shadow-sm p-6">
-                   
+                   <Outlet></Outlet>
                 </div>
             </div>
         </div>
@@ -56,4 +56,4 @@ function Users() {
     );
 }
 
-export default Instructor;
+export default InstructorLayout;
