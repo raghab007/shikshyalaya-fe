@@ -7,11 +7,13 @@ export default function BasicCard({ courseId, price, description, title, imageSr
     <div className="w-80 bg-white rounded-xl shadow-lg hover:shadow-2xl overflow-hidden relative flex flex-col h-full transition-transform transform hover:scale-105 hover:border-blue-500 border-2 border-transparent">
       {/* Image */}
       <div className="bg-gray-100 h-48 w-full relative">
-        <img
-          src={imageSrc}
+         <img
+          src={"http://localhost:8085/images/course/image.png"}
           alt={title}
           className="object-cover w-full h-full"
-        />
+        /> 
+
+
         {/* Bookmark Button */}
         <button
           className="absolute top-4 right-4 p-2 bg-white/80 rounded-full hover:bg-white/90 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"

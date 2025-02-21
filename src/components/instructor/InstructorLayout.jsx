@@ -4,27 +4,14 @@ import Students from './Students';
 import Settings, { UserInformation } from './Settings';
 import Courses from './Courses';
 import CourseDetails from './CourseDetail';
-import { FaTachometerAlt, FaBook, FaUserGraduate, FaCog, FaUsers, FaSignOutAlt, FaChartLine } from 'react-icons/fa';
 import AddCourse from './AddCourse';
+import Sidebar from './SideBar';
 
 function InstructorLayout() {
     return (
         <div className="flex min-h-screen bg-gray-100">
             {/* Sidebar */}
-            <div className="sticky top-0 flex-shrink-0 w-64 h-screen bg-gradient-to-b from-blue-800 to-blue-900 p-6 space-y-6 shadow-xl">
-                <div className="flex items-center justify-center mb-8">
-                    <h2 className="text-white text-2xl font-bold">EduTrack</h2>
-                </div>
-                <nav className="space-y-2">
-                    <NavItem to="/instructor/dashboard" icon={<FaTachometerAlt />} label="Dashboard" />
-                    <NavItem to="/instructor/courses" icon={<FaBook />} label="Courses" />
-                    <NavItem to="/instructor/students" icon={<FaUserGraduate />} label="Students" />
-                    <NavItem to="/instructor/settings" icon={<FaCog />} label="Settings" />
-                    <NavItem to="/instructor/users" icon={<FaUsers />} label="Users" />
-                    <NavItem to="/instructor/reports" icon={<FaChartLine />} label="Reports" />
-                    <NavItem to="/instructor/logout" icon={<FaSignOutAlt />} label="Logout" />
-                </nav>
-            </div>
+        <Sidebar/>
 
             {/* Main Content */}
             <div className="flex-grow p-8 overflow-auto">

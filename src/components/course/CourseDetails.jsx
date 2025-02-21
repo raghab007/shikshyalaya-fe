@@ -6,6 +6,7 @@ export default function CourseDetails() {
   const { courseId } = useParams();
 
   const [course, setCourse] = useState(null);
+  const [sections,setSections] = useState(null)
   useEffect(() => {
     const getCourseDetails = async () => {
       try {
@@ -44,7 +45,7 @@ export default function CourseDetails() {
 
             {/* Course Sections */}
             <div className="bg-white rounded-lg shadow-sm p-6">
-              <h2 className="text-xl font-semibold mb-4 text-gray-800">Course Sections</h2>
+            <h2 className="text-xl font-semibold mb-4 text-gray-800">Course Sections</h2>
               <div className="space-y-4">
                 {sections.length > 0 ? (
                   sections.map((section, index) => (

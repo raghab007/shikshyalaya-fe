@@ -9,7 +9,7 @@ const InstructorRoutes = ()=>{
 
    return( <Routes>
                 <Route path="/instructor" element={<InstructorLayout></InstructorLayout>}>
-                    <Route path="dashboard" element={<Dashboard />} />
+                    <Route index element={<Dashboard />} />
                     <Route path="courses" element={<Courses />} />
                     <Route path="users" element={<Users />} />
                     <Route path="students" element={<Students />} />
