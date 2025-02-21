@@ -29,20 +29,7 @@ function Instructor() {
             {/* Main Content */}
             <div className="flex-grow p-8 overflow-auto">
                 <div className="bg-white rounded-lg shadow-sm p-6">
-                    <Routes>
-                        <Route path="/instructor/dashboard" element={<Dashboard />} />
-                        <Route path="/instructor/courses" element={<Courses />} />
-                        <Route path="/instructor/users" element={<Users />} />
-                        <Route path="/instructor/students" element={<Students />} />
-                        <Route path="/instructor/settings" element={<Settings />} />
-                        <Route path="/instructor/settings/user-information" element={<UserInformation />} />
-                        <Route path="/instructor/settings/payment-methods" element={<h1>Payment Methods</h1>} />
-                        <Route path="/instructor/courses/course-details/:courseId" element={<CourseDetails />} />
-                        <Route path="/instructor/reports" element={<h1>Reports Section</h1>} />
-                        <Route path="/instructor/logout" element={<h1>Logging out...</h1>} />
-                        <Route path="/instructor/add-course" element={<AddCourse />} />
-                        <Route path="*" element={<h1>Not found</h1>} />
-                    </Routes>
+                   
                 </div>
             </div>
         </div>

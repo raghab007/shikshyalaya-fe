@@ -6,8 +6,6 @@ export default function CourseDetails() {
   const { courseId } = useParams();
 
   const [course, setCourse] = useState(null);
-  const [sections, setSections] = useState([]);
-
   useEffect(() => {
     const getCourseDetails = async () => {
       try {
