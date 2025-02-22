@@ -30,15 +30,8 @@ function App() {
   )  
 }
 
-export default function RootApp() {
-  return (
-    <BrowserRouter>
-      <RecoilRoot>
-        <App />
-      </RecoilRoot>
-    </BrowserRouter>
-  );
-}
+
+export default App;
 
 
 

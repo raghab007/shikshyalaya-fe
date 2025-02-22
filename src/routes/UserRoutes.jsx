@@ -5,9 +5,9 @@ import Signup from "../pages/Signup";
 import AboutUs from "../pages/AboutUs";
 import Course from "../pages/Course";
 import CourseDetails from "../components/course/CourseDetails";
-import ForgotPassword from "../pages/ForgotPassword"; // Fixed spelling
 import UserProfile from "../pages/UserProfile";
 import ChangePassword from "../components/ChangePassword";
+import ForgotPassword from "../pages/Forgotpassword";
 
 export default function UserRoutes() {
     return (

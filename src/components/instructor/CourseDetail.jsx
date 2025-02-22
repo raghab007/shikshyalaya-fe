@@ -45,7 +45,7 @@ export default function CourseDetails() {
                                     <div key={section} className="border-l-4 border-indigo-200 bg-gray-50 p-4 rounded">
                                         <div className="flex justify-between items-center">
                                             <div>
-                                                <h3 className="font-medium text-gray-800">Lesson {section}: Advanced Concepts</h3>
+                                                <h3 className="font-medium text-gray-800">Section {section}: Advanced Concepts</h3>
                                                 <p className="text-sm text-gray-600 mt-1">5 Videos • 2h 30m</p>
                                             </div>
                                             <button className="text-indigo-600 hover:underline">Edit</button>

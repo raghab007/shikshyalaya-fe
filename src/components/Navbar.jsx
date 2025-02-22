@@ -1,99 +1,100 @@
 import { Link, NavLink } from "react-router-dom";
 import { useState } from "react";
 import { FiSearch, FiMenu, FiX, FiUser } from "react-icons/fi";
-import Logo from "../assets/logo2.png";
+import Logo from "../assets/logo2.png"; // Replace with your logo path
 import { useRecoilState } from "recoil";
-import userState from "../store/atoms/user";
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
-  const [state] = useRecoilState(userState);
-
-  const isLogin = state;
-  const username = "User";
+  const isLogin = true; // Replace with your authentication logic
+  const {userState,setUserState} = useRecoilState(userState);
+  const username = "John Doe"; // Replace with dynamic username
 
   return (
-    <nav className="sticky top-0 bg-blue-700 shadow-lg border-gray-200 z-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center py-4">
-        
-        {/* Logo */}
-        <div className="flex items-center space-x-3">
-          <img
-            src={Logo}
-            alt="Sikshyalaya Logo"
-            className="w-12 h-12 rounded-md hover:scale-105 transition-transform duration-300"
-          />
-          <h1 className="text-2xl font-bold text-white tracking-wide hover:text-gray-200 transition-colors duration-300">
-            <Link to="/">Sikshyalaya</Link>
-          </h1>
-        </div>
+    <nav className="sticky top-0 bg-blue-700 shadow-lg z-50">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Desktop Navbar */}
+        <div className="flex justify-between items-center h-16">
+          {/* Logo and App Name */}
+          <div className="flex items-center space-x-3">
+            <img
+              src={Logo}
+              alt="App Logo"
+              className="w-10 h-10 rounded-md hover:scale-105 transition-transform duration-300"
+            />
+            <h1 className="text-2xl font-bold text-white tracking-wide hover:text-gray-200 transition-colors duration-300">
+              <Link to="/">Sikshyalaya</Link>
+            </h1>
+          </div>
 
-        {/* Search Bar (Desktop) */}
-        <div className="hidden md:flex flex-1 justify-center mx-8">
-          <div className="relative w-full max-w-lg">
-            <input
-              type="search"
-              placeholder="Search courses..."
-              className="w-full px-4 py-2 pl-10 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-white shadow-sm transition-all duration-300"
-              aria-label="Search"
-            />
-            <FiSearch
-              size={20}
-              className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500"
-            />
+          {/* Search Bar (Desktop) */}
+          <div className="hidden md:flex flex-1 justify-center mx-8">
+            <div className="relative w-full max-w-lg">
+              <input
+                type="search"
+                placeholder="Search courses..."
+                className="w-full px-4 py-2 pl-10 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-white shadow-sm transition-all duration-300"
+                aria-label="Search"
+              />
+              <FiSearch
+                size={20}
+                className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500"
+              />
+            </div>
+          </div>
+
+          {/* Navigation Links (Desktop) */}
+          <div className="hidden md:flex items-center space-x-6">
+            <NavLinkItem to="/" label="Home" />
+            <NavLinkItem to="/courses" label="Courses" />
+            <NavLinkItem to="/enrolled-courses" label="Enrolled Courses" />
+            <NavLinkItem to="/about-us" label="About Us" />
+            {!isLogin ? (
+              <>
+                <LinkButton to="/login" label="Login" primary />
+                <LinkButton to="/signup" label="Signup" />
+              </>
+            ) : (
+              <UserProfile username={username} />
+            )}
+          </div>
+
+          {/* Mobile Icons */}
+          <div className="flex items-center md:hidden space-x-4">
+            <button
+              className="text-white hover:text-gray-300 transition-colors duration-300"
+              onClick={() => setIsSearchOpen(!isSearchOpen)}
+            >
+              <FiSearch size={24} />
+            </button>
+            <button
+              className="text-white hover:text-gray-300 transition-colors duration-300"
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+            >
+              {isMenuOpen ? <FiX size={28} /> : <FiMenu size={28} />}
+            </button>
           </div>
         </div>
 
-        {/* Navigation Links */}
-        <div className="hidden md:flex items-center space-x-6">
-          <NavLinkItem to="/" label="Home" />
-          <NavLinkItem to="/courses" label="Courses" />
-          <NavLinkItem to="/about-us" label="About Us" />
-          {!isLogin ? (
-            <>
-              <LinkButton to="/login" label="Login" primary />
-              <LinkButton to="/signup" label="Signup" />
-            </>
-          ) : (
-            <UserProfile username={username} />
-          )}
-        </div>
-
-        {/* Mobile Icons */}
-        <div className="flex items-center md:hidden space-x-4">
-          <button
-            className="text-white hover:text-gray-300 transition-colors duration-300"
-            onClick={() => setIsSearchOpen(!isSearchOpen)}
-          >
-            <FiSearch size={24} />
-          </button>
-          <button
-            className="text-white hover:text-gray-300 transition-colors duration-300"
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-          >
-            {isMenuOpen ? <FiX size={28} /> : <FiMenu size={28} />}
-          </button>
-        </div>
+        {/* Mobile Search Bar */}
+        {isSearchOpen && (
+          <div className="block md:hidden py-2 px-4 bg-blue-600">
+            <div className="relative">
+              <input
+                type="search"
+                placeholder="Search courses..."
+                className="w-full px-4 py-2 pl-10 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-white shadow-sm transition-all duration-300"
+                aria-label="Search"
+              />
+              <FiSearch
+                size={20}
+                className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500"
+              />
+            </div>
+          </div>
+        )}
       </div>
-
-      {/* Mobile Search Bar */}
-      {isSearchOpen && (
-        <div className="block md:hidden py-2 px-4 bg-blue-600">
-          <div className="relative">
-            <input
-              type="search"
-              placeholder="Search courses..."
-              className="w-full px-4 py-2 pl-10 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-white shadow-sm transition-all duration-300"
-              aria-label="Search"
-            />
-            <FiSearch
-              size={20}
-              className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500"
-            />
-          </div>
-        </div>
-      )}
 
       {/* Mobile Menu */}
       {isMenuOpen && (
@@ -106,6 +107,7 @@ export default function Navbar() {
             <div className="flex flex-col items-center space-y-6 py-8">
               <NavLinkItem to="/" label="Home" />
               <NavLinkItem to="/courses" label="Courses" />
+              <NavLinkItem to="/enrolled-courses" label="Enrolled Courses" />
               <NavLinkItem to="/about-us" label="About Us" />
               {!isLogin ? (
                 <>
@@ -123,6 +125,7 @@ export default function Navbar() {
   );
 }
 
+// Reusable NavLink Component
 function NavLinkItem({ to, label }) {
   return (
     <NavLink
@@ -138,6 +141,7 @@ function NavLinkItem({ to, label }) {
   );
 }
 
+// Reusable LinkButton Component
 function LinkButton({ to, label, primary }) {
   return (
     <Link to={to}>
@@ -154,6 +158,7 @@ function LinkButton({ to, label, primary }) {
   );
 }
 
+// User Profile Component
 function UserProfile({ username }) {
   return (
     <div className="flex items-center space-x-2">
