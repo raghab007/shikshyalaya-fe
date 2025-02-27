@@ -8,6 +8,7 @@ import CourseDetails from "../components/course/CourseDetails";
 import UserProfile from "../pages/UserProfile";
 import ChangePassword from "../components/ChangePassword";
 import ForgotPassword from "../pages/Forgotpassword";
+import EnrolledCourses from "../pages/EnrolledCourses";
 
 export default function UserRoutes() {
     return (
@@ -21,6 +22,7 @@ export default function UserRoutes() {
             <Route path="/forgotpassword" element={<ForgotPassword />} />
             <Route path="/profile" element={<UserProfile />} />
             <Route path="/changepassword" element={<ChangePassword />} />
+            <Route path="/enrolled" element={<EnrolledCourses></EnrolledCourses>}></Route>
         </Routes>
     );
 }

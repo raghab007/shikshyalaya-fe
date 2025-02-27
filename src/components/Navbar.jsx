@@ -3,13 +3,14 @@ import { useState } from "react";
 import { FiSearch, FiMenu, FiX, FiUser } from "react-icons/fi";
 import Logo from "../assets/logo2.png"; // Replace with your logo path
 import { useRecoilState } from "recoil";
+import userRecoilState from "../store/atoms/user";
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const isLogin = true; // Replace with your authentication logic
-  const {userState,setUserState} = useRecoilState(userState);
-  const username = "John Doe"; // Replace with dynamic username
+  const {userState,setUserState} = useRecoilState(userRecoilState);
+  const username = "Raghab Pokhrel"; // Replace with dynamic username
 
   return (
     <nav className="sticky top-0 bg-blue-700 shadow-lg z-50">
@@ -48,10 +49,11 @@ export default function Navbar() {
           <div className="hidden md:flex items-center space-x-6">
             <NavLinkItem to="/" label="Home" />
             <NavLinkItem to="/courses" label="Courses" />
-            <NavLinkItem to="/enrolled-courses" label="Enrolled Courses" />
+         
             <NavLinkItem to="/about-us" label="About Us" />
-            {!isLogin ? (
+            {!userState ? (
               <>
+              
                 <LinkButton to="/login" label="Login" primary />
                 <LinkButton to="/signup" label="Signup" />
               </>
