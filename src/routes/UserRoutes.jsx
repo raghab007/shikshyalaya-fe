@@ -23,7 +23,7 @@ export default function UserRoutes() {
             <Route path="/profile" element={<UserProfile />} />
             <Route path="/changepassword" element={<ChangePassword />} />
             <Route path="/enrolled" element={<EnrolledCoursesPage/>}>
-                <Route path="allcourses" element={<EnrolledCourses/>}></Route>
+                <Route index  element={<EnrolledCourses/>}></Route>
                 <Route path="archived" element={<ArchivedCourses/>}></Route>
             </Route>
         </Routes>
