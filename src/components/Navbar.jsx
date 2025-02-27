@@ -13,7 +13,7 @@ export default function Navbar() {
   const username = "Raghab Pokhrel"; // Replace with dynamic username
 
   return (
-    <nav className="sticky top-0 bg-blue-700 shadow-lg z-50">
+    <nav style={{backgroundColor:"#2e7dad"}} className="sticky top-0  shadow-lg z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Desktop Navbar */}
         <div className="flex justify-between items-center h-16">

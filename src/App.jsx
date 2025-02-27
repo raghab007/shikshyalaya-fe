@@ -13,11 +13,7 @@ function App() {
   const location = useLocation()
   const isAdmin = location.pathname.startsWith("/admin");
   const isInstructor = location.pathname.startsWith("/instructor");
-  console.log("somthing")
-  console.log(isInstructor)
-  console.log(location)
   
-
   return (
     <>
     {!isAdmin && !isInstructor && <Navbar />}

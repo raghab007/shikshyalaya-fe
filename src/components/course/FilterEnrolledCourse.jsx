@@ -1,39 +1,42 @@
 function FilterEnrolledCourse() {
   return (
     <>
-      <h1
-        style={{ justifySelf: "center", fontSize: "30px", fontWeight: "bold" }}
-      >
-        My Courses
-      </h1>
-
-    
       <div
         style={{
-          background: "green",
           height: "100px",
           display: "flex",
           justifyContent: "space-evenly",
         }}
       >
-
-        <div style={{ display: "flex", flexDirection: "column" ,border:"1px solid red",alignItems:"center",justifyContent:"space-around"}}>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            border: "1px solid red",
+            alignItems: "center",
+            justifyContent: "space-around",
+            width: "30%",
+          }}
+        >
           <p>Sort by</p>
-          <div> <button>Title a-z</button></div>
+          <div>
+            {" "}
+            <button style={{ border: "1px solid black" }}>Title a-z</button>
+          </div>
         </div>
-
 
         <div
           style={{
             display: "flex",
             flexDirection: "column",
             border: "1px solid red",
-            alignItems:"center"
-            ,justifyContent:"space-around"
+            alignItems: "center",
+            justifyContent: "space-around",
+            width: "30%",
           }}
         >
           <p>Filter by</p>
-          <div style={{display:"flex"}}>
+          <div style={{ display: "flex", justifyContent:"space-around" }}>
             <div>
               <button>Categories</button>
             </div>
@@ -43,14 +46,24 @@ function FilterEnrolledCourse() {
           </div>
         </div>
 
-        <div  style={{border:"1px solid red"}}>
-          <input style={{marginTop:"35px",marginLeft:"0px",}} type="search"  placeholder="Search your courses" />
-          <button>Search</button>
+        <div style={{ border: "1px solid red", width: "30%", display:"flex", flexDirection:"row",justifyContent:"space-around", alignItems:"center" }}>
+          <div>
+            <input
+              style={{
+               
+                border: "1px solid black",
+              }}
+              type="search"
+              placeholder="Search your courses"
+            />
+          </div>
 
+
+        <div>
+            <button>Search</button>
+          </div>
         </div>
       </div>
-
-  
     </>
   );
 }

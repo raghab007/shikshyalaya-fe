@@ -6,7 +6,7 @@ import Settings from "../components/instructor/Settings";
 import InstructorLayout from "../components/instructor/Instructorlayout";
 import AddCourse from "../components/instructor/AddCourse";
 import CourseDetails from "../components/instructor/CourseDetail";
-import  EnrolledCourses  from "../pages/EnrolledCourses";
+import { EnrolledCourses}  from "../pages/EnrolledCourses";
 
 const InstructorRoutes = ()=>{
 

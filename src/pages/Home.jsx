@@ -154,7 +154,7 @@ export default function Home() {
         </div>
 
         {/* Call-to-Action Section */}
-        <div className="bg-blue-600 text-white py-12 px-6">
+        <div style={{backgroundColor:"#2e7dad"}} className=" text-white py-12 px-6">
           <div className="max-w-4xl mx-auto text-center">
             <h2 className="text-4xl font-bold mb-4">Subscribe to Our Newsletter</h2>
             <p className="text-lg mb-6">Stay updated with the latest courses and offers.</p>

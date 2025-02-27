@@ -47,7 +47,7 @@ export default function Login() {
     <div className="flex items-center justify-center min-h-screen bg-gradient-to-r from-green-400 to-blue-500 p-4">
       {/* Login Form */}
       <div className="w-full max-w-md p-8 bg-white shadow-2xl rounded-xl">
-        <h2 className="text-center text-4xl font-bold text-gray-800 mb-2">Welcome to shikshyalaya</h2>
+        <h2 className="text-center text-4xl font-bold text-gray-800 mb-2">Welcome to Shikshyalaya</h2>
         <h3 className="text-center text-lg text-gray-600 mb-8">Login to Continue Learning</h3>
 
         {/* Username Field */}
