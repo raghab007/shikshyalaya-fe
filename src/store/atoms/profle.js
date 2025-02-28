@@ -8,7 +8,8 @@ const userProfileState = atom({
         email: null,
         firstName: null,
         lastName: null,
-        contactNumber: null
+        contactNumber: null,
+        role:"USER"
     }
 })
 

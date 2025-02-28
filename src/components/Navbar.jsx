@@ -9,7 +9,7 @@ export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const isLogin = true; // Replace with your authentication logic
-  const {userState,setUserState} = useRecoilState(userRecoilState);
+  const [userState,setUserState] = useRecoilState(userRecoilState);
   const username = "Raghab Pokhrel"; // Replace with dynamic username
 
   return (
@@ -56,6 +56,7 @@ export default function Navbar() {
               
                 <LinkButton to="/login" label="Login" primary />
                 <LinkButton to="/signup" label="Signup" />
+               
               </>
             ) : (
               <UserProfile username={username} />
@@ -111,7 +112,7 @@ export default function Navbar() {
               <NavLinkItem to="/courses" label="Courses" />
               <NavLinkItem to="/enrolled-courses" label="Enrolled Courses" />
               <NavLinkItem to="/about-us" label="About Us" />
-              {!isLogin ? (
+              {!userState ? (
                 <>
                   <LinkButton to="/login" label="Login" primary />
                   <LinkButton to="/signup" label="Signup" />

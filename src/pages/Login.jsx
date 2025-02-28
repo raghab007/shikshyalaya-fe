@@ -3,11 +3,12 @@ import { Link, useNavigate } from "react-router-dom";
 import userState from "../store/atoms/user.js";
 import axios from "axios";
 import { useRecoilState } from "recoil";
+import userRecoilState from "../store/atoms/user.js";
 
 export default function Login() {
   const userName = useRef(null);
   const password = useRef(null);
-  const [state, setUserState] = useRecoilState(userState);
+  const [state, setUserState] = useRecoilState(userRecoilState);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -28,12 +29,19 @@ export default function Login() {
           "Content-Type": "application/json",
         },
       });
+      const token = response.data.token;
+      const ROLE = response.data.role;
 
-      if (response.data) {
-        localStorage.setItem("token", response.data);
+      if (token) {
+        localStorage.setItem("token", token);
         setUserState(true);
         alert("Login successful");
-        navigate("/");
+       
+       if(ROLE=="USER"){
+        navigate("/")
+       }else if (ROLE=="INSTRUCTOR"){
+        navigate("/instructor")
+       }
       } else {
         alert("Invalid credentials");
       }
