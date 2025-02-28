@@ -1,5 +1,7 @@
 import { useState  } from "react";
 import { Link } from "react-router-dom";
+import video from "../assets/video.mp4"
+import logo from "../assets/logo.png"
 export default function Home() {
   const [openIndex, setOpenIndex] = useState(null);
 
@@ -15,7 +17,7 @@ export default function Home() {
     {
       question: "What payment methods are available?",
       answer: "We accept eSewa, Khalti, and major banking payment systems.",
-    },
+    }, 
   ];
 
   const toggleAnswer = (index) => {
@@ -90,7 +92,7 @@ export default function Home() {
                 key={index}
                 className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition"
               >
-                <img src={instructor.imageUrl} alt={instructor.name} className="w-full h-48 object-cover rounded-lg" />
+                <img src={logo} alt={instructor.name} className="w-full h-48 object-cover rounded-lg" />
                 <h3 className="mt-4 font-bold text-gray-800">{instructor.name}</h3>
                 <p className="mt-2 text-gray-600">{instructor.bio}</p>
               </div>
@@ -103,7 +105,7 @@ export default function Home() {
           <h2 className="text-4xl font-bold text-center text-gray-800 mb-8">Get a Sneak Peek</h2>
           <div className="max-w-4xl mx-auto text-center">
             <video className="w-full h-72 object-cover rounded-lg" controls>
-              <source src="/videos/course-preview.mp4" type="video/mp4" />
+              <source   src={video} type="video/mp4"  />
               Your browser does not support the video tag.
             </video>
           </div>

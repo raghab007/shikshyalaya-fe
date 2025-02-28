@@ -1,14 +1,15 @@
 import React, { useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import userState from "../store/atoms/user.js";
 import axios from "axios";
 import { useRecoilState } from "recoil";
 import userRecoilState from "../store/atoms/user.js";
+import userProfileState from "../store/atoms/profle.js";
 
 export default function Login() {
   const userName = useRef(null);
   const password = useRef(null);
   const [state, setUserState] = useRecoilState(userRecoilState);
+  const [userState, setUserProfileState] = useRecoilState(userProfileState);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -35,11 +36,20 @@ export default function Login() {
       if (token) {
         localStorage.setItem("token", token);
         setUserState(true);
+     
         alert("Login successful");
        
        if(ROLE=="USER"){
         navigate("/")
        }else if (ROLE=="INSTRUCTOR"){
+        setUserProfileState({
+          userName: null,
+          email: null,
+          firstName: null,
+          lastName: null,
+          contactNumber: null,
+          role:"INSTRUCTOR"
+      })
         navigate("/instructor")
        }
       } else {

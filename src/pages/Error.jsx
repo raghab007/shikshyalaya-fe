@@ -1,4 +1,9 @@
+import { useNavigate } from "react-router-dom";
+
 function ErrorPage(){
+
+    const navigate = useNavigate();
+    navigate("/")
     return (
         <>
         <div style={{background:"white", color:"red",}}>    

@@ -3,7 +3,7 @@ import Dashboard from "../components/instructor/Dashboard";
 import Courses from "../components/instructor/Courses";
 import Students from "../components/instructor/Students";
 import Settings from "../components/instructor/Settings";
-import InstructorLayout from "../components/instructor/Instructorlayout";
+import InstructorLayout from "../components/instructor/InstructorLayout";
 import AddCourse from "../components/instructor/AddCourse";
 import CourseDetails from "../components/instructor/CourseDetail";
 
