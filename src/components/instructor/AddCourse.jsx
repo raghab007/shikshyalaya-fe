@@ -1,3 +1,4 @@
+import axios from "axios";
 import { useRef } from "react";
 
 function AddCourse() {
@@ -20,9 +21,16 @@ function AddCourse() {
             courseImage:image,
         }
 
+        const token = localStorage.getItem("token");
+        const response = await axios.post("http://localhost:8085/instructor/course", course, { headers: {
+            'Content-Type': 'multipart/form-data',
+            "Authorization": `Bearer ${token}`
+          }})
 
-        
-    
+          console.log(response.status)
+          alert(response.data)
+          console.log(response)
+
     }
     return (
         <div class="max-w-lg mx-auto p-8 bg-white rounded-lg shadow-lg space-y-6 mt-10">

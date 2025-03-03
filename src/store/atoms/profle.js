@@ -1,5 +1,5 @@
 import axios from "axios";
-import { atom, useRecoilState } from "recoil";
+import { atom, selector, useRecoilState } from "recoil";
 
 const userProfileState = atom({
     key: "userProfileState",
@@ -9,10 +9,30 @@ const userProfileState = atom({
         firstName: null,
         lastName: null,
         contactNumber: null,
-        //role:"INSTRUCTOR"
-        role:"USER"
+        role:null
+        //role:"USER"
     }
 })
 
 
-export default userProfileState;
+const userProfileSelector = selector({
+    key:"userProfileSelector",
+    get:async ({get})=>{
+        try {
+            const response = await axios.get("http://localhost:8085/user",{
+                headers:{
+                    Authorization:"token"+localStorage.getItem("token")
+                }
+            })
+        }catch(error){
+            console.log("Error fetching data ");
+            return get(userProfileState) // Return the  default state if the backend call fails
+        }
+    }
+    
+})
+
+
+
+
+export  {userProfileState,userProfileSelector};

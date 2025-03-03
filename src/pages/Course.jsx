@@ -14,14 +14,7 @@ export default function Course() {
     async function getCourses() {
       try {
         const response = await axios.get("http://localhost:8085/courses");
-        const updatedCourses = response.data
-        // map((course) => ({
-        //    ...course,
-        //   imageSrc: `https://picsum.photos/200/300?random=${Math.floor(
-        //      Math.random() * 1000
-        //    )}`,
-        //  }));
-        console.log(response.data)
+        const updatedCourses = response.data;
         setCourses(updatedCourses);
         setTotalPages(Math.ceil(updatedCourses.length / itemsPerPage));
       } catch (error) {
@@ -43,31 +36,27 @@ export default function Course() {
   };
 
   return (
-    <div className="p-6 bg-gray-50 min-h-screen">
-      <div className="text-center mb-10">
-        <h1 className="text-4xl font-bold text-gray-800">Our Courses</h1>
+    <div className="bg-gray-50 min-h-screen p-4">
+      <div className="text-center mb-6">
+        <h1 className="text-3xl font-bold text-gray-800">Our Courses</h1>
         <p className="text-gray-500 mt-2">
           Explore a variety of courses to enhance your skills.
         </p>
       </div>
 
-      <div className="flex flex-col md:flex-row gap-8 max-w-7xl mx-auto">
+      <div className="flex flex-col md:flex-row gap-4 max-w-7xl mx-auto">
         {/* Filtering Section */}
-        <div className="w-full md:w-1/4 bg-white p-6 rounded-xl shadow-lg">
-          <h2 className="text-xl font-semibold text-gray-700 mb-6 border-b pb-2">
+        <div className="w-full md:w-1/4 bg-white p-4 rounded-lg shadow-md">
+          <h2 className="text-lg font-semibold text-gray-700 mb-4 border-b pb-2">
             Filter Courses
           </h2>
-          <div className="space-y-6">
+          <div className="space-y-4">
             {/* Category Filter */}
             <div>
-              <label className="block text-gray-600 font-medium mb-2">
-                Category
-              </label>
+              <label className="block text-gray-600 text-sm mb-1">Category</label>
               <select
-                className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-400"
-                onChange={(e) =>
-                  console.log("Selected category:", e.target.value)
-                }
+                className="w-full border border-gray-300 rounded-md p-2 focus:ring-2 focus:ring-blue-400"
+                onChange={(e) => console.log("Selected category:", e.target.value)}
               >
                 <option value="">All Categories</option>
                 <option value="programming">Programming</option>
@@ -78,61 +67,47 @@ export default function Course() {
 
             {/* Price Filter */}
             <div>
-              <label className="block text-gray-600 font-medium mb-2">
-                Price Range
-              </label>
+              <label className="block text-gray-600 text-sm mb-1">Price Range</label>
               <div className="flex items-center space-x-2">
                 <input
                   type="number"
                   placeholder="Min"
-                  className="w-1/2 border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-400"
-                  onChange={(e) =>
-                    console.log("Min price:", e.target.value)
-                  }
+                  className="w-1/2 border border-gray-300 rounded-md p-2 focus:ring-2 focus:ring-blue-400"
+                  onChange={(e) => console.log("Min price:", e.target.value)}
                 />
                 <input
                   type="number"
                   placeholder="Max"
-                  className="w-1/2 border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-400"
-                  onChange={(e) =>
-                    console.log("Max price:", e.target.value)
-                  }
+                  className="w-1/2 border border-gray-300 rounded-md p-2 focus:ring-2 focus:ring-blue-400"
+                  onChange={(e) => console.log("Max price:", e.target.value)}
                 />
               </div>
             </div>
 
             {/* Difficulty Filter */}
             <div>
-              <label className="block text-gray-600 font-medium mb-2">
-                Difficulty
-              </label>
+              <label className="block text-gray-600 text-sm mb-1">Difficulty</label>
               <div className="flex items-center space-x-4">
                 {["Beginner", "Intermediate", "Advanced"].map((level) => (
                   <label key={level} className="inline-flex items-center">
                     <input
                       type="checkbox"
                       value={level.toLowerCase()}
-                      className="form-checkbox h-5 w-5 text-blue-600"
-                      onChange={(e) =>
-                        console.log("Selected difficulty:", e.target.value)
-                      }
+                      className="form-checkbox h-4 w-4 text-blue-600"
+                      onChange={(e) => console.log("Selected difficulty:", e.target.value)}
                     />
-                    <span className="ml-2 text-gray-700">{level}</span>
+                    <span className="ml-2 text-gray-700 text-sm">{level}</span>
                   </label>
                 ))}
               </div>
             </div>
 
             {/* Duration Filter */}
-            <div>   
-              <label className="block text-gray-600 font-medium mb-2">
-                Duration
-              </label>
+            <div>
+              <label className="block text-gray-600 text-sm mb-1">Duration</label>
               <select
-                className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-400"
-                onChange={(e) =>
-                  console.log("Selected duration:", e.target.value)
-                }
+                className="w-full border border-gray-300 rounded-md p-2 focus:ring-2 focus:ring-blue-400"
+                onChange={(e) => console.log("Selected duration:", e.target.value)}
               >
                 <option value="">Any Duration</option>
                 <option value="short">Less than 1 hour</option>
@@ -141,7 +116,7 @@ export default function Course() {
               </select>
             </div>
 
-            <button className="w-full bg-gradient-to-r from-blue-500 to-blue-600 text-white py-2 rounded-lg hover:from-blue-600 hover:to-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 transition">
+            <button className="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 transition">
               Apply Filters
             </button>
           </div>
@@ -162,7 +137,7 @@ export default function Course() {
               No courses available at the moment.
             </p>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {currentCourses.map((course) => (
                 <div className="flex justify-center" key={course.courseID}>
                   <BasicCard
@@ -180,17 +155,18 @@ export default function Course() {
       </div>
 
       {/* Pagination Section */}
-      <div className="flex justify-center mt-8">
+      <div className="flex justify-center mt-6">
         <ul className="flex space-x-2">
           {Array.from({ length: totalPages }, (_, index) => index + 1).map(
             (pageNumber) => (
               <li key={pageNumber}>
                 <button
                   onClick={() => handlePageChange(pageNumber)}
-                  className={`px-4 py-2 border rounded-md transition ${currentPage === pageNumber
-                    ? "bg-blue-500 text-white"
-                    : "bg-white text-gray-700 border-gray-300 hover:bg-gray-100"
-                    }`}
+                  className={`px-3 py-1 border rounded-md transition ${
+                    currentPage === pageNumber
+                      ? "bg-blue-500 text-white"
+                      : "bg-white text-gray-700 border-gray-300 hover:bg-gray-100"
+                  }`}
                 >
                   {pageNumber}
                 </button>

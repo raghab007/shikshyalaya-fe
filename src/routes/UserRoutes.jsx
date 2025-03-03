@@ -10,6 +10,7 @@ import ChangePassword from "../components/ChangePassword";
 import ForgotPassword from "../pages/Forgotpassword";
 import {ArchivedCourses, EnrolledCourses, EnrolledCoursesPage} from "../pages/EnrolledCourses";
 import ErrorPage from "../pages/Error";
+import PaymentPage from "../pages/PaymentDetails";
 
 export default function UserRoutes() {
     return (
@@ -27,6 +28,7 @@ export default function UserRoutes() {
                 <Route index  element={<EnrolledCourses/>}></Route>
                 <Route path="archived" element={<ArchivedCourses/>}></Route>
             </Route>
+            <Route path="/payment" element={<PaymentPage></PaymentPage>}></Route>
             <Route path="*" element={<ErrorPage></ErrorPage>}></Route>
         </Routes>
     );

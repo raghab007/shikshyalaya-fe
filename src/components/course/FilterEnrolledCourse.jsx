@@ -1,11 +1,11 @@
 function FilterEnrolledCourse() {
   return (
-    <div style={styles.filterContainer}>
+    <div className="flex justify-evenly items-center h-24 bg-gray-50 border-b border-gray-200 px-5">
       {/* Sort by Section */}
-      <div style={styles.filterSection}>
-        <p style={styles.filterLabel}>Sort by</p>
-        <div style={styles.buttonContainer}>
-          <select style={styles.dropdown}>
+      <div className="flex flex-col items-center justify-center w-1/4 border border-gray-200 rounded-lg p-3 bg-white shadow-sm">
+        <p className="text-sm font-semibold text-gray-700 mb-2">Sort by</p>
+        <div className="w-full">
+          <select className="w-full px-4 py-2 border border-gray-300 rounded-md text-sm text-gray-700 bg-white cursor-pointer transition-colors hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500">
             <option value="title-asc">Title A-Z</option>
             <option value="title-desc">Title Z-A</option>
             <option value="date-asc">Date (Oldest First)</option>
@@ -15,117 +15,39 @@ function FilterEnrolledCourse() {
       </div>
 
       {/* Filter by Section */}
-      <div style={styles.filterSection}>
-        <p style={styles.filterLabel}>Filter by</p>
-        <div style={styles.buttonGroup}>
-          <select style={styles.dropdown}>
+      <div className="flex flex-col items-center justify-center w-1/4 border border-gray-200 rounded-lg p-3 bg-white shadow-sm">
+        <p className="text-sm font-semibold text-gray-700 mb-2">Filter by</p>
+        <div className="flex gap-3 w-full">
+          <select className="w-full px-4 py-2 border border-gray-300 rounded-md text-sm text-gray-700 bg-white cursor-pointer transition-colors hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500">
             <option value="">Select Category</option>
             <option value="web-development">Web Development</option>
             <option value="data-science">Data Science</option>
             <option value="mobile-development">Mobile Development</option>
             <option value="design">Design</option>
           </select>
-          <select style={styles.dropdown}>
+          <select className="w-full px-4 py-2 border border-gray-300 rounded-md text-sm text-gray-700 bg-white cursor-pointer transition-colors hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500">
             <option value="">Select Instructor</option>
             <option value="raghab-pokhrel">Raghab Pokhrel</option>
             <option value="aastha-aryal">Aastha Aryal</option>
-            <option value="john-doe">John Doe</option>
-            <option value="jane-smith">Jane Smith</option>
+            <option value="john-doe">Alish Sunuwar</option>
+            <option value="jane-smith">Niroj bahadur gofle</option>
           </select>
         </div>
       </div>
 
       {/* Search Section */}
-      <div style={styles.searchSection}>
+      <div className="flex items-center justify-between w-1/4 border border-gray-200 rounded-lg p-3 bg-white shadow-sm">
         <input
-          style={styles.searchInput}
           type="search"
           placeholder="Search your courses"
+          className="flex-1 px-4 py-2 border border-gray-300 rounded-md text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
-        <button style={styles.searchButton}>Search</button>
+        <button className="ml-2 px-4 py-2 border border-green-500 rounded-md bg-green-500 text-white text-sm font-medium hover:bg-green-600 transition-colors">
+          Search
+        </button>
       </div>
     </div>
   );
 }
-
-const styles = {
-  filterContainer: {
-    display: "flex",
-    justifyContent: "space-evenly",
-    alignItems: "center",
-    height: "100px",
-    backgroundColor: "#f9f9f9",
-    borderBottom: "1px solid #ddd",
-    padding: "0 20px",
-  },
-  filterSection: {
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    justifyContent: "center",
-    width: "30%",
-    border: "1px solid #ddd",
-    borderRadius: "8px",
-    padding: "10px",
-    backgroundColor: "#fff",
-    boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
-  },
-  filterLabel: {
-    fontSize: "14px",
-    fontWeight: "600",
-    color: "#333",
-    marginBottom: "8px",
-  },
-  buttonContainer: {
-    display: "flex",
-    justifyContent: "center",
-  },
-  buttonGroup: {
-    display: "flex",
-    gap: "10px",
-  },
-  dropdown: {
-    padding: "8px 16px",
-    border: "1px solid #ccc",
-    borderRadius: "4px",
-    backgroundColor: "#fff",
-    cursor: "pointer",
-    fontSize: "14px",
-    fontWeight: "500",
-    color: "#333",
-    transition: "border-color 0.3s",
-    width: "100%", // Ensure dropdowns take full width
-  },
-  searchSection: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "space-between",
-    width: "30%",
-    border: "1px solid #ddd",
-    borderRadius: "8px",
-    padding: "10px",
-    backgroundColor: "#fff",
-    boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
-  },
-  searchInput: {
-    flex: 1,
-    padding: "8px",
-    border: "1px solid #ccc",
-    borderRadius: "4px",
-    fontSize: "14px",
-    marginRight: "10px",
-  },
-  searchButton: {
-    padding: "8px 16px",
-    border: "1px solid #4CAF50",
-    borderRadius: "4px",
-    backgroundColor: "#4CAF50",
-    color: "#fff",
-    cursor: "pointer",
-    fontSize: "14px",
-    fontWeight: "500",
-    transition: "background-color 0.3s",
-  },
-};
 
 export default FilterEnrolledCourse;

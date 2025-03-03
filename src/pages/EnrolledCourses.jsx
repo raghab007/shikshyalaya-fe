@@ -5,9 +5,9 @@ import { useState } from "react";
 
 function EnrolledCoursesPage() {
   return (
-    <div style={styles.pageContainer}>
-      <div style={styles.header}>
-        <h1 style={styles.headerTitle}>My Courses</h1>
+    <div className="font-sans bg-gray-100 min-h-screen">
+      <div className="bg-blue-900 py-6 shadow-lg">
+        <h1 className="text-3xl font-bold text-white text-center">My Courses</h1>
         <EnrollCourseTab />
       </div>
       <Outlet />
@@ -22,26 +22,26 @@ function EnrolledCourses() {
       courseInstructor: "Raghab Pokhrel",
       courseImageSrc:
         "https://images.unsplash.com/photo-1501504905252-473c47e087f8?q=80&w=3174&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-      courseDescrption: "This is a course description.",
+      courseDescription: "This is a course description.",
     },
     {
       courseId: 2,
       courseInstructor: "Aastha Aryal",
       courseImageSrc:
         "https://images.unsplash.com/photo-1501504905252-473c47e087f8?q=80&w=3174&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-      courseDescrption: "This is another course description.",
+      courseDescription: "This is another course description.",
     },
   ];
 
   return (
     <>
       <FilterEnrolledCourse />
-      <div style={styles.coursesContainer}>
+      <div className="flex flex-wrap justify-center gap-6 p-6">
         {courses.map((course) => (
           <EnrolledCourseCard
             key={course.courseId}
             courseId={course.courseId}
-            courseDescrption={course.courseDescrption}
+            courseDescription={course.courseDescription}
             courseInstructor={course.courseInstructor}
             courseImageSrc={course.courseImageSrc}
           />
@@ -52,15 +52,38 @@ function EnrolledCourses() {
 }
 
 function ArchivedCourses() {
+  const archivedCourses = [
+    {
+      courseId: 3,
+      courseInstructor: "John Doe",
+      courseImageSrc:
+        "https://images.unsplash.com/photo-1501504905252-473c47e087f8?q=80&w=3174&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      courseDescription: "This is an archived course description.",
+    },
+    {
+      courseId: 4,
+      courseInstructor: "Jane Smith",
+      courseImageSrc:
+        "https://images.unsplash.com/photo-1501504905252-473c47e087f8?q=80&w=3174&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      courseDescription: "This is another archived course description.",
+    },
+  ];
+
   return (
-    <div style={styles.archivedContainer}>
-      <h1 style={styles.archivedTitle}>Archived Courses</h1>
-      <p style={styles.archivedText}>
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Deleniti unde,
-        natus perferendis, nesciunt corrupti nisi iste consectetur esse est sed,
-        cupiditate magni laborum in similique magnam id cumque vero ut.
-      </p>
-    </div>
+    <>
+      <FilterEnrolledCourse />
+      <div className="flex flex-wrap justify-center gap-6 p-6">
+        {archivedCourses.map((course) => (
+          <EnrolledCourseCard
+            key={course.courseId}
+            courseId={course.courseId}
+            courseDescription={course.courseDescription}
+            courseInstructor={course.courseInstructor}
+            courseImageSrc={course.courseImageSrc}
+          />
+        ))}
+      </div>
+    </>
   );
 }
 
@@ -72,95 +95,33 @@ function EnrollCourseTab() {
   };
 
   return (
-    <div style={styles.tabContainer}>
-      <button style={styles.tabButton}>
-        <a
-          href="/enrolled"
-          style={{ ...styles.tabLink, ...(currentTab ? styles.activeTab : {}) }}
-        >
+    <div className="flex justify-center gap-4 mt-6">
+      <button
+        className={`px-6 py-2 rounded-lg transition-colors duration-300 ${
+          currentTab
+            ? "bg-green-500 text-white"
+            : "bg-transparent text-white hover:bg-green-500/20"
+        }`}
+        onClick={changeTab}
+      >
+        <a href="/enrolled" className="no-underline">
           My Courses
         </a>
       </button>
-      <button style={styles.tabButton}>
-        <a
-          href="/enrolled/archived"
-          style={{ ...styles.tabLink, ...(!currentTab ? styles.activeTab : {}) }}
-        >
+      <button
+        className={`px-6 py-2 rounded-lg transition-colors duration-300 ${
+          !currentTab
+            ? "bg-green-500 text-white"
+            : "bg-transparent text-white hover:bg-green-500/20"
+        }`}
+        onClick={changeTab}
+      >
+        <a href="/enrolled/archived" className="no-underline">
           Archived Courses
         </a>
       </button>
     </div>
   );
 }
-
-const styles = {
-  pageContainer: {
-    fontFamily: "Arial, sans-serif",
-    backgroundColor: "#f5f5f5",
-    minHeight: "100vh",
-  },
-  header: {
-    backgroundColor: "#1d2e3a",
-    padding: "20px",
-    textAlign: "center",
-    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
-  },
-  headerTitle: {
-    fontSize: "30px",
-    fontWeight: "bold",
-    color: "white",
-    margin: "0",
-  },
-  coursesContainer: {
-    display: "flex",
-    flexWrap: "wrap",
-    justifyContent: "center",
-    gap: "20px",
-    padding: "20px",
-  },
-  archivedContainer: {
-    padding: "20px",
-    maxWidth: "800px",
-    margin: "0 auto",
-    textAlign: "center",
-  },
-  archivedTitle: {
-    fontSize: "24px",
-    fontWeight: "bold",
-    color: "#333",
-    marginBottom: "20px",
-  },
-  archivedText: {
-    fontSize: "16px",
-    color: "#666",
-    lineHeight: "1.6",
-  },
-  tabContainer: {
-    display: "flex",
-    justifyContent: "center",
-    gap: "20px",
-    marginTop: "20px",
-  },
-  tabButton: {
-    backgroundColor: "transparent",
-    border: "none",
-    cursor: "pointer",
-    padding: "10px 20px",
-    fontSize: "16px",
-    fontWeight: "600",
-    color: "white",
-    transition: "background-color 0.3s",
-  },
-  tabLink: {
-    textDecoration: "none",
-    color: "white",
-    padding: "10px 20px",
-    borderRadius: "5px",
-    transition: "background-color 0.3s",
-  },
-  activeTab: {
-    backgroundColor: "#4CAF50",
-  },
-};
 
 export { EnrolledCoursesPage, ArchivedCourses, EnrolledCourses };

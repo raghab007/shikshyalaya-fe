@@ -6,6 +6,7 @@ import Settings from "../components/instructor/Settings";
 import InstructorLayout from "../components/instructor/InstructorLayout";
 import AddCourse from "../components/instructor/AddCourse";
 import CourseDetails from "../components/instructor/CourseDetail";
+import ErrorPage from "../pages/Error";
 
 const InstructorRoutes = ()=>{
 
@@ -22,7 +23,7 @@ const InstructorRoutes = ()=>{
                 <Route path="/instructor/settings/payment-methods" element={<h1>Payment Methods</h1>} />
                 <Route path="/instructor/reports" element={<h1>Reports Section</h1>} />
                 <Route path="/instructor/logout" element={<h1>Logging out...</h1>} />
-                <Route path="*" element={<h1>Not found</h1>} />
+                <Route path="*" element={<h1>Page not found</h1>} />
             </Routes>
    )
 }

@@ -3,13 +3,13 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useRecoilState } from "recoil";
 import userRecoilState from "../store/atoms/user.js";
-import userProfileState from "../store/atoms/profle.js";
+import { userProfileSelector } from "../store/atoms/profle.js";
 
 export default function Login() {
   const userName = useRef(null);
   const password = useRef(null);
   const [state, setUserState] = useRecoilState(userRecoilState);
-  const [userState, setUserProfileState] = useRecoilState(userProfileState);
+  const [userState, setUserProfileState] = useRecoilState(userProfileSelector);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -40,6 +40,7 @@ export default function Login() {
         alert("Login successful");
        
        if(ROLE=="USER"){
+        
         navigate("/")
        }else if (ROLE=="INSTRUCTOR"){
         setUserProfileState({

@@ -1,12 +1,16 @@
 import axios from "axios";
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import userRecoilState from "../../store/atoms/user";
+import { useRecoilState } from "recoil";
 
 export default function CourseDetails() {
   const { courseId } = useParams();
 
   const [course, setCourse] = useState(null);
   const [sections,setSections] = useState(null)
+  const [userState,setUserState] =useRecoilState(userRecoilState);
+  const navigate = useNavigate();
   useEffect(() => {
     const getCourseDetails = async () => {
       try {
@@ -19,6 +23,29 @@ export default function CourseDetails() {
     };
     getCourseDetails();
   }, [courseId]);
+
+ async function  enrollCourse(){
+  console.log("Clicked")
+    if(!userState){
+      navigate('/login')
+    }else{
+
+      const course1 = {
+        courseId:course.courseId,
+        amount:course.coursePrice
+      }
+      console.log(course1.courseId, course1.coursePrice)
+
+     
+    const response = await axios.get("http://localhost:8085/payment", course, {
+      headers:{
+        "Authorization":"Bearer"+localStorage.getItem("token")
+      }
+    });
+window.location.href = response.data.payment_url;
+  }
+    
+  }
 
   if (!course) {
     return <h1 className="text-center mt-10 text-2xl font-bold">Loading...</h1>;
@@ -106,7 +133,7 @@ export default function CourseDetails() {
 
             {/* Enroll Button */}
             <div className="text-center">
-              <button className="w-full px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition">
+              <button onClick={enrollCourse} className="w-full px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition">
                 Enroll Now
               </button>
             </div>

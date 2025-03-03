@@ -1,14 +1,14 @@
 import { useRecoilState } from "recoil";
-import userProfileState from "../store/atoms/profle";
 import UserRoutes from "./UserRoutes";
 import InstructorRoutes from "./InstructorRoutes";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
+import { userProfileSelector } from "../store/atoms/profle";
 
 function Router (){
-    const [userState, setUserState] = useRecoilState(userProfileState);
+    const [userState, setUserState] = useRecoilState(userProfileSelector);
 
-    if(userState.role=="USER"){
+    if(userState.role=="USER" || userState.role==null){
         return (
             <><Navbar></Navbar>
             <UserRoutes></UserRoutes>

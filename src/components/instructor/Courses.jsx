@@ -57,7 +57,7 @@ function Courses() {
                             {courses.map((course) => (
                                 <tr key={course.courseId} className="border-b border-gray-200 hover:bg-gray-50 transition-colors duration-300">
                                     <td className="py-4 px-6 text-sm text-gray-900">{course.courseName}</td>
-                                    <td className="py-4 px-6 text-sm text-gray-900">${course.coursePrice}</td>
+                                    <td className="py-4 px-6 text-sm text-gray-900">Rs {course.coursePrice}</td>
                                     <td className="py-4 px-6">
                                         {course.imageUrl ? (
                                             <img
