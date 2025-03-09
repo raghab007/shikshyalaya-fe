@@ -23,33 +23,47 @@ export default function CourseDetails() {
     console.log(sectionName, sectionDescription)
 
     useEffect(function () {
-        async function getSections() {
-            try {
-                const response = await axios.get(`http://localhost:8085/course/` + courseId);
-                console.log(response);
-                setCourse(response.data);
-                setSections(response.data.sections);
-            } catch (error) {
-                setError(true);
-            }
-        }
-
         getSections();
-    }, [courseId]);
+    }, []);
 
+    async function getSections() {
+        try {
+            const response = await axios.get(`http://localhost:8085/course/` + courseId);
+            console.log(response);
+            setCourse(response.data);
+            console.log(response.data.sections)
+            setSections(response.data.sections);
+        } catch (error) {
+            setError(true);
+        }
+    }
 
-
-    const addSection  = (e)=>{
+  async function addSection   (e){
         e.preventDefault()
         const section = {
             name: sectionName,
             description:sectionDescription
         }
-
-      
-
         console.log(section)
-        const response  = axios.post(`http://localhost:8085/instrcutor/course/${courseId}/section`,)
+      try {
+          const response = await axios.post(`http://localhost:8085/instructor/course/${courseId}/section`, section, {
+              headers: {
+                  "Content-Type": "application/json",
+                  Authorization: `Bearer ${token}`
+              }
+          })
+          const status = response.status;
+          if (status === 200){
+              alert("Section added successfully");
+              getSections()
+              setIsAddingSection(false);
+          }
+      }catch (error){
+            alert("Something went wrong!")
+            console.log(error)
+          setIsAddingSection()
+      }
+
     }
 
     const handleAddSectionClick = () => {
