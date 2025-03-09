@@ -1,5 +1,5 @@
 
-import { FaTachometerAlt, FaBook, FaUserGraduate, FaCog, FaUsers, FaSignOutAlt, FaChartLine } from 'react-icons/fa';
+import { FaTachometerAlt, FaBook, FaUserGraduate, FaCog, FaUsers, FaSignOutAlt, FaChartLine, FaMoneyBill } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 export default function Sidebar(){
     return (
@@ -13,8 +13,9 @@ export default function Sidebar(){
                             <NavItem to="/instructor/students" icon={<FaUserGraduate />} label="Students" />
                             <NavItem to="/instructor/settings" icon={<FaCog />} label="Settings" />
                             <NavItem to="/instructor/users" icon={<FaUsers />} label="Users" />
-                            <NavItem to="/instructor/reports" icon={<FaChartLine />} label="Reports" />
+                            <NavItem to="/instructor/reports" icon={<FaChartLine />} label="FeedBakcs" />
                             <NavItem to="/instructor/logout" icon={<FaSignOutAlt />} label="Logout" />
+                            <NavItem to={"/instructor/payment-history" } icon={<FaMoneyBill></FaMoneyBill>} label={"payment-history"}></NavItem>
                         </nav>
                     </div>
     )

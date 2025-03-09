@@ -1,13 +1,13 @@
-import React from "react";
-import { useLocation } from "react-router-dom";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const PaymentPage = () => {
   const location = useLocation();
+  const navigate = useNavigate();
 
-  // Use URLSearchParams to get query parameters from the location object
+  // Get query parameters
   const queryParams = new URLSearchParams(location.search);
-
-  // Capture specific query parameters
   const txnId = queryParams.get("txnId");
   const amount = queryParams.get("amount");
   const totalAmount = queryParams.get("total_amount");
@@ -17,22 +17,53 @@ const PaymentPage = () => {
   const purchaseOrderId = queryParams.get("purchase_order_id");
   const purchaseOrderName = queryParams.get("purchase_order_name");
   const transactionId = queryParams.get("transaction_id");
+  
 
-  // Display the captured data
-  return (
-    <div>
-      <h2>Payment Details</h2>
-      <p>txnId: {txnId}</p>
-      <p>Amount: {amount}</p>
-      <p>Total Amount: {totalAmount}</p>
-      <p>Status: {status}</p>
-      <p>Mobile: {mobile}</p>
-      <p>tidx: {tidx}</p>
-      <p>Purchase Order ID: {purchaseOrderId}</p>
-      <p>Purchase Order Name: {purchaseOrderName}</p>
-      <p>Transaction ID: {transactionId}</p>
-    </div>
-  );
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (status?.toLowerCase() === "completed") {
+      const enrollCourse = async () => {
+        try {
+          const token = localStorage.getItem("token");
+
+          if (!token) {
+            console.error("No token found in localStorage");
+            navigate("/login"); // Redirect to login if no token
+            return;
+          }
+
+          const response = await axios.post(
+            "http://localhost:8085/enrollment/"+purchaseOrderId,
+            {},
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+
+          if(response.data=="OK"){
+            navigate("/enrolled")
+          }
+          setLoading(false);
+        } catch (error) {
+          console.error("Error enrolling in course:", error.response?.data || error.message);
+          navigate("/courses"); // Redirect if there's an error
+        }
+      };
+
+      enrollCourse();
+    } else {
+      navigate("/courses");
+    }
+  }, []); // Added dependencies
+
+  if (loading) {
+    return <h1>Loading...</h1>;
+  }
+
+  return <h1>Payment Successful!</h1>;
 };
 
 export default PaymentPage;

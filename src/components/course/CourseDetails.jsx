@@ -6,7 +6,6 @@ import { useRecoilState } from "recoil";
 
 export default function CourseDetails() {
   const { courseId } = useParams();
-
   const [course, setCourse] = useState(null);
   const [sections,setSections] = useState(null)
   const [userState,setUserState] =useRecoilState(userRecoilState);
@@ -15,34 +14,28 @@ export default function CourseDetails() {
     const getCourseDetails = async () => {
       try {
         const response = await axios.get(`http://localhost:8085/course/${courseId}`);
+        console.log(response)
         setCourse(response.data);
+        console.log(response.data.sections);
         setSections(response.data.sections || []); // Assuming sections are part of response
       } catch (error) {
         console.error("Error fetching course details:", error);
       }
     };
     getCourseDetails();
-  }, [courseId]);
+  }, []);
 
  async function  enrollCourse(){
-  console.log("Clicked")
     if(!userState){
       navigate('/login')
     }else{
 
-      const course1 = {
-        courseId:course.courseId,
-        amount:course.coursePrice
-      }
-      console.log(course1.courseId, course1.coursePrice)
-
-     
-    const response = await axios.get("http://localhost:8085/payment", course, {
+    const response = await axios.get("http://localhost:8085/payment/"+course.courseID, {
       headers:{
-        "Authorization":"Bearer"+localStorage.getItem("token")
+        "Authorization":"Bearer "+localStorage.getItem("token")
       }
     });
-window.location.href = response.data.payment_url;
+  window.location.href = response.data.payment_url;
   }
     
   }
@@ -75,15 +68,12 @@ window.location.href = response.data.payment_url;
             <h2 className="text-xl font-semibold mb-4 text-gray-800">Course Sections</h2>
               <div className="space-y-4">
                 {sections.length > 0 ? (
-                  sections.map((section, index) => (
+                 sections.map((section, index) =>
                     <div key={index} className="border-l-4 border-indigo-200 bg-gray-50 p-4 rounded">
-                      <h3 className="font-medium text-gray-800">{section.title}</h3>
-                      <p className="text-sm text-gray-600 mt-1">
-                        {section.lessons.length} Lessons • {section.duration} Hours
-                      </p>
+                      <h3 className="font-medium text-gray-800">{section.name}</h3>
+                      <h3 className="font-medium text-gray-800">{section.description}</h3>
                     </div>
-                  ))
-                ) : (
+                  )) : (
                   <p className="text-gray-600">No sections available for this course.</p>
                 )}
               </div>

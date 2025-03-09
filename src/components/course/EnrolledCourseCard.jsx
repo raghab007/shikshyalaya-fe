@@ -1,11 +1,11 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-function EnrolledCourseCard({ courseId, courseInstructor, courseImageSrc, courseDescription }) {
+function EnrolledCourseCard({ courseId, courseInstructor="Raghab Pokhrel", courseName, courseImageSrc, courseDescription }) {
   const [isHovered, setIsHovered] = useState(false);
   const navigate = useNavigate();
 
-  const handleClick = () => {
+   const handleClick = () => {
     // Redirect to the course details page
     navigate(`/course/${courseId}`);
   };
@@ -21,7 +21,7 @@ function EnrolledCourseCard({ courseId, courseInstructor, courseImageSrc, course
     >
       <div className="relative w-full h-48 transition-opacity duration-300">
         <img
-          src={courseImageSrc}
+          src={"http://localhost:8085/images/course/"+courseImageSrc}
           className="w-full h-full object-cover"
           alt={`Course ${courseId}`}
         />
@@ -36,7 +36,7 @@ function EnrolledCourseCard({ courseId, courseInstructor, courseImageSrc, course
         )}
       </div>
       <div className="p-4 text-center">
-        <h1 className="text-lg font-bold text-gray-800 mb-2">Course Description: {courseDescription}</h1>
+        <h1 className="text-lg font-bold text-gray-800 mb-2">Course Name: {courseName}</h1>
         <h2 className="text-md text-gray-600">Instructor: {courseInstructor}</h2>
       </div>
     </div>

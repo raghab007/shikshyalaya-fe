@@ -4,12 +4,13 @@ import { FiSearch, FiMenu, FiX, FiUser } from "react-icons/fi";
 import Logo from "../assets/logo2.png"; // Replace with your logo path
 import { useRecoilState } from "recoil";
 import userRecoilState from "../store/atoms/user";
+import { userProfileSelector } from "../store/atoms/profle";
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
-  const isLogin = true; // Replace with your authentication logic
   const [userState,setUserState] = useRecoilState(userRecoilState);
+  const [state, setState] = useRecoilState(userProfileSelector)
   const username = "Raghab Pokhrel"; // Replace with dynamic username
 
   return (
@@ -59,7 +60,7 @@ export default function Navbar() {
                
               </>
             ) : (
-              <UserProfile username={username} />
+              <UserProfile username={state.userName} />
             )}
           </div>
 
@@ -118,7 +119,7 @@ export default function Navbar() {
                   <LinkButton to="/signup" label="Signup" />
                 </>
               ) : (
-                <UserProfile username={username} />
+                <UserProfile username={state.userName} />
               )}
             </div>
           </div>
@@ -163,6 +164,7 @@ function LinkButton({ to, label, primary }) {
 
 // User Profile Component
 function UserProfile({ username }) {
+  username = "Raghab"
   return (
     <div className="flex items-center space-x-2">
       <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center text-blue-700 font-bold">

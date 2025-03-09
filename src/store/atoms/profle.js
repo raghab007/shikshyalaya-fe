@@ -1,38 +1,43 @@
 import axios from "axios";
-import { atom, selector, useRecoilState } from "recoil";
+import { atom, selector } from "recoil";
 
 const userProfileState = atom({
-    key: "userProfileState",
-    default: {
-        userName: null,
-        email: null,
-        firstName: null,
-        lastName: null,
-        contactNumber: null,
-        role:null
-        //role:"USER"
-    }
-})
-
+  key: "userProfileState",
+  default: {
+    userName: null,
+    email: null,
+    firstName: null,
+    lastName: null,
+    contactNumber: null,
+    role: null,
+  },
+});
 
 const userProfileSelector = selector({
-    key:"userProfileSelector",
-    get:async ({get})=>{
-        try {
-            const response = await axios.get("http://localhost:8085/user",{
-                headers:{
-                    Authorization:"token"+localStorage.getItem("token")
-                }
-            })
-        }catch(error){
-            console.log("Error fetching data ");
-            return get(userProfileState) // Return the  default state if the backend call fails
-        }
+  key: "userProfileS",
+  get: async ({ get }) => {
+    try {
+      const token = localStorage.getItem("token");
+
+      if (!token) {
+        console.error("No token found");
+        return get(userProfileState); // Return default state if no token
+      }
+
+      const response = await axios.get("http://localhost:8085/user", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      
+
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching user profile:", error.response?.data || error.message);
+      return get(userProfileState); // Return default state if request fails
     }
-    
-})
+  },
+});
 
 
-
-
-export  {userProfileState,userProfileSelector};
+export { userProfileState, userProfileSelector };

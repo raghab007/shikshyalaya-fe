@@ -1,7 +1,8 @@
 import { Outlet } from "react-router-dom";
 import EnrolledCourseCard from "../components/course/EnrolledCourseCard";
 import FilterEnrolledCourse from "../components/course/FilterEnrolledCourse";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import axios from "axios";
 
 function EnrolledCoursesPage() {
   return (
@@ -16,34 +17,42 @@ function EnrolledCoursesPage() {
 }
 
 function EnrolledCourses() {
-  const courses = [
-    {
-      courseId: 1,
-      courseInstructor: "Raghab Pokhrel",
-      courseImageSrc:
-        "https://images.unsplash.com/photo-1501504905252-473c47e087f8?q=80&w=3174&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-      courseDescription: "This is a course description.",
-    },
-    {
-      courseId: 2,
-      courseInstructor: "Aastha Aryal",
-      courseImageSrc:
-        "https://images.unsplash.com/photo-1501504905252-473c47e087f8?q=80&w=3174&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-      courseDescription: "This is another course description.",
-    },
-  ];
+  
 
+  const [courses, setEnrolledCourses] = useState(null);
+
+  useEffect(function(){
+    async function fetchCourses() {
+          const response = await axios.get("http://localhost:8085/enrollment",{
+              headers:{
+                Authorization:"Bearer "+localStorage.getItem("token")
+              }
+            }
+          )
+          console.log(response.data)
+         setEnrolledCourses(response.data)
+
+        }
+        fetchCourses()
+  },[])
+
+  if(!courses){
+    return (
+      <h1>Loading courses...</h1>
+    )
+  }
   return (
     <>
       <FilterEnrolledCourse />
       <div className="flex flex-wrap justify-center gap-6 p-6">
         {courses.map((course) => (
           <EnrolledCourseCard
-            key={course.courseId}
+            key={Math.random()*1}
             courseId={course.courseId}
             courseDescription={course.courseDescription}
             courseInstructor={course.courseInstructor}
-            courseImageSrc={course.courseImageSrc}
+            courseImageSrc={course.image}
+            courseName={course.courseName}
           />
         ))}
       </div>
@@ -55,14 +64,14 @@ function ArchivedCourses() {
   const archivedCourses = [
     {
       courseId: 3,
-      courseInstructor: "John Doe",
+      courseInstructor: "Raghab Pokhrel",
       courseImageSrc:
         "https://images.unsplash.com/photo-1501504905252-473c47e087f8?q=80&w=3174&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
       courseDescription: "This is an archived course description.",
     },
     {
       courseId: 4,
-      courseInstructor: "Jane Smith",
+      courseInstructor: "Raghab Pokhrel",
       courseImageSrc:
         "https://images.unsplash.com/photo-1501504905252-473c47e087f8?q=80&w=3174&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
       courseDescription: "This is another archived course description.",

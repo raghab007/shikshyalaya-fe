@@ -6,10 +6,8 @@ import Settings from "../components/instructor/Settings";
 import InstructorLayout from "../components/instructor/InstructorLayout";
 import AddCourse from "../components/instructor/AddCourse";
 import CourseDetails from "../components/instructor/CourseDetail";
-import ErrorPage from "../pages/Error";
 
 const InstructorRoutes = ()=>{
-
    return( <Routes>
                 <Route path="/instructor" element={<InstructorLayout></InstructorLayout>}>
                     <Route index element={<Dashboard />} />

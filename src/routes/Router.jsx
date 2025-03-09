@@ -5,22 +5,23 @@ import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import { userProfileSelector } from "../store/atoms/profle";
 
-function Router (){
+function Router() {
     const [userState, setUserState] = useRecoilState(userProfileSelector);
 
-    if(userState.role=="USER" || userState.role==null){
+    if (userState?.role === "USER" || userState?.role == null) {
         return (
-            <><Navbar></Navbar>
-            <UserRoutes></UserRoutes>
-            <Footer></Footer></>  
-        )
-    }else if (userState.role=="INSTRUCTOR"){
-        return (
-        <InstructorRoutes></InstructorRoutes>
-        )
+            <>
+                <Navbar />
+                <UserRoutes />
+                <Footer />
+            </>
+        );
+    } else if (userState?.role === "INSTRUCTOR") {
+        return <InstructorRoutes />;
     }
 
+    // Optionally, you can return a fallback if none of the conditions are met
+    return null; // Or a default fallback JSX
 }
-
 
 export default Router;
