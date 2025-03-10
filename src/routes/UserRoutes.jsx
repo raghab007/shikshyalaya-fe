@@ -26,7 +26,9 @@ export default function UserRoutes() {
             <Route path="/changepassword" element={<ChangePassword />} />
             <Route path="/course/:courseId" element={<UserCourse></UserCourse>}></Route>
             <Route path="/enrolled" element={<EnrolledCoursesPage/>}>
-                <Route index  element={<EnrolledCourses/>}></Route>
+
+                <Route index element={<EnrolledCourses/>}></Route>
+
                 <Route path="archived" element={<ArchivedCourses/>}></Route>
             </Route>
             <Route path="/payment" element={<PaymentPage></PaymentPage>}></Route>
