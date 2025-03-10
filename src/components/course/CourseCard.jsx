@@ -1,70 +1,70 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-export default function BasicCard({ courseId, price, description, title, imageSrc }) {
+// Import a shopping cart icon from a library like react-icons or use an SVG
+import { FaShoppingCart } from 'react-icons/fa'; // Assuming you're using react-icons
 
-  return (
-    <div className="w-80 bg-white rounded-xl shadow-lg hover:shadow-2xl overflow-hidden relative flex flex-col h-full transition-transform transform hover:scale-105 hover:border-blue-500 border-2 border-transparent">
-      {/* Image */}
-      <div className="bg-gray-100 h-48 w-full relative">
-         <img
-          src={"http://localhost:8085"+imageSrc}
-          alt={title}
-          className="object-cover w-full h-full"
-        /> 
+export default function CourseCard({ courseId, price, originalPrice, title, instructor, imageSrc, rating, studentsEnrolled, isBestseller = false }) {
+    return (
+        <div className="w-66 bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300 transform hover:-translate-y-1">
+            {/* Image Section */}
+            <div className="h-40 w-full relative">
+                <img
+                    src={imageSrc ? "http://localhost:8085" + imageSrc : "placeholder.jpg"}
+                    alt={title || "Course Image"}
+                    className="object-cover w-full h-full"
+                />
+                {isBestseller && (
+                    <div className="absolute top-2 left-2 bg-yellow-400 text-xs font-bold text-black px-2 py-1 rounded">
+                        Bestseller
+                    </div>
+                )}
+            </div>
 
+            {/* Content Section */}
+            <div className="p-4">
+                <h2 className="text-md font-bold text-gray-900 line-clamp-2">{title || "Untitled Course"}</h2>
+                <p className="text-sm text-gray-600">{instructor || "Unknown Instructor"}</p>
 
-        {/* Bookmark Button */}
-        <button
-          className="absolute top-4 right-4 p-2 bg-white/80 rounded-full hover:bg-white/90 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
-          aria-label="Bookmark course"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            strokeWidth={1.5}
-            stroke="currentColor"
-            className="w-6 h-6"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M6.75 3.75v16.5l6.75-4.5 6.75 4.5V3.75a.75.75 0 00-.75-.75H7.5a.75.75 0 00-.75.75z"
-            />
-          </svg>
-        </button>
-      </div>
+                {/* Rating and Students Count */}
+                <div className="flex items-center space-x-2 mt-2">
+                    <span className="text-yellow-500 font-bold">{rating || "N/A"}</span>
+                    <div className="flex items-center">
+                        {[...Array(5)].map((_, i) => (
+                            <svg
+                                key={i}
+                                className={`h-4 w-4 ${rating && i < Math.floor(rating) ? 'text-yellow-400' : 'text-gray-300'}`}
+                                fill="currentColor"
+                                viewBox="0 0 20 20"
+                            >
+                                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.957a1 1 0 00.95.69h4.166c.969 0 1.371 1.24.588 1.81l-3.368 2.448a1 1 0 00-.364 1.118l1.286 3.957c.3.921-.755 1.688-1.54 1.118l-3.368-2.448a1 1 0 00-1.176 0l-3.368 2.448c-.785.57-1.84-.197-1.54-1.118l1.286-3.957a1 1 0 00-.364-1.118L2.41 9.384c-.783-.57-.38-1.81.588-1.81h4.166a1 1 0 00.95-.69l1.286-3.957z" />
+                            </svg>
+                        ))}
+                    </div>
+                    <span className="text-sm text-gray-500">({studentsEnrolled || 0})</span>
+                </div>
 
-      {/* Title and Description */}
-      <div className="p-6 flex-grow">
-        <h2 className="text-xl font-bold text-gray-900 line-clamp-2 mb-3">{title}</h2>
-        <p className="text-sm text-gray-600 line-clamp-3 mb-4">{description}</p>
-      </div>
+                {/* Price Section */}
+                <div className="mt-2">
+                    <p className="text-lg font-bold text-gray-900">Rs {price || "N/A"}</p>
+                    {originalPrice && (
+                        <p className="text-sm text-gray-500 line-through">Rs {originalPrice}</p>
+                    )}
+                </div>
+            </div>
 
-      {/* Price and View Button */}
-      <div className="px-6 pb-6 flex justify-between items-center border-t border-gray-100">
-        <div>
-          <p className="text-xs text-gray-500 mb-1">Total Price:</p>
-          <p className="text-xl font-bold text-gray-900">Rs {price}</p>
+            {/* Buttons Section */}
+            <div className="p-4 border-t border-gray-100 flex justify-between items-center">
+                <Link to={`/coursedetails/${courseId}`} className="flex-1 mr-2">
+                    <button className="w-full bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-semibold hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
+                        View Course
+                    </button>
+                </Link>
+                <button className="flex-1 ml-2 flex items-center justify-center border border-blue-600 text-blue-600 px-4 py-2 rounded-md text-sm font-semibold hover:bg-blue-600 hover:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
+                    <FaShoppingCart className="mr-2" />
+                    Add to Cart
+                </button>
+            </div>
         </div>
-        <Link to={`/coursedetails/${courseId}`}>
-          <button
-            className="bg-gradient-to-r from-blue-600 to-blue-500 text-white px-6 py-2 rounded-lg text-sm font-semibold hover:from-blue-700 hover:to-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition"
-          >
-            View Course
-          </button>
-        </Link>
-      </div>
-
-      {/* Add to Cart Button */}
-      <div className="px-6 pb-6">
-        <button
-          className="w-full border-2 border-blue-600 text-blue-600 px-6 py-2 rounded-lg text-sm font-semibold hover:bg-blue-600 hover:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition"
-        >
-          Add to Cart
-        </button>
-      </div>
-    </div>
-  );
+    );
 }

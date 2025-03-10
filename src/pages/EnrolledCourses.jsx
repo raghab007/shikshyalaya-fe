@@ -1,71 +1,59 @@
 import { Outlet } from "react-router-dom";
 import EnrolledCourseCard from "../components/course/EnrolledCourseCard";
 import FilterEnrolledCourse from "../components/course/FilterEnrolledCourse";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import axios from "axios";
 
 function EnrolledCoursesPage() {
-  const buttonStyle = {
-    fontSize: "15px",
-    fontWeight: "600",
-  };
-
   return (
-    <div>
-      <div style={{ backgroundColor: "#1d2e3a", height: "100px" }}>
-        <h1
-          style={{
-            justifySelf: "center",
-            fontSize: "30px",
-            fontWeight: "bold",
-            color:"white"
-          }}
-        >
-          My Courses
-        </h1>
-        <EnrollCourseTab></EnrollCourseTab>
+    <div className="font-sans bg-gray-100 min-h-screen">
+      <div className="bg-blue-900 py-6 shadow-lg">
+        <h1 className="text-3xl font-bold text-white text-center">My Courses</h1>
+        <EnrollCourseTab />
       </div>
-        
-      <Outlet></Outlet>
+      <Outlet />
     </div>
   );
 }
 
 function EnrolledCourses() {
-  const courses = [
-    {
-      courseId: 1,
-      courseInstructor: "Raghab pokhrel",
-      courseImageSrc:
-        "https://images.unsplash.com/photo-1501504905252-473c47e087f8?q=80&w=3174&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-      courseDescrption: "this is course",
-    },
-    {
-      courseId: 2,
-      courseInstructor: "Aastha Aryal",
-      courseImageSrc:
-        "https://images.unsplash.com/photo-1501504905252-473c47e087f8?q=80&w=3174&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-      courseDescrption: "this is course",
-    },
-  ];
+  
+
+  const [courses, setEnrolledCourses] = useState(null);
+
+  useEffect(function(){
+    async function fetchCourses() {
+          const response = await axios.get("http://localhost:8085/enrollment",{
+              headers:{
+                Authorization:"Bearer "+localStorage.getItem("token")
+              }
+            }
+          )
+          console.log(response.data)
+         setEnrolledCourses(response.data)
+
+        }
+        fetchCourses()
+  },[])
+
+  if(!courses){
+    return (
+      <h1>Loading courses...</h1>
+    )
+  }
   return (
     <>
-      <FilterEnrolledCourse></FilterEnrolledCourse>
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "row",
-          justifyContent: "space-around",
-          marginBottom: "200px",
-        }}
-      >
+      <FilterEnrolledCourse />
+      <div className="flex flex-wrap justify-center gap-6 p-6">
         {courses.map((course) => (
           <EnrolledCourseCard
-          key={course.courseId}
+            key={Math.random()*1}
             courseId={course.courseId}
-            courseDescrption={course.courseDescrption}
+            courseDescription={course.courseDescription}
             courseInstructor={course.courseInstructor}
-            courseImageSrc={course.courseImageSrc}
-          ></EnrolledCourseCard>
+            courseImageSrc={course.image}
+            courseName={course.courseName}
+          />
         ))}
       </div>
     </>
@@ -73,45 +61,73 @@ function EnrolledCourses() {
 }
 
 function ArchivedCourses() {
+  const archivedCourses = [
+    {
+      courseId: 3,
+      courseInstructor: "Raghab Pokhrel",
+      courseImageSrc:
+        "https://images.unsplash.com/photo-1501504905252-473c47e087f8?q=80&w=3174&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      courseDescription: "This is an archived course description.",
+    },
+    {
+      courseId: 4,
+      courseInstructor: "Raghab Pokhrel",
+      courseImageSrc:
+        "https://images.unsplash.com/photo-1501504905252-473c47e087f8?q=80&w=3174&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      courseDescription: "This is another archived course description.",
+    },
+  ];
+
   return (
-   <div style={{marginBottom:"300px"}}>
-     <h1>This is
-     Archived Courses page  Lorem ipsum dolor sit amet consectetur
-     , adipisicing elit. Deleniti unde, natus perferendis, nesciunt corrupti nisi iste consectetur esse est sed,
-      cupiditate magni laborum in similique magnam id cumque vero ut.x
-      Lorem ipsum dolor sit amet consectetur adipisicing elit. Quibusdam nihil rem mollitia asperiores omnis consequuntur eum possimus ratione dolorem sequi nobis laudantium, natus delectus atque voluptate rerum molestias harum similique quisquam veniam eveniet, cum sunt cupiditate voluptates. Adipisci dolore consequuntur quas, beatae deleniti natus voluptate accusamus, necessitatibus quod cumque voluptatum voluptates dolorum. Earum incidunt nisi praesentium tenetur nostrum autem nam temporibus eius laudantium, inventore maxime fugit molestias odit atque deleniti iusto aspernatur numquam pariatur. Dolorem eaque reiciendis vitae. Sit nulla culpa deleniti sint illo tempora itaque quod dolore quos obcaecati est modi ducimus placeat, facere veniam sapiente autem pariatur possimus.
-      
-      </h1>
-   </div>
-  )
-  
+    <>
+      <FilterEnrolledCourse />
+      <div className="flex flex-wrap justify-center gap-6 p-6">
+        {archivedCourses.map((course) => (
+          <EnrolledCourseCard
+            key={course.courseId}
+            courseId={course.courseId}
+            courseDescription={course.courseDescription}
+            courseInstructor={course.courseInstructor}
+            courseImageSrc={course.courseImageSrc}
+          />
+        ))}
+      </div>
+    </>
+  );
 }
 
 function EnrollCourseTab() {
-    const [currentTab, setCurrentTab] = useState(true);
+  const [currentTab, setCurrentTab] = useState(true);
 
-    function changeTab(){
-        setCurrentTab(!currentTab)
-    }
+  const changeTab = () => {
+    setCurrentTab(!currentTab);
+  };
 
-   
   return (
-    <div
-      style={{
-        width: "40%",
-        display: "flex",
-        margin: "auto",
-        justifyContent: "space-between",
-    border:"1px",
-        height: "50%",
-        color:"white"
-      }}
-    >
-      <button>
-        <a style={{textDecorationStyle:"double"}} href="/enrolled/allcourses">My courses</a>
+    <div className="flex justify-center gap-4 mt-6">
+      <button
+        className={`px-6 py-2 rounded-lg transition-colors duration-300 ${
+          currentTab
+            ? "bg-green-500 text-white"
+            : "bg-transparent text-white hover:bg-green-500/20"
+        }`}
+        onClick={changeTab}
+      >
+        <a href="/enrolled" className="no-underline">
+          My Courses
+        </a>
       </button>
-      <button>
-        <a href="/enrolled/archived">Archived Courses</a>
+      <button
+        className={`px-6 py-2 rounded-lg transition-colors duration-300 ${
+          !currentTab
+            ? "bg-green-500 text-white"
+            : "bg-transparent text-white hover:bg-green-500/20"
+        }`}
+        onClick={changeTab}
+      >
+        <a href="/enrolled/archived" className="no-underline">
+          Archived Courses
+        </a>
       </button>
     </div>
   );

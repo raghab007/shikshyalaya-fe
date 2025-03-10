@@ -3,13 +3,11 @@ import Dashboard from "../components/instructor/Dashboard";
 import Courses from "../components/instructor/Courses";
 import Students from "../components/instructor/Students";
 import Settings from "../components/instructor/Settings";
-import InstructorLayout from "../components/instructor/Instructorlayout";
+import InstructorLayout from "../components/instructor/InstructorLayout";
 import AddCourse from "../components/instructor/AddCourse";
 import CourseDetails from "../components/instructor/CourseDetail";
-import { EnrolledCourses}  from "../pages/EnrolledCourses";
 
 const InstructorRoutes = ()=>{
-
    return( <Routes>
                 <Route path="/instructor" element={<InstructorLayout></InstructorLayout>}>
                     <Route index element={<Dashboard />} />
@@ -23,7 +21,7 @@ const InstructorRoutes = ()=>{
                 <Route path="/instructor/settings/payment-methods" element={<h1>Payment Methods</h1>} />
                 <Route path="/instructor/reports" element={<h1>Reports Section</h1>} />
                 <Route path="/instructor/logout" element={<h1>Logging out...</h1>} />
-                <Route path="*" element={<h1>Not found</h1>} />
+                <Route path="*" element={<h1>Page not found</h1>} />
             </Routes>
    )
 }

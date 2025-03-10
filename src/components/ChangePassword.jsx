@@ -12,8 +12,6 @@ function ChangePassword(){
         padding:"10px"
     }
 
-   
-    
     function changePassword(){
         const current  = currentPassword.current.value;
         const confirm = confirmPassword.current.value;
@@ -25,7 +23,6 @@ function ChangePassword(){
         else{
             alert("Password changed successfully")
         }
-
     }
         return (
            <>
@@ -34,7 +31,7 @@ function ChangePassword(){
             <div>
                 <div style={{display:"flex",flexDirection:"column", height:"250px",alignItems:"center",
                         justifyContent:"space-between",marginTop:"50px",marginBottom:"300px",border:''}}>
-                  <p style={{color:"red"}}>{confirm==false?"enter password correctly":""}</p>
+                  <p style={{color:"red"}}>{confirm===false?"enter password correctly":""}</p>
                     <input style={inputStyles} ref={currentPassword} type="text" placeholder="Enter your current password" />
                     <input style={inputStyles} ref={confirmPassword} type="text" placeholder="Enter your new password" />
                     <input style={inputStyles} ref={newPassword} type="text" placeholder="Confirm your current password"></input>
