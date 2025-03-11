@@ -214,7 +214,7 @@ export default function CourseDetails() {
 
                         {/* Manage Sections */}
                         <div className="bg-white rounded-lg shadow-sm p-6">
-                            <h2 className="text-xl font-semibold mb-4 text-gray-800">Manage Sections</h2>
+                            <h2 className="text-xl font-semibold mb-4 text-gray-800">Course Sections</h2>
                             <div className="space-y-4">
                                 {sections.map((section, index) => (
                                     <div key={index} className="border-l-4 border-indigo-200 bg-gray-50 p-4 rounded">
@@ -223,7 +223,7 @@ export default function CourseDetails() {
                                                 <h3 className="font-medium text-gray-800">{section.name}</h3>
                                                 <p className="text-sm text-gray-600 mt-1">{section.description}</p>
                                             </div>
-                                            <button className="text-indigo-600 hover:underline">Edit</button>
+                                            <button onClick={()=>{location.href= "/instructor/videos"}} className="text-indigo-600 hover:underline">Manage</button>
                                         </div>
                                     </div>
                                 ))}

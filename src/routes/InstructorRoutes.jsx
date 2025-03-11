@@ -6,6 +6,7 @@ import Settings from "../components/instructor/Settings";
 import InstructorLayout from "../components/instructor/InstructorLayout";
 import AddCourse from "../components/instructor/AddCourse";
 import CourseDetails from "../components/instructor/CourseDetail";
+import UploadLecture from "../components/instructor/CourseContent";
 
 const InstructorRoutes = ()=>{
    return( <Routes>
@@ -16,6 +17,7 @@ const InstructorRoutes = ()=>{
                     <Route path="students" element={<Students />} />
                     <Route path="add-course" element={<AddCourse></AddCourse>}></Route>
                     <Route path="coursedetails/:courseId" element={<CourseDetails></CourseDetails>}></Route>
+                    <Route path="videos" element={<UploadLecture></UploadLecture>}></Route>
                 </Route>
                 <Route path="/instructor/settings" element={<Settings />} />
                 <Route path="/instructor/settings/payment-methods" element={<h1>Payment Methods</h1>} />

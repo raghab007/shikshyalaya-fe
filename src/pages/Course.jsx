@@ -17,6 +17,7 @@ export default function Course() {
       try {
         const response = await axios.get("http://localhost:8085/courses");
         const updatedCourses = response.data;
+        console.log(updatedCourses)
         setCourses(updatedCourses);
         setFilteredCourses(updatedCourses); // Initialize filtered courses
         setTotalPages(Math.ceil(updatedCourses.length / itemsPerPage));
@@ -33,6 +34,7 @@ export default function Course() {
   const indexOfLastCourse = currentPage * itemsPerPage;
   const indexOfFirstCourse = indexOfLastCourse - itemsPerPage;
   const currentCourses = filteredCourses.slice(indexOfFirstCourse, indexOfLastCourse);
+  console.log(typeof currentCourses)
 
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
