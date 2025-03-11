@@ -109,19 +109,6 @@ function AddCourse() {
 }
 
 
-function FruitPicker() {
-    const [selectedFruit, setSelectedFruit] = useState('orange'); // Declare a state variable...
-    // ...
-    return (
-      <select
-        value={selectedFruit} // ...force the select's value to match the state variable...
-        onChange={e => setSelectedFruit(e.target.value)} // ... and update the state variable on any change!
-      >
-        <option value="apple">Apple</option>
-        <option value="banana">Banana</option>
-        <option value="orange">Orange</option>
-      </select>
-    );
-  }
+
 
 export default AddCourse;

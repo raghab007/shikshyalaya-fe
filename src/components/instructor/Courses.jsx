@@ -59,45 +59,43 @@ function Courses() {
                         }}
                     />
                 </div>
+
                 {filteredCourses.length > 0 ? (
-                    <div className="bg-white border border-gray-300 shadow-lg rounded-lg overflow-hidden">
-                        <table className="min-w-full">
-                            <thead className="bg-gray-100">
-                                <tr>
-                                    <th className="py-3 px-6 text-left text-sm font-semibold text-gray-700 uppercase">Course Name</th>
-                                    <th className="py-3 px-6 text-left text-sm font-semibold text-gray-700 uppercase">Price</th>
-                                    <th className="py-3 px-6 text-left text-sm font-semibold text-gray-700 uppercase">Image</th>
-                                    <th className="py-3 px-6 text-left text-sm font-semibold text-gray-700 uppercase">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {filteredCourses.map((course) => (
-                                    <tr key={course.courseId} className="border-b border-gray-200 hover:bg-gray-50 transition-colors duration-300">
-                                        <td className="py-4 px-6 text-sm text-gray-900">{course.courseName}</td>
-                                        <td className="py-4 px-6 text-sm text-gray-900">Rs {course.coursePrice}</td>
-                                        <td className="py-4 px-6">
-                                            {course.imageUrl ? (
-                                                <img
-                                                    src={"http://localhost:8085" + course.imageUrl}
-                                                    alt="Course"
-                                                    className="w-16 h-16 object-cover rounded-lg"
-                                                />
-                                            ) : (
-                                                <span className="text-gray-500 text-sm">No Image</span>
-                                            )}
-                                        </td>
-                                        <td className="py-4 px-6">
-                                            <Link
-                                                to={`/instructor/coursedetails/${course.courseID}`}
-                                                className="px-4 py-2 bg-blue-600 text-white text-sm font-semibold rounded-lg hover:bg-blue-700 transition-colors duration-300 shadow-md hover:shadow-lg"
-                                            >
-                                                Manage Course
-                                            </Link>
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                        {filteredCourses.map((course) => (
+                            <div
+                                key={course.courseId}
+                                className="bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300 overflow-hidden"
+                            >
+                                <div className="relative h-40 w-full">
+                                    {course.imageUrl ? (
+                                        <img
+                                            src={"http://localhost:8085" + course.imageUrl}
+                                            alt={course.courseName}
+                                            className="w-full h-full object-cover"
+                                        />
+                                    ) : (
+                                        <div className="w-full h-full flex items-center justify-center bg-gray-100 text-gray-500">
+                                            No Image
+                                        </div>
+                                    )}
+                                </div>
+                                <div className="p-4">
+                                    <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                                        {course.courseName}
+                                    </h3>
+                                    <p className="text-sm text-gray-600 mb-4">
+                                        Rs {course.coursePrice}
+                                    </p>
+                                    <Link
+                                        to={`/instructor/coursedetails/${course.courseID}`}
+                                        className="w-full inline-block text-center px-4 py-2 bg-blue-600 text-white text-sm font-semibold rounded-lg hover:bg-blue-700 transition-colors duration-300 shadow-md hover:shadow-lg"
+                                    >
+                                        Manage Course
+                                    </Link>
+                                </div>
+                            </div>
+                        ))}
                     </div>
                 ) : (
                     <p className="text-gray-600 text-center">

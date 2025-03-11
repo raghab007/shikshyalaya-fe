@@ -3,20 +3,35 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 import { GiProgression } from "react-icons/gi";
 import ReactPlayer from "react-player"; // For playing YouTube videos
+import video from"../../assets/video.mp4"
 
-const VideoCard = ({ name, onPlay }) => {
+const VideoCard = ({ name, image = "https://images.unsplash.com/photo-1501504905252-473c47e087f8?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8Y291cnNlfGVufDB8fDB8fHww", onPlay }) => {
     return (
-        <div className="relative group bg-gray-100 p-4 rounded-lg shadow-sm hover:shadow-md transition-shadow">
+        <div className="relative group bg-gray-100 p-4 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300 overflow-hidden">
+            {/* Image container */}
             <div className="w-full h-40 bg-gray-200 flex items-center justify-center rounded-lg overflow-hidden">
-                <span className="text-gray-500">Thumbnail</span>
+                {image ? (
+                    <img
+                        src={image}
+                        alt={name}
+                        className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
+                    />
+                ) : (
+                    <span className="text-gray-500">Thumbnail</span>
+                )}
             </div>
+
+            {/* Video name */}
             <div className="mt-3">
-                <p className="text-lg font-semibold text-center">{name}</p>
+                <p className="text-lg font-semibold text-center text-gray-800">{name}</p>
             </div>
-            <div className="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
+
+            {/* Play button overlay */}
+            <div className="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity duration-300">
                 <button
                     onClick={onPlay}
-                    className="bg-white text-black px-4 py-2 rounded-lg hover:bg-gray-100"
+                    className="bg-white text-black px-6 py-2 rounded-lg hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 transition-colors duration-200"
+                    aria-label={`Play ${name}`}
                 >
                     ▶ Play
                 </button>
@@ -43,7 +58,9 @@ export default function UploadLecture() {
     const staticVideos = [
         { id: 1, name: "Introduction to React" },
         { id: 2, name: "Advanced JavaScript" },
-        { id: 3, name: "Spring Boot Basics" }
+        { id: 3, name: "Mern stack" },
+        { id: 4, name: "Java full course" },
+        { id: 5, name: "Spring Boot Basics" }
     ];
 
     useEffect(() => {
@@ -128,37 +145,35 @@ export default function UploadLecture() {
             {/* Add Video Button */}
             <div className="flex justify-end">
                 <button
-                    onClick={() => setShowAddVideoForm(!showAddVideoForm)}
+                    onClick={() => setShowAddVideoForm(true)}
                     className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600"
                 >
-                    {showAddVideoForm ? "Cancel" : "Add Video"}
+                    Add Video
                 </button>
             </div>
 
-            {/* Add Video Form */}
+            {/* Add Video Form Modal */}
             {showAddVideoForm && (
-                <div className="bg-white shadow rounded-lg">
-                    <div className="p-4 border-b">
-                        <h2 className="text-xl font-semibold">Add New Video</h2>
-                    </div>
-                    <div className="p-4 space-y-4">
-                        <input
-                            type="text"
-                            value={videoName}
-                            onChange={(e) => setVideoName(e.target.value)}
-                            placeholder="Enter video name"
-                            disabled={isUploading}
-                            className="w-full p-2 border rounded-lg"
-                        />
-                        <textarea
-                            value={videoDescription}
-                            onChange={(e) => setVideoDescription(e.target.value)}
-                            placeholder="Enter video description"
-                            disabled={isUploading}
-                            className="w-full p-2 border rounded-lg"
-                            rows={3}
-                        />
-                        <div className="grid grid-cols-2 gap-4">
+                <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50">
+                    <div className="bg-white p-6 rounded-lg w-full max-w-md">
+                        <h2 className="text-xl font-semibold mb-4">Add New Video</h2>
+                        <div className="space-y-4">
+                            <input
+                                type="text"
+                                value={videoName}
+                                onChange={(e) => setVideoName(e.target.value)}
+                                placeholder="Enter video name"
+                                disabled={isUploading}
+                                className="w-full p-2 border rounded-lg"
+                            />
+                            <textarea
+                                value={videoDescription}
+                                onChange={(e) => setVideoDescription(e.target.value)}
+                                placeholder="Enter video description"
+                                disabled={isUploading}
+                                className="w-full p-2 border rounded-lg"
+                                rows={3}
+                            />
                             <div>
                                 <label className="block text-sm font-medium mb-1">Video File</label>
                                 <input
@@ -179,14 +194,22 @@ export default function UploadLecture() {
                                     className="w-full p-2 border rounded-lg"
                                 />
                             </div>
+                            <div className="flex justify-end space-x-2">
+                                <button
+                                    onClick={() => setShowAddVideoForm(false)}
+                                    className="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600"
+                                >
+                                    Cancel
+                                </button>
+                                <button
+                                    onClick={handleVideoUpload}
+                                    disabled={isUploading || isLoading}
+                                    className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 disabled:bg-blue-300"
+                                >
+                                    {isUploading ? "Uploading..." : "Upload Video"}
+                                </button>
+                            </div>
                         </div>
-                        <button
-                            onClick={handleVideoUpload}
-                            disabled={isUploading || isLoading}
-                            className="w-full bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-600 disabled:bg-blue-300"
-                        >
-                            {isUploading ? "Uploading..." : "Upload Video"}
-                        </button>
                     </div>
                 </div>
             )}
@@ -216,10 +239,11 @@ export default function UploadLecture() {
                 <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50">
                     <div className="bg-white p-6 rounded-lg w-full max-w-2xl">
                         <ReactPlayer
-                            url="https://www.youtube.com/watch?v=t-UhINPsmj4" // YouTube video URL
+                            url={video} // YouTube video URL
                             controls={true}
                             width="100%"
                             height="400px"
+                            
                         />
                         <button
                             onClick={handleCloseVideo}
