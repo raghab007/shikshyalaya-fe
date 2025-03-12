@@ -5,7 +5,17 @@ import { GiProgression } from "react-icons/gi";
 import ReactPlayer from "react-player"; // For playing YouTube videos
 import video from"../../assets/video.mp4"
 
-const VideoCard = ({ name, image = "https://images.unsplash.com/photo-1501504905252-473c47e087f8?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8Y291cnNlfGVufDB8fDB8fHww", onPlay }) => {
+const VideoCard = ({ name, 
+    image = "https://images.unsplash.com/photo-1501504905252-473c47e087f8?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8Y291cnNlfGVufDB8fDB8fHww",
+     videorul, title, description }) => {
+    const [isVideoPlaying, setIsVideoPlaying] = useState(false); // State to control video playback
+    const handleCloseVideo = () => {
+        setIsVideoPlaying(false); // Close the video player
+    };
+
+    const handlePlayVideo = () => {
+        setIsVideoPlaying(true); // Open the video player
+    };
     return (
         <div className="relative group bg-gray-100 p-4 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300 overflow-hidden">
             {/* Image container */}
@@ -23,25 +33,46 @@ const VideoCard = ({ name, image = "https://images.unsplash.com/photo-1501504905
 
             {/* Video name */}
             <div className="mt-3">
-                <p className="text-lg font-semibold text-center text-gray-800">{name}</p>
+                <p className="text-lg font-semibold text-center text-gray-800">{title}</p>
             </div>
 
             {/* Play button overlay */}
             <div className="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity duration-300">
                 <button
-                    onClick={onPlay}
+                    onClick={handlePlayVideo}
                     className="bg-white text-black px-6 py-2 rounded-lg hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 transition-colors duration-200"
                     aria-label={`Play ${name}`}
                 >
                     ▶ Play
                 </button>
             </div>
+
+            {/* Video Player Modal */}
+            {isVideoPlaying && (
+                <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50">
+                    <div className="bg-white p-6 rounded-lg w-full max-w-2xl">
+                        <ReactPlayer
+                            url={`http://localhost:8085/videos/course/${videorul}`} // YouTube video URL
+                            controls={true}
+                            width="100%"
+                            height="400px"
+                            
+                        />
+                        <button
+                            onClick={handleCloseVideo}
+                            className="mt-4 bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600"
+                        >
+                            Close
+                        </button>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };
 
 export default function UploadLecture() {
-    const { courseId } = useParams();
+    const { sectionId } = useParams();
     const [videos, setVideos] = useState([]);
     const [videoFile, setVideoFile] = useState(null);
     const [videoName, setVideoName] = useState("");
@@ -51,17 +82,10 @@ export default function UploadLecture() {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState("");
     const [success, setSuccess] = useState("");
-    const [isVideoPlaying, setIsVideoPlaying] = useState(false); // State to control video playback
+   
     const [showAddVideoForm, setShowAddVideoForm] = useState(false); // State to toggle add video form
     const token = localStorage.getItem("token");
 
-    const staticVideos = [
-        { id: 1, name: "Introduction to React" },
-        { id: 2, name: "Advanced JavaScript" },
-        { id: 3, name: "Mern stack" },
-        { id: 4, name: "Java full course" },
-        { id: 5, name: "Spring Boot Basics" }
-    ];
 
     useEffect(() => {
         fetchVideos();
@@ -70,8 +94,12 @@ export default function UploadLecture() {
     async function fetchVideos() {
         setIsLoading(true);
         try {
-            const response = await axios.get(`http://localhost:8085/course/${courseId}/videos`);
-            setVideos(response.data.length > 0 ? response.data : staticVideos);
+            const response = await axios.get(`http://localhost:8085/instructor/course/section/${sectionId}/lecture`, {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem("token")}`
+                }
+            });
+            setVideos(response.data)
         } catch (error) {
             setError("Failed to fetch videos. Showing static examples.");
             setVideos(staticVideos);
@@ -128,13 +156,9 @@ export default function UploadLecture() {
         }
     };
 
-    const handlePlayVideo = () => {
-        setIsVideoPlaying(true); // Open the video player
-    };
+  
 
-    const handleCloseVideo = () => {
-        setIsVideoPlaying(false); // Close the video player
-    };
+   
 
     return (
         <div className="max-w-4xl mx-auto p-6 space-y-6 bg-white shadow-lg rounded-xl">
@@ -224,8 +248,9 @@ export default function UploadLecture() {
                         {videos.map((video) => (
                             <VideoCard
                                 key={video.id}
-                                name={video.name}
-                                onPlay={handlePlayVideo} // Pass the play handler
+                                title={video.title}
+                                videorul={video.videoUrl}
+                                description={video.description}
                             />
                         ))}
                     </div>
@@ -233,27 +258,7 @@ export default function UploadLecture() {
             </div>
 
             {isUploading && <GiProgression value={50} />}
-
-            {/* Video Player Modal */}
-            {isVideoPlaying && (
-                <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50">
-                    <div className="bg-white p-6 rounded-lg w-full max-w-2xl">
-                        <ReactPlayer
-                            url={video} // YouTube video URL
-                            controls={true}
-                            width="100%"
-                            height="400px"
-                            
-                        />
-                        <button
-                            onClick={handleCloseVideo}
-                            className="mt-4 bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600"
-                        >
-                            Close
-                        </button>
-                    </div>
-                </div>
-            )}
+            
         </div>
     );
 }

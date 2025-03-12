@@ -17,7 +17,7 @@ const InstructorRoutes = ()=>{
                     <Route path="students" element={<Students />} />
                     <Route path="add-course" element={<AddCourse></AddCourse>}></Route>
                     <Route path="coursedetails/:courseId" element={<CourseDetails></CourseDetails>}></Route>
-                    <Route path="videos" element={<UploadLecture></UploadLecture>}></Route>
+                    <Route path="videos/:sectionId" element={<UploadLecture></UploadLecture>}></Route>
                 </Route>
                 <Route path="/instructor/settings" element={<Settings />} />
                 <Route path="/instructor/settings/payment-methods" element={<h1>Payment Methods</h1>} />

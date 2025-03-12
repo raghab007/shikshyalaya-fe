@@ -1,6 +1,6 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 
 export default function CourseDetails() {
     const { courseId } = useParams();
@@ -223,7 +223,7 @@ export default function CourseDetails() {
                                                 <h3 className="font-medium text-gray-800">{section.name}</h3>
                                                 <p className="text-sm text-gray-600 mt-1">{section.description}</p>
                                             </div>
-                                            <button onClick={()=>{location.href= "/instructor/videos"}} className="text-indigo-600 hover:underline">Manage</button>
+                                            <button  className="text-indigo-600 hover:underline"><Link to={"/instructor/videos/"+section.sectionId}>Manage</Link></button>
                                         </div>
                                     </div>
                                 ))}
