@@ -102,13 +102,16 @@ export default function UploadLecture() {
             setVideos(response.data)
         } catch (error) {
             setError("Failed to fetch videos. Showing static examples.");
-            setVideos(staticVideos);
+            setVideos({
+                
+            });
         } finally {
             setIsLoading(false);
         }
     }
 
-    const handleVideoUpload = async () => {
+    const handleVideoUpload = async (e) => {
+        e.preventDefault();
         if (!videoFile || !videoName.trim() || !videoDescription.trim() || !videoImage) {
             setError("All fields are required.");
             return;
@@ -128,20 +131,22 @@ export default function UploadLecture() {
         }
 
         const formData = new FormData();
+        formData.append("title", videoName);
         formData.append("video", videoFile);
-        formData.append("name", videoName);
         formData.append("description", videoDescription);
         formData.append("image", videoImage);
-
+        console.log(formData)
         setIsUploading(true);
         setError("");
         setSuccess("");
         try {
-            await axios.post(
-                `http://localhost:8085/course/${courseId}/upload-video`,
+          const response =   await axios.post(
+                `http://localhost:8085/instructor/course/section/${sectionId}/lecture`,
                 formData,
                 { headers: { "Content-Type": "multipart/form-data", Authorization: `Bearer ${token}` } }
             );
+
+            console.log(response)
             setSuccess("Video uploaded successfully!");
             setVideoFile(null);
             setVideoName("");
@@ -163,8 +168,8 @@ export default function UploadLecture() {
     return (
         <div className="max-w-4xl mx-auto p-6 space-y-6 bg-white shadow-lg rounded-xl">
             <h1 className="text-2xl font-bold text-center">Upload Lecture Video</h1>
-            {error && <div className="text-red-500 bg-red-100 p-2 rounded">{error}</div>}
-            {success && <div className="text-green-500 bg-green-100 p-2 rounded">{success}</div>}
+            {error && <div className="text-red-500 bg-red-100 p-2 rounded z-100">{error}</div>}
+            {success && <div className="text-green-500 bg-green-100 p-2 rounded z-100">{success}</div>}
 
             {/* Add Video Button */}
             <div className="flex justify-end">

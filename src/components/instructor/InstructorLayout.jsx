@@ -14,8 +14,8 @@ function InstructorLayout() {
         <Sidebar/>
 
             {/* Main Content */}
-            <div className="flex-grow p-8 overflow-auto">
-                <div className="bg-white rounded-lg shadow-sm p-6">
+            <div className="flex-grow   overflow-auto">
+                <div className="bg-white rounded-lg shadow-sm ">
                    <Outlet></Outlet>
                 </div>
             </div>

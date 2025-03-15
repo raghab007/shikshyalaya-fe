@@ -10,7 +10,12 @@ function Courses() {
     useEffect(() => {
         const getCourses = async () => {
             try {
-                const response = await axios.get("http://localhost:8085/courses");
+                const response = await axios.get("http://localhost:8085/instructor/course",{
+                    headers:{
+                        Authorization:"Bearer "+localStorage.getItem("token")
+                    }
+                });
+                console.log(response)
                 setCourses(response.data);
             } catch (error) {
                 console.error("Error fetching courses:", error);
@@ -35,7 +40,7 @@ function Courses() {
     }
 
     return (
-        <main className="p-6 bg-gray-50 min-h-screen">
+        <main className="p-6 bg-green-100 min-h-screen">
             <h1 className="text-4xl font-bold text-gray-900 mb-8 text-center">Your Courses</h1>
             <div className="max-w-7xl mx-auto">
                 <div className="flex justify-between items-center mb-8">
@@ -70,7 +75,7 @@ function Courses() {
                                 <div className="relative h-40 w-full">
                                     {course.imageUrl ? (
                                         <img
-                                            src={"http://localhost:8085" + course.imageUrl}
+                                            src={"http://localhost:8085/images/course/" + course.imageUrl}
                                             alt={course.courseName}
                                             className="w-full h-full object-cover"
                                         />

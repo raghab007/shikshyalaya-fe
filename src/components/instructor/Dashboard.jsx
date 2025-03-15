@@ -41,7 +41,7 @@ const Dashboard = () => {
   const COLORS = ["#FF6384", "#36A2EB", "#4CAF50"]; // Colors for pie chart segments
 
   return (
-    <div className="p-6 bg-gray-100 min-h-screen">
+    <div className="p-6 bg-orange-100 min-h-screen">
       <h1 className="text-2xl font-bold mb-6">Instructor Dashboard</h1>
 
       {/* Notifications Section */}

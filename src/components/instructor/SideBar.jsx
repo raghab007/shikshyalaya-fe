@@ -12,7 +12,6 @@ export default function Sidebar(){
                             <NavItem to="/instructor/courses" icon={<FaBook />} label="Courses" />
                             <NavItem to="/instructor/students" icon={<FaUserGraduate />} label="Students" />
                             <NavItem to="/instructor/settings" icon={<FaCog />} label="Settings" />
-                            <NavItem to="/instructor/users" icon={<FaUsers />} label="Users" />
                             <NavItem to="/instructor/reports" icon={<FaChartLine />} label="FeedBakcs" />
                             <NavItem to="/instructor/logout" icon={<FaSignOutAlt />} label="Logout" />
                             <NavItem to={"/instructor/payment-history" } icon={<FaMoneyBill></FaMoneyBill>} label={"payment-history"}></NavItem>
