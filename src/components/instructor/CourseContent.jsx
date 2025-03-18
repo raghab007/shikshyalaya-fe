@@ -99,6 +99,7 @@ export default function UploadLecture() {
                     Authorization: `Bearer ${localStorage.getItem("token")}`
                 }
             });
+            console.log(response.data)
             setVideos(response.data)
         } catch (error) {
             setError("Failed to fetch videos. Showing static examples.");
