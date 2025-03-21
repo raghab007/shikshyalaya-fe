@@ -2,269 +2,439 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import { GiProgression } from "react-icons/gi";
-import ReactPlayer from "react-player"; // For playing YouTube videos
-import video from"../../assets/video.mp4"
+import ReactPlayer from "react-player";
+import { FaPlay, FaPlus, FaTimes, FaUpload } from "react-icons/fa";
 
-const VideoCard = ({ name, 
-    image = "https://images.unsplash.com/photo-1501504905252-473c47e087f8?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8Y291cnNlfGVufDB8fDB8fHww",
-     videorul, title, description }) => {
-    const [isVideoPlaying, setIsVideoPlaying] = useState(false); // State to control video playback
-    const handleCloseVideo = () => {
-        setIsVideoPlaying(false); // Close the video player
-    };
+const VideoCard = ({ title, image = "https://images.unsplash.com/photo-1501504905252-473c47e087f8?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8Y291cnNlfGVufDB8fDB8fHww", videorul, description }) => {
+  const [isVideoPlaying, setIsVideoPlaying] = useState(false);
+  
+  return (
+    <div className="relative group bg-white p-4 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 overflow-hidden border border-gray-200">
+      {/* Image container with gradient overlay */}
+      <div className="w-full h-44 rounded-lg overflow-hidden relative">
+        {image ? (
+          <img
+            src={image}
+            alt={title}
+            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+          />
+        ) : (
+          <div className="w-full h-full bg-gray-200 flex items-center justify-center">
+            <span className="text-gray-500">No Thumbnail</span>
+          </div>
+        )}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-80"></div>
+      </div>
 
-    const handlePlayVideo = () => {
-        setIsVideoPlaying(true); // Open the video player
-    };
-    return (
-        <div className="relative group bg-gray-100 p-4 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300 overflow-hidden">
-            {/* Image container */}
-            <div className="w-full h-40 bg-gray-200 flex items-center justify-center rounded-lg overflow-hidden">
-                {image ? (
-                    <img
-                        src={image}
-                        alt={name}
-                        className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
-                    />
-                ) : (
-                    <span className="text-gray-500">Thumbnail</span>
-                )}
+      {/* Video title */}
+      <h3 className="mt-3 text-lg font-semibold text-gray-800 line-clamp-1">{title}</h3>
+      
+      {/* Description preview */}
+      <p className="text-gray-600 text-sm mt-1 line-clamp-2">{description}</p>
+
+      {/* Play button overlay */}
+      <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity duration-300">
+        <button
+          onClick={() => setIsVideoPlaying(true)}
+          className="bg-white text-black p-3 rounded-full hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200 transform hover:scale-110"
+          aria-label={`Play ${title}`}
+        >
+          <FaPlay className="text-blue-600" />
+        </button>
+      </div>
+
+      {/* Video duration badge */}
+      <div className="absolute bottom-16 right-6 bg-black/70 text-white text-xs px-2 py-1 rounded">
+        12:34
+      </div>
+
+      {/* Video Player Modal */}
+      {isVideoPlaying && (
+        <div className="fixed inset-0 bg-black/90 flex items-center justify-center z-50 backdrop-blur-sm">
+          <div className="bg-white p-6 rounded-lg w-full max-w-3xl">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-xl font-bold text-gray-800">{title}</h3>
+              <button
+                onClick={() => setIsVideoPlaying(false)}
+                className="text-gray-500 hover:text-red-500"
+              >
+                <FaTimes size={24} />
+              </button>
             </div>
-
-            {/* Video name */}
-            <div className="mt-3">
-                <p className="text-lg font-semibold text-center text-gray-800">{title}</p>
-            </div>
-
-            {/* Play button overlay */}
-            <div className="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity duration-300">
-                <button
-                    onClick={handlePlayVideo}
-                    className="bg-white text-black px-6 py-2 rounded-lg hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 transition-colors duration-200"
-                    aria-label={`Play ${name}`}
-                >
-                    ▶ Play
-                </button>
-            </div>
-
-            {/* Video Player Modal */}
-            {isVideoPlaying && (
-                <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50">
-                    <div className="bg-white p-6 rounded-lg w-full max-w-2xl">
-                        <ReactPlayer
-                            url={`http://localhost:8085/videos/course/${videorul}`} // YouTube video URL
-                            controls={true}
-                            width="100%"
-                            height="400px"
-                            
-                        />
-                        <button
-                            onClick={handleCloseVideo}
-                            className="mt-4 bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600"
-                        >
-                            Close
-                        </button>
-                    </div>
-                </div>
-            )}
+            <ReactPlayer
+              url={`http://localhost:8085/videos/course/${videorul}`}
+              controls={true}
+              width="100%"
+              height="450px"
+              playing={true}
+              config={{
+                file: {
+                  attributes: {
+                    controlsList: 'nodownload',
+                  },
+                },
+              }}
+            />
+            <p className="mt-4 text-gray-600">{description}</p>
+          </div>
         </div>
-    );
+      )}
+    </div>
+  );
 };
 
 export default function UploadLecture() {
-    const { sectionId } = useParams();
-    const [videos, setVideos] = useState([]);
-    const [videoFile, setVideoFile] = useState(null);
-    const [videoName, setVideoName] = useState("");
-    const [videoDescription, setVideoDescription] = useState("");
-    const [videoImage, setVideoImage] = useState(null);
-    const [isUploading, setIsUploading] = useState(false);
-    const [isLoading, setIsLoading] = useState(false);
-    const [error, setError] = useState("");
-    const [success, setSuccess] = useState("");
-   
-    const [showAddVideoForm, setShowAddVideoForm] = useState(false); // State to toggle add video form
-    const token = localStorage.getItem("token");
+  const { sectionId } = useParams();
+  const [videos, setVideos] = useState([]);
+  const [videoFile, setVideoFile] = useState(null);
+  const [videoName, setVideoName] = useState("");
+  const [videoDescription, setVideoDescription] = useState("");
+  const [videoImage, setVideoImage] = useState(null);
+  const [isUploading, setIsUploading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
+  const [showAddVideoForm, setShowAddVideoForm] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const token = localStorage.getItem("token");
 
+  useEffect(() => {
+    fetchVideos();
+  }, []);
 
-    useEffect(() => {
-        fetchVideos();
-    }, []);
-
-    async function fetchVideos() {
-        setIsLoading(true);
-        try {
-            const response = await axios.get(`http://localhost:8085/instructor/course/section/${sectionId}/lecture`, {
-                headers: {
-                    Authorization: `Bearer ${localStorage.getItem("token")}`
-                }
-            });
-            console.log(response.data)
-            setVideos(response.data)
-        } catch (error) {
-            setError("Failed to fetch videos. Showing static examples.");
-            setVideos({
-                
-            });
-        } finally {
-            setIsLoading(false);
+  async function fetchVideos() {
+    setIsLoading(true);
+    try {
+      const response = await axios.get(`http://localhost:8085/instructor/course/section/${sectionId}/lecture`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`
         }
+      });
+      setVideos(response.data);
+    } catch (error) {
+      setError("Failed to fetch videos. Showing static examples.");
+      setVideos([]);
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
+  const handleVideoUpload = async (e) => {
+    e.preventDefault();
+    if (!videoFile || !videoName.trim() || !videoDescription.trim() || !videoImage) {
+      setError("All fields are required.");
+      return;
     }
 
-    const handleVideoUpload = async (e) => {
-        e.preventDefault();
-        if (!videoFile || !videoName.trim() || !videoDescription.trim() || !videoImage) {
-            setError("All fields are required.");
-            return;
+    if (!videoFile.type.startsWith("video/")) {
+      setError("Please upload a valid video file.");
+      return;
+    }
+    if (videoFile.size > 100 * 1024 * 1024) {
+      setError("Video file size should not exceed 100MB.");
+      return;
+    }
+    if (videoImage.size > 5 * 1024 * 1024) {
+      setError("Image file size should not exceed 5MB.");
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("title", videoName);
+    formData.append("video", videoFile);
+    formData.append("description", videoDescription);
+    formData.append("image", videoImage);
+    
+    setIsUploading(true);
+    setError("");
+    setSuccess("");
+    
+    try {
+      const response = await axios.post(
+        `http://localhost:8085/instructor/course/section/${sectionId}/lecture`,
+        formData,
+        { 
+          headers: { 
+            "Content-Type": "multipart/form-data", 
+            Authorization: `Bearer ${token}` 
+          },
+          onUploadProgress: (progressEvent) => {
+            const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+            setUploadProgress(percentCompleted);
+          }
         }
+      );
 
-        if (!videoFile.type.startsWith("video/")) {
-            setError("Please upload a valid video file.");
-            return;
-        }
-        if (videoFile.size > 100 * 1024 * 1024) {
-            setError("Video file size should not exceed 100MB.");
-            return;
-        }
-        if (videoImage.size > 5 * 1024 * 1024) {
-            setError("Image file size should not exceed 5MB.");
-            return;
-        }
+      setSuccess("Video uploaded successfully!");
+      setVideoFile(null);
+      setVideoName("");
+      setVideoDescription("");
+      setVideoImage(null);
+      setShowAddVideoForm(false);
+      fetchVideos();
+    } catch (error) {
+      setError("Video upload failed. Please try again.");
+    } finally {
+      setIsUploading(false);
+      setUploadProgress(0);
+    }
+  };
 
-        const formData = new FormData();
-        formData.append("title", videoName);
-        formData.append("video", videoFile);
-        formData.append("description", videoDescription);
-        formData.append("image", videoImage);
-        console.log(formData)
-        setIsUploading(true);
-        setError("");
-        setSuccess("");
-        try {
-          const response =   await axios.post(
-                `http://localhost:8085/instructor/course/section/${sectionId}/lecture`,
-                formData,
-                { headers: { "Content-Type": "multipart/form-data", Authorization: `Bearer ${token}` } }
-            );
+  const [videoPreview, setVideoPreview] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null);
 
-            console.log(response)
-            setSuccess("Video uploaded successfully!");
-            setVideoFile(null);
-            setVideoName("");
-            setVideoDescription("");
-            setVideoImage(null);
-            setShowAddVideoForm(false); // Hide the form after successful upload
-            fetchVideos();
-        } catch (error) {
-            setError("Video upload failed. Please try again.");
-        } finally {
-            setIsUploading(false);
-        }
-    };
+  const handleVideoFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setVideoFile(file);
+      setVideoPreview(URL.createObjectURL(file));
+    }
+  };
 
-  
+  const handleImageFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setVideoImage(file);
+      setImagePreview(URL.createObjectURL(file));
+    }
+  };
 
-   
+  return (
+    <div className="max-w-6xl mx-auto p-6 space-y-8">
+      <div className="flex justify-between items-center">
+        <h1 className="text-3xl font-bold text-gray-800">Course Lectures</h1>
+        <button
+          onClick={() => setShowAddVideoForm(true)}
+          className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2 shadow-md"
+        >
+          <FaPlus size={14} />
+          Add Lecture
+        </button>
+      </div>
 
-    return (
-        <div className="max-w-4xl mx-auto p-6 space-y-6 bg-white shadow-lg rounded-xl">
-            <h1 className="text-2xl font-bold text-center">Upload Lecture Video</h1>
-            {error && <div className="text-red-500 bg-red-100 p-2 rounded z-100">{error}</div>}
-            {success && <div className="text-green-500 bg-green-100 p-2 rounded z-100">{success}</div>}
-
-            {/* Add Video Button */}
-            <div className="flex justify-end">
-                <button
-                    onClick={() => setShowAddVideoForm(true)}
-                    className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600"
-                >
-                    Add Video
-                </button>
-            </div>
-
-            {/* Add Video Form Modal */}
-            {showAddVideoForm && (
-                <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50">
-                    <div className="bg-white p-6 rounded-lg w-full max-w-md">
-                        <h2 className="text-xl font-semibold mb-4">Add New Video</h2>
-                        <div className="space-y-4">
-                            <input
-                                type="text"
-                                value={videoName}
-                                onChange={(e) => setVideoName(e.target.value)}
-                                placeholder="Enter video name"
-                                disabled={isUploading}
-                                className="w-full p-2 border rounded-lg"
-                            />
-                            <textarea
-                                value={videoDescription}
-                                onChange={(e) => setVideoDescription(e.target.value)}
-                                placeholder="Enter video description"
-                                disabled={isUploading}
-                                className="w-full p-2 border rounded-lg"
-                                rows={3}
-                            />
-                            <div>
-                                <label className="block text-sm font-medium mb-1">Video File</label>
-                                <input
-                                    type="file"
-                                    accept="video/*"
-                                    onChange={(e) => setVideoFile(e.target.files[0])}
-                                    disabled={isUploading}
-                                    className="w-full p-2 border rounded-lg"
-                                />
-                            </div>
-                            <div>
-                                <label className="block text-sm font-medium mb-1">Thumbnail Image</label>
-                                <input
-                                    type="file"
-                                    accept="image/*"
-                                    onChange={(e) => setVideoImage(e.target.files[0])}
-                                    disabled={isUploading}
-                                    className="w-full p-2 border rounded-lg"
-                                />
-                            </div>
-                            <div className="flex justify-end space-x-2">
-                                <button
-                                    onClick={() => setShowAddVideoForm(false)}
-                                    className="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600"
-                                >
-                                    Cancel
-                                </button>
-                                <button
-                                    onClick={handleVideoUpload}
-                                    disabled={isUploading || isLoading}
-                                    className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 disabled:bg-blue-300"
-                                >
-                                    {isUploading ? "Uploading..." : "Upload Video"}
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            )}
-
-            {/* Uploaded Videos Section */}
-            <div className="bg-white shadow rounded-lg">
-                <div className="p-4 border-b">
-                    <h2 className="text-xl font-semibold">Uploaded Videos</h2>
-                </div>
-                <div className="p-4">
-                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-                        {videos.map((video) => (
-                            <VideoCard
-                                key={video.id}
-                                title={video.title}
-                                videorul={video.videoUrl}
-                                description={video.description}
-                            />
-                        ))}
-                    </div>
-                </div>
-            </div>
-
-            {isUploading && <GiProgression value={50} />}
-            
+      {/* Notifications */}
+      {error && (
+        <div className="bg-red-50 border-l-4 border-red-500 p-4 rounded-md flex items-start">
+          <div className="text-red-500 flex-shrink-0 mr-3">
+            <FaTimes size={20} />
+          </div>
+          <div>
+            <p className="text-red-800 font-medium">Error</p>
+            <p className="text-red-700">{error}</p>
+          </div>
+          <button 
+            onClick={() => setError("")} 
+            className="ml-auto text-red-500 hover:text-red-700"
+          >
+            <FaTimes size={16} />
+          </button>
         </div>
-    );
+      )}
+      
+      {success && (
+        <div className="bg-green-50 border-l-4 border-green-500 p-4 rounded-md flex items-start">
+          <div className="text-green-500 flex-shrink-0 mr-3">
+            <FaUpload size={20} />
+          </div>
+          <div>
+            <p className="text-green-800 font-medium">Success</p>
+            <p className="text-green-700">{success}</p>
+          </div>
+          <button 
+            onClick={() => setSuccess("")} 
+            className="ml-auto text-green-500 hover:text-green-700"
+          >
+            <FaTimes size={16} />
+          </button>
+        </div>
+      )}
+
+      {/* Video grid */}
+      {isLoading ? (
+        <div className="py-20 flex justify-center">
+          <GiProgression className="animate-spin text-blue-500" size={48} />
+        </div>
+      ) : videos.length > 0 ? (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {videos.map((video) => (
+            <VideoCard
+              key={video.id}
+              title={video.title}
+              videorul={video.videoUrl}
+              description={video.description}
+              image={video.imageUrl || undefined}
+            />
+          ))}
+        </div>
+      ) : (
+        <div className="bg-gray-50 rounded-lg p-10 text-center">
+          <div className="text-gray-400 mb-3">
+            <FaUpload size={40} className="mx-auto" />
+          </div>
+          <h3 className="text-xl font-medium text-gray-700 mb-2">No lectures uploaded yet</h3>
+          <p className="text-gray-500 mb-4">Get started by adding your first lecture video</p>
+          <button
+            onClick={() => setShowAddVideoForm(true)}
+            className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+          >
+            Add Your First Lecture
+          </button>
+        </div>
+      )}
+
+      {/* Add Video Form Modal */}
+      {showAddVideoForm && (
+        <div className="fixed inset-0 bg-black/75 flex items-center justify-center z-50 backdrop-blur-sm">
+          <div className="bg-white p-6 rounded-xl w-full max-w-xl shadow-2xl">
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-2xl font-bold text-gray-800">Add New Lecture</h2>
+              <button
+                onClick={() => setShowAddVideoForm(false)}
+                className="text-gray-500 hover:text-gray-700"
+              >
+                <FaTimes size={20} />
+              </button>
+            </div>
+            
+            <form className="space-y-6">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Lecture Title</label>
+                <input
+                  type="text"
+                  value={videoName}
+                  onChange={(e) => setVideoName(e.target.value)}
+                  placeholder="Enter an engaging title for your lecture"
+                  disabled={isUploading}
+                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                />
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                <textarea
+                  value={videoDescription}
+                  onChange={(e) => setVideoDescription(e.target.value)}
+                  placeholder="Describe what students will learn in this lecture"
+                  disabled={isUploading}
+                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                  rows={4}
+                />
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Video File</label>
+                  <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center hover:border-blue-500 transition-colors">
+                    <input
+                      type="file"
+                      accept="video/*"
+                      onChange={handleVideoFileChange}
+                      disabled={isUploading}
+                      className="hidden"
+                      id="video-upload"
+                    />
+                    <label htmlFor="video-upload" className="cursor-pointer">
+                      {videoPreview ? (
+                        <div className="relative">
+                          <video 
+                            src={videoPreview} 
+                            className="w-full h-36 object-cover rounded" 
+                            controls={false}
+                          />
+                          <div className="absolute inset-0 flex items-center justify-center bg-black/30">
+                            <span className="text-white bg-blue-600 px-2 py-1 rounded text-xs">Change</span>
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="py-6">
+                          <FaUpload className="mx-auto text-gray-400 text-3xl mb-2" />
+                          <p className="text-sm text-gray-500">Click to upload video</p>
+                          <p className="text-xs text-gray-400 mt-1">MP4, WebM (max 100MB)</p>
+                        </div>
+                      )}
+                    </label>
+                  </div>
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Thumbnail Image</label>
+                  <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center hover:border-blue-500 transition-colors">
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleImageFileChange}
+                      disabled={isUploading}
+                      className="hidden"
+                      id="image-upload"
+                    />
+                    <label htmlFor="image-upload" className="cursor-pointer">
+                      {imagePreview ? (
+                        <div className="relative">
+                          <img 
+                            src={imagePreview} 
+                            alt="Thumbnail preview" 
+                            className="w-full h-36 object-cover rounded" 
+                          />
+                          <div className="absolute inset-0 flex items-center justify-center bg-black/30">
+                            <span className="text-white bg-blue-600 px-2 py-1 rounded text-xs">Change</span>
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="py-6">
+                          <FaUpload className="mx-auto text-gray-400 text-3xl mb-2" />
+                          <p className="text-sm text-gray-500">Click to upload thumbnail</p>
+                          <p className="text-xs text-gray-400 mt-1">JPG, PNG (max 5MB)</p>
+                        </div>
+                      )}
+                    </label>
+                  </div>
+                </div>
+              </div>
+              
+              {isUploading && (
+                <div className="mt-4">
+                  <p className="text-sm font-medium text-gray-700 mb-1">Uploading: {uploadProgress}%</p>
+                  <div className="w-full bg-gray-200 rounded-full h-2.5">
+                    <div 
+                      className="bg-blue-600 h-2.5 rounded-full transition-all duration-300" 
+                      style={{ width: `${uploadProgress}%` }}
+                    ></div>
+                  </div>
+                </div>
+              )}
+              
+              <div className="flex justify-end space-x-3 pt-4 border-t">
+                <button
+                  type="button"
+                  onClick={() => setShowAddVideoForm(false)}
+                  disabled={isUploading}
+                  className="px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-500 transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  onClick={handleVideoUpload}
+                  disabled={isUploading}
+                  className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors disabled:bg-blue-300 flex items-center gap-2"
+                >
+                  {isUploading ? (
+                    <>
+                      <GiProgression className="animate-spin" />
+                      Uploading...
+                    </>
+                  ) : (
+                    <>
+                      <FaUpload />
+                      Upload Lecture
+                    </>
+                  )}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+    </div>
+  );
 }
