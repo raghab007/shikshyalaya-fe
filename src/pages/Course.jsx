@@ -94,13 +94,6 @@ export default function Course() {
       );
     }
 
-    if (filters.searchTerm) {
-      filtered = filtered.filter((course) =>
-        course.courseName.toLowerCase().includes(filters.searchTerm.toLowerCase()) ||
-        course.courseDescription.toLowerCase().includes(filters.searchTerm.toLowerCase())
-      );
-    }
-
     return filtered;
   };
 
@@ -119,29 +112,17 @@ export default function Course() {
   };
 
   return (
-    <div className="bg-gradient-to-b from-indigo-50 to-blue-50 min-h-screen pb-12">
+    <div className="bg-gradient-to-b from-[#e8f1f8] to-[#f1f7fb] min-h-screen pb-12">
       {/* Hero Section */}
-      <div className="bg-gradient-to-r from-indigo-600 via-blue-600 to-purple-600 text-white py-16 px-4 relative overflow-hidden">
+      <div className="bg-gradient-to-r from-[#2e7dad] to-[#1c5f8f] text-white py-20 px-6 relative overflow-hidden">
         <div className="max-w-7xl mx-auto relative z-10">
-          <h1 className="text-5xl font-bold mb-4 tracking-tight">Our Courses</h1>
-          <p className="text-xl text-indigo-100 max-w-2xl">
-            Expand your horizons with our expertly curated learning experiences.
+          <h1 className="text-5xl font-bold mb-4 tracking-tight text-center">
+            Explore Our Courses
+          </h1>
+          <p className="text-xl text-blue-100 text-center max-w-2xl mx-auto">
+            Discover top-notch courses designed by industry experts. Learn new skills, enhance your
+            career, and achieve your goals with ease.
           </p>
-          <div className="mt-8 max-w-lg">
-            <div className="relative">
-              <input
-                type="text"
-                placeholder="Search for courses..."
-                className="w-full py-3 px-4 pr-10 rounded-lg border-0 shadow-lg focus:ring-2 focus:ring-indigo-400 text-gray-700"
-                onChange={(e) => handleFilterChange({ searchTerm: e.target.value })}
-              />
-              <div className="absolute right-3 top-3 text-gray-400">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                </svg>
-              </div>
-            </div>
-          </div>
         </div>
       </div>
 
@@ -150,12 +131,12 @@ export default function Course() {
         <div className="flex flex-col md:flex-row gap-6">
           {/* Filtering Section */}
           <div className="w-full md:w-1/4">
-            <div className="bg-white rounded-xl shadow-md p-5 sticky top-4 border border-indigo-100">
-              <div className="flex justify-between items-center mb-4 border-b border-indigo-100 pb-3">
-                <h2 className="text-xl font-semibold text-indigo-800">Filters</h2>
+            <div className="bg-white rounded-xl shadow-lg p-6 sticky top-4 border border-blue-100">
+              <div className="flex justify-between items-center mb-4 border-b border-blue-100 pb-3">
+                <h2 className="text-xl font-bold text-blue-800">Filters</h2>
                 <button
                   onClick={handleClearFilters}
-                  className="text-sm text-indigo-600 hover:text-indigo-800 font-medium flex items-center"
+                  className="text-sm text-blue-600 hover:text-blue-800 font-medium flex items-center"
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -171,10 +152,10 @@ export default function Course() {
           <div className="w-full md:w-3/4">
             {/* Results summary with sorting options */}
             {!loading && !error && (
-              <div className="mb-6 bg-white rounded-xl shadow-md p-4 border border-indigo-100">
+              <div className="mb-6 bg-white rounded-xl shadow-lg p-6 border border-blue-100">
                 <div className="flex flex-col sm:flex-row justify-between items-center">
                   <p className="text-gray-700 mb-3 sm:mb-0">
-                    <span className="font-semibold text-indigo-700">{courses.length}</span> courses found
+                    <span className="font-bold text-blue-800">{courses.length}</span> courses found
                   </p>
                   <div className="flex items-center">
                     <label htmlFor="sort" className="text-sm text-gray-600 mr-2">Sort by:</label>
@@ -182,7 +163,7 @@ export default function Course() {
                       id="sort"
                       value={sortOption}
                       onChange={(e) => handleSort(e.target.value)}
-                      className="bg-indigo-50 border border-indigo-100 text-indigo-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 p-2"
+                      className="bg-blue-50 border border-blue-100 text-blue-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2"
                     >
                       <option value="default">Featured</option>
                       <option value="price-low-high">Price: Low to High</option>
@@ -197,9 +178,9 @@ export default function Course() {
 
             {/* Loading state */}
             {loading ? (
-              <div className="flex flex-col justify-center items-center h-64 bg-white rounded-xl shadow-md p-6 border border-indigo-100">
-                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-500 mb-4"></div>
-                <p className="text-indigo-600 font-medium">Loading courses...</p>
+              <div className="flex flex-col justify-center items-center h-64 bg-white rounded-xl shadow-lg p-6 border border-blue-100">
+                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500 mb-4"></div>
+                <p className="text-blue-600 font-medium">Loading courses...</p>
               </div>
             ) : error ? (
               <div className="bg-red-50 border border-red-200 text-red-700 p-6 rounded-xl shadow-sm flex items-center justify-center">
@@ -218,15 +199,15 @@ export default function Course() {
                 </div>
               </div>
             ) : courses.length === 0 ? (
-              <div className="bg-indigo-50 border border-indigo-200 text-indigo-700 p-8 rounded-xl shadow-sm text-center">
-                <svg className="w-14 h-14 mx-auto mb-4 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <div className="bg-blue-50 border border-blue-200 text-blue-700 p-8 rounded-xl shadow-sm text-center">
+                <svg className="w-14 h-14 mx-auto mb-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
                 </svg>
-                <p className="text-xl font-semibold">No courses match your filters</p>
-                <p className="mt-2 text-indigo-600">Try adjusting your filter criteria to find more courses.</p>
+                <p className="text-xl font-bold">No courses match your filters</p>
+                <p className="mt-2 text-blue-600">Try adjusting your filter criteria to find more courses.</p>
                 <button 
                   onClick={handleClearFilters} 
-                  className="mt-4 bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-6 rounded-lg transition duration-200 shadow-md"
+                  className="mt-4 bg-blue-600 hover:bg-blue-700 text-white py-2 px-6 rounded-lg transition duration-200 shadow-md"
                 >
                   Clear all filters
                 </button>
@@ -256,14 +237,14 @@ export default function Course() {
             {/* Pagination */}
             {totalPages > 1 && !loading && !error && courses.length > 0 && (
               <div className="mt-10 flex justify-center">
-                <nav className="flex items-center bg-white px-4 py-3 rounded-xl shadow-md border border-indigo-100">
+                <nav className="flex items-center bg-white px-4 py-3 rounded-xl shadow-lg border border-blue-100">
                   <button
                     onClick={() => handlePageChange(Math.max(1, currentPage - 1))}
                     disabled={currentPage === 1}
                     className={`px-3 py-1.5 mr-2 rounded-lg flex items-center transition ${
                       currentPage === 1
                         ? "text-gray-400 cursor-not-allowed bg-gray-50"
-                        : "text-indigo-700 hover:bg-indigo-50"
+                        : "text-blue-700 hover:bg-blue-50"
                     }`}
                     aria-label="Previous page"
                   >
@@ -286,8 +267,8 @@ export default function Course() {
                           onClick={() => handlePageChange(pageNumber)}
                           className={`w-10 h-10 mx-1 rounded-lg transition duration-200 ${
                             currentPage === pageNumber
-                              ? "bg-indigo-600 text-white font-medium shadow-md"
-                              : "bg-white text-gray-700 hover:bg-indigo-50 hover:text-indigo-700"
+                              ? "bg-blue-600 text-white font-medium shadow-md"
+                              : "bg-white text-gray-700 hover:bg-blue-50 hover:text-blue-700"
                           }`}
                           aria-label={`Page ${pageNumber}`}
                           aria-current={currentPage === pageNumber ? "page" : undefined}
@@ -302,7 +283,7 @@ export default function Course() {
                     className={`px-3 py-1.5 ml-2 rounded-lg flex items-center transition ${
                       currentPage === totalPages
                         ? "text-gray-400 cursor-not-allowed bg-gray-50"
-                        : "text-indigo-700 hover:bg-indigo-50"
+                        : "text-blue-700 hover:bg-blue-50"
                     }`}
                     aria-label="Next page"
                   >

@@ -1,33 +1,118 @@
-
-import { FaTachometerAlt, FaBook, FaUserGraduate, FaCog, FaUsers, FaSignOutAlt, FaChartLine, FaMoneyBill } from 'react-icons/fa';
-import { Link } from 'react-router-dom';
-export default function Sidebar(){
+import { 
+    FaTachometerAlt, 
+    FaBook, 
+    FaUserGraduate, 
+    FaCog, 
+    FaUsers, 
+    FaSignOutAlt, 
+    FaChartLine, 
+    FaMoneyBill 
+  } from 'react-icons/fa';
+  import { Link, useLocation } from 'react-router-dom';
+  
+  export default function Sidebar() {
+    const location = useLocation();
+    
     return (
-            <div className="sticky top-0 flex-shrink-0 w-64 h-screen bg-pink-100 p-6 space-y-6 shadow-xl">
-                        <div className="flex items-center justify-center mb-8">
-                            <h2 className="text-black text-2xl font-bold">EduTrack</h2>
-                        </div>
-                        <nav className="space-y-2">
-                            <NavItem to="/instructor/" icon={<FaTachometerAlt />} label="Dashboard" />
-                            <NavItem to="/instructor/courses" icon={<FaBook />} label="Courses" />
-                            <NavItem to="/instructor/students" icon={<FaUserGraduate />} label="Students" />
-                            <NavItem to="/instructor/settings" icon={<FaCog />} label="Settings" />
-                            <NavItem to="/instructor/reports" icon={<FaChartLine />} label="FeedBakcs" />
-                            <NavItem to="/instructor/logout" icon={<FaSignOutAlt />} label="Logout" />
-                            <NavItem to={"/instructor/payment-history" } icon={<FaMoneyBill></FaMoneyBill>} label={"payment-history"}></NavItem>
-                        </nav>
-                    </div>
-    )
-}
-
-
-function NavItem({ to, icon, label }) {
-    return (
-        <Link
-            to={to}
-            className="flex items-center px-4 py-3 rounded-lg text-black hover:bg-blue-700 hover:text-white transition-all duration-200 transform hover:translate-x-2"
-        >
-            {icon} <span className="ml-3 font-medium">{label}</span>
-        </Link>
+      <div className="sticky top-0 flex-shrink-0 w-64 h-screen bg-gradient-to-b from-blue-50 to-blue-100 p-6 shadow-lg flex flex-col">
+        {/* Logo */}
+        <div className="mb-8">
+          <h2 className="text-blue-800 text-2xl font-bold flex items-center justify-center">
+            <span className="mr-2">📚</span>
+            Shikshyalaya
+          </h2>
+        </div>
+        
+        {/* Navigation Groups */}
+        <nav className="flex-1 flex flex-col space-y-6">
+          {/* Main Navigation */}
+          <div>
+            <h3 className="text-xs uppercase text-blue-500 font-semibold mb-2 px-4">Main</h3>
+            <div className="space-y-1">
+              <NavItem 
+                to="/instructor/" 
+                icon={<FaTachometerAlt />} 
+                label="Dashboard" 
+                isActive={location.pathname === "/instructor/"}
+              />
+              <NavItem 
+                to="/instructor/courses" 
+                icon={<FaBook />} 
+                label="Courses" 
+                isActive={location.pathname.includes("/instructor/courses")}
+              />
+              <NavItem 
+                to="/instructor/students" 
+                icon={<FaUserGraduate />} 
+                label="Students" 
+                isActive={location.pathname.includes("/instructor/students")}
+              />
+            </div>
+          </div>
+          
+          {/* Analytics */}
+          <div>
+            <h3 className="text-xs uppercase text-blue-500 font-semibold mb-2 px-4">Analytics</h3>
+            <div className="space-y-1">
+              <NavItem 
+                to="/instructor/reports" 
+                icon={<FaChartLine />} 
+                label="Feedback" 
+                isActive={location.pathname.includes("/instructor/reports")}
+              />
+              <NavItem 
+                to="/instructor/payment-history" 
+                icon={<FaMoneyBill />} 
+                label="Payment History" 
+                isActive={location.pathname.includes("/instructor/payment-history")}
+              />
+            </div>
+          </div>
+          
+          {/* Account */}
+          <div>
+            <h3 className="text-xs uppercase text-blue-500 font-semibold mb-2 px-4">Account</h3>
+            <div className="space-y-1">
+              <NavItem 
+                to="/instructor/settings" 
+                icon={<FaCog />} 
+                label="Settings" 
+                isActive={location.pathname.includes("/instructor/settings")}
+              />
+            </div>
+          </div>
+        </nav>
+        
+        {/* Logout (at bottom) */}
+        <div className="pt-6 border-t border-blue-200 mt-auto">
+          <NavItem 
+            to="/instructor/logout" 
+            icon={<FaSignOutAlt />} 
+            label="Logout" 
+            isActive={false}
+            className="text-blue-700 hover:bg-blue-200 hover:text-blue-900"
+          />
+        </div>
+      </div>
     );
-}
+  }
+  
+  function NavItem({ to, icon, label, isActive, className }) {
+    return (
+      <Link
+        to={to}
+        className={`
+          flex items-center px-4 py-2.5 rounded-lg transition-all duration-200
+          ${isActive 
+            ? "bg-blue-200 text-blue-900 font-medium" 
+            : "text-gray-700 hover:bg-blue-200 hover:text-blue-900"}
+          ${className || ""}
+        `}
+      >
+        <span className={`text-lg ${isActive ? "text-blue-700" : "text-blue-400"}`}>
+          {icon}
+        </span> 
+        <span className="ml-3 font-medium">{label}</span>
+      </Link>
+    );
+  }
