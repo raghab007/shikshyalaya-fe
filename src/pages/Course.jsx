@@ -5,22 +5,26 @@ import FilterSection from "../components/FilteringComponent.jsx";
 
 export default function Course() {
   const [courses, setCourses] = useState([]);
-  const [filteredCourses, setFilteredCourses] = useState([]);
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [itemsPerPage] = useState(6);
+  const [sortOption, setSortOption] = useState("default");
 
   useEffect(() => {
     async function getCourses() {
       try {
-        const response = await axios.get("http://localhost:8085/courses");
-        const updatedCourses = response.data;
-        console.log(updatedCourses);
-        setCourses(updatedCourses);
-        setFilteredCourses(updatedCourses);
-        setTotalPages(Math.ceil(updatedCourses.length / itemsPerPage));
+        setLoading(true);
+        const response = await axios.get("http://localhost:8085/courses", {
+          params: {
+            page: currentPage,
+            limit: itemsPerPage,
+          },
+        });
+        const { courses: fetchedCourses, totalPages: fetchedTotalPages } = response.data;
+        setCourses(fetchedCourses);
+        setTotalPages(fetchedTotalPages);
       } catch (error) {
         setError(true);
         console.error("Error fetching courses:", error);
@@ -29,16 +33,36 @@ export default function Course() {
       }
     }
     getCourses();
-  }, []);
+  }, [currentPage]); // Re-fetch data when currentPage changes
 
-  const indexOfLastCourse = currentPage * itemsPerPage;
-  const indexOfFirstCourse = indexOfLastCourse - itemsPerPage;
-  const currentCourses = filteredCourses.slice(indexOfFirstCourse, indexOfLastCourse);
+  const handleSort = (option) => {
+    setSortOption(option);
+    let sorted = [...courses];
+
+    switch (option) {
+      case "price-low-high":
+        sorted.sort((a, b) => a.coursePrice - b.coursePrice);
+        break;
+      case "price-high-low":
+        sorted.sort((a, b) => b.coursePrice - a.coursePrice);
+        break;
+      case "name-a-z":
+        sorted.sort((a, b) => a.courseName.localeCompare(b.courseName));
+        break;
+      case "name-z-a":
+        sorted.sort((a, b) => b.courseName.localeCompare(a.courseName));
+        break;
+      default:
+        // Keep original order
+        break;
+    }
+
+    setCourses(sorted);
+  };
 
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
-    // Scroll to top when changing pages for better UX
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const applyFilters = (courses, filters) => {
@@ -70,107 +94,183 @@ export default function Course() {
       );
     }
 
+    if (filters.searchTerm) {
+      filtered = filtered.filter((course) =>
+        course.courseName.toLowerCase().includes(filters.searchTerm.toLowerCase()) ||
+        course.courseDescription.toLowerCase().includes(filters.searchTerm.toLowerCase())
+      );
+    }
+
     return filtered;
   };
 
   const handleFilterChange = (filters) => {
     const filtered = applyFilters(courses, filters);
-    setFilteredCourses(filtered);
+    setCourses(filtered);
     setTotalPages(Math.ceil(filtered.length / itemsPerPage));
     setCurrentPage(1);
   };
 
+  const handleClearFilters = () => {
+    setCourses(courses);
+    setTotalPages(Math.ceil(courses.length / itemsPerPage));
+    setCurrentPage(1);
+    setSortOption("default");
+  };
+
   return (
-    <div className="bg-gradient-to-b from-gray-50 to-gray-100 min-h-screen">
+    <div className="bg-gradient-to-b from-indigo-50 to-blue-50 min-h-screen pb-12">
       {/* Hero Section */}
-      <div className="bg-gradient-to-r from-blue-600 to-indigo-700 text-white py-12 px-4">
-        <div className="max-w-7xl mx-auto">
-          <h1 className="text-4xl font-bold mb-2">Our Courses</h1>
-          <p className="text-xl text-blue-100">
-            Expand your horizons with our expertly curated learning experiences
+      <div className="bg-gradient-to-r from-indigo-600 via-blue-600 to-purple-600 text-white py-16 px-4 relative overflow-hidden">
+        <div className="max-w-7xl mx-auto relative z-10">
+          <h1 className="text-5xl font-bold mb-4 tracking-tight">Our Courses</h1>
+          <p className="text-xl text-indigo-100 max-w-2xl">
+            Expand your horizons with our expertly curated learning experiences.
           </p>
+          <div className="mt-8 max-w-lg">
+            <div className="relative">
+              <input
+                type="text"
+                placeholder="Search for courses..."
+                className="w-full py-3 px-4 pr-10 rounded-lg border-0 shadow-lg focus:ring-2 focus:ring-indigo-400 text-gray-700"
+                onChange={(e) => handleFilterChange({ searchTerm: e.target.value })}
+              />
+              <div className="absolute right-3 top-3 text-gray-400">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 py-8">
         <div className="flex flex-col md:flex-row gap-6">
-          {/* Filtering Section - Styled as a card */}
-          <div className="w-full md:w-1/4 bg-white rounded-lg shadow-md p-4 h-fit sticky top-4">
-            <h2 className="text-xl font-semibold mb-4 text-gray-800 border-b pb-2">Filters</h2>
-            <FilterSection onFilterChange={handleFilterChange} />
+          {/* Filtering Section */}
+          <div className="w-full md:w-1/4">
+            <div className="bg-white rounded-xl shadow-md p-5 sticky top-4 border border-indigo-100">
+              <div className="flex justify-between items-center mb-4 border-b border-indigo-100 pb-3">
+                <h2 className="text-xl font-semibold text-indigo-800">Filters</h2>
+                <button
+                  onClick={handleClearFilters}
+                  className="text-sm text-indigo-600 hover:text-indigo-800 font-medium flex items-center"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                  Clear all
+                </button>
+              </div>
+              <FilterSection onFilterChange={handleFilterChange} />
+            </div>
           </div>
 
           {/* Courses Section */}
           <div className="w-full md:w-3/4">
-            {/* Results summary */}
+            {/* Results summary with sorting options */}
             {!loading && !error && (
-              <div className="mb-4 bg-white rounded-lg shadow-sm p-4 flex justify-between items-center">
-                <p className="text-gray-700">
-                  <span className="font-semibold">{filteredCourses.length}</span> courses found
-                </p>
-                <div className="text-sm text-gray-500">
-                  Showing {indexOfFirstCourse + 1}-{Math.min(indexOfLastCourse, filteredCourses.length)} of {filteredCourses.length}
+              <div className="mb-6 bg-white rounded-xl shadow-md p-4 border border-indigo-100">
+                <div className="flex flex-col sm:flex-row justify-between items-center">
+                  <p className="text-gray-700 mb-3 sm:mb-0">
+                    <span className="font-semibold text-indigo-700">{courses.length}</span> courses found
+                  </p>
+                  <div className="flex items-center">
+                    <label htmlFor="sort" className="text-sm text-gray-600 mr-2">Sort by:</label>
+                    <select
+                      id="sort"
+                      value={sortOption}
+                      onChange={(e) => handleSort(e.target.value)}
+                      className="bg-indigo-50 border border-indigo-100 text-indigo-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 p-2"
+                    >
+                      <option value="default">Featured</option>
+                      <option value="price-low-high">Price: Low to High</option>
+                      <option value="price-high-low">Price: High to Low</option>
+                      <option value="name-a-z">Name: A to Z</option>
+                      <option value="name-z-a">Name: Z to A</option>
+                    </select>
+                  </div>
                 </div>
               </div>
             )}
 
             {/* Loading state */}
             {loading ? (
-              <div className="flex flex-col justify-center items-center h-64 bg-white rounded-lg shadow-sm p-6">
-                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500 mb-4"></div>
-                <p className="text-gray-600">Loading courses...</p>
+              <div className="flex flex-col justify-center items-center h-64 bg-white rounded-xl shadow-md p-6 border border-indigo-100">
+                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-500 mb-4"></div>
+                <p className="text-indigo-600 font-medium">Loading courses...</p>
               </div>
             ) : error ? (
-              <div className="bg-red-50 border border-red-200 text-red-700 p-4 rounded-lg flex items-center">
-                <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd"></path>
+              <div className="bg-red-50 border border-red-200 text-red-700 p-6 rounded-xl shadow-sm flex items-center justify-center">
+                <svg className="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
-                <p>Failed to load courses. Please try again later.</p>
+                <div>
+                  <p className="font-medium">Failed to load courses</p>
+                  <p className="text-sm mt-1">Please try again later or contact support if the problem persists.</p>
+                  <button 
+                    onClick={() => window.location.reload()} 
+                    className="mt-3 text-sm bg-red-100 hover:bg-red-200 text-red-800 py-1 px-4 rounded-lg transition duration-200"
+                  >
+                    Retry
+                  </button>
+                </div>
               </div>
-            ) : currentCourses.length === 0 ? (
-              <div className="bg-yellow-50 border border-yellow-200 text-yellow-700 p-6 rounded-lg text-center">
-                <svg className="w-12 h-12 mx-auto mb-4" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd"></path>
+            ) : courses.length === 0 ? (
+              <div className="bg-indigo-50 border border-indigo-200 text-indigo-700 p-8 rounded-xl shadow-sm text-center">
+                <svg className="w-14 h-14 mx-auto mb-4 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
                 </svg>
-                <p className="text-lg font-semibold">No courses match your filters</p>
-                <p className="mt-1">Try adjusting your filter criteria to find more courses.</p>
+                <p className="text-xl font-semibold">No courses match your filters</p>
+                <p className="mt-2 text-indigo-600">Try adjusting your filter criteria to find more courses.</p>
+                <button 
+                  onClick={handleClearFilters} 
+                  className="mt-4 bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-6 rounded-lg transition duration-200 shadow-md"
+                >
+                  Clear all filters
+                </button>
               </div>
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {currentCourses.map((course) => (
-                  <div className="transform transition hover:-translate-y-1 hover:shadow-lg" key={course.courseID}>
+                {courses.map((course) => (
+                  <div 
+                    className="transform transition duration-300 hover:-translate-y-2 hover:shadow-xl" 
+                    key={course.courseID}
+                  >
                     <BasicCard
                       courseId={course.courseID}
                       price={course.coursePrice}
                       description={course.courseDescription}
                       title={course.courseName}
                       imageSrc={course.imageUrl}
+                      difficulty={course.difficulty}
+                      duration={course.duration}
+                      category={course.category}
                     />
                   </div>
                 ))}
               </div>
             )}
 
-            {/* Enhanced Pagination */}
-            {totalPages > 1 && !loading && !error && (
-              <div className="mt-8 flex justify-center">
-                <nav className="flex items-center bg-white px-3 py-2 rounded-md shadow-sm">
+            {/* Pagination */}
+            {totalPages > 1 && !loading && !error && courses.length > 0 && (
+              <div className="mt-10 flex justify-center">
+                <nav className="flex items-center bg-white px-4 py-3 rounded-xl shadow-md border border-indigo-100">
                   <button
                     onClick={() => handlePageChange(Math.max(1, currentPage - 1))}
                     disabled={currentPage === 1}
-                    className={`px-2 py-1 mr-2 rounded-md ${
+                    className={`px-3 py-1.5 mr-2 rounded-lg flex items-center transition ${
                       currentPage === 1
-                        ? "text-gray-400 cursor-not-allowed"
-                        : "text-blue-700 hover:bg-blue-50"
+                        ? "text-gray-400 cursor-not-allowed bg-gray-50"
+                        : "text-indigo-700 hover:bg-indigo-50"
                     }`}
+                    aria-label="Previous page"
                   >
-                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clipRule="evenodd"></path>
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                     </svg>
                   </button>
-                  
-                  {/* Show limited page numbers with ellipsis for better UX */}
                   {Array.from({ length: totalPages }, (_, index) => index + 1)
                     .filter(num => 
                       num === 1 || 
@@ -184,28 +284,30 @@ export default function Course() {
                         )}
                         <button
                           onClick={() => handlePageChange(pageNumber)}
-                          className={`px-3 py-1 mx-1 rounded-md transition ${
+                          className={`w-10 h-10 mx-1 rounded-lg transition duration-200 ${
                             currentPage === pageNumber
-                              ? "bg-blue-500 text-white font-medium"
-                              : "bg-white text-gray-700 hover:bg-gray-100"
+                              ? "bg-indigo-600 text-white font-medium shadow-md"
+                              : "bg-white text-gray-700 hover:bg-indigo-50 hover:text-indigo-700"
                           }`}
+                          aria-label={`Page ${pageNumber}`}
+                          aria-current={currentPage === pageNumber ? "page" : undefined}
                         >
                           {pageNumber}
                         </button>
                       </React.Fragment>
                     ))}
-                  
                   <button
                     onClick={() => handlePageChange(Math.min(totalPages, currentPage + 1))}
                     disabled={currentPage === totalPages}
-                    className={`px-2 py-1 ml-2 rounded-md ${
+                    className={`px-3 py-1.5 ml-2 rounded-lg flex items-center transition ${
                       currentPage === totalPages
-                        ? "text-gray-400 cursor-not-allowed"
-                        : "text-blue-700 hover:bg-blue-50"
+                        ? "text-gray-400 cursor-not-allowed bg-gray-50"
+                        : "text-indigo-700 hover:bg-indigo-50"
                     }`}
+                    aria-label="Next page"
                   >
-                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd"></path>
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                     </svg>
                   </button>
                 </nav>
