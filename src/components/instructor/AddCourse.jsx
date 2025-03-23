@@ -16,6 +16,7 @@ function AddCourse() {
             try {
                 const response = await axios.get("http://localhost:8085/course/course_category");
                 const categories = response.data;
+                console.log(categories)
                 setAllCategories(categories);
                 setCourseCategory(categories[0]?.categoryId || "");
                 setIsLoading(false);
@@ -40,6 +41,28 @@ function AddCourse() {
             return;
         }
 
+        
+        console.log(courseCategory)
+        console.log(courseCategory)
+        console.log(courseCategory)
+        console.log(courseCategory)
+        console.log(courseCategory)
+        console.log(courseCategory)
+        console.log(courseCategory)
+        console.log(courseCategory)
+        console.log(courseCategory)
+        console.log(courseCategory)
+        console.log(courseCategory)
+        console.log(courseCategory)
+        console.log(courseCategory)
+        console.log(courseCategory)
+        console.log(courseCategory)
+        console.log(courseCategory)
+        console.log(courseCategory)
+        console.log(courseCategory)
+        console.log(courseCategory)
+        console.log(courseCategory)
+        console.log(courseCategory)
         const formData = new FormData();
         formData.append("categoryId", courseCategory);
         formData.append("courseName", name);
@@ -121,7 +144,7 @@ function AddCourse() {
                         className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     >
                         {allCategories.map((category) => (
-                            <option key={category.categoryId} value={category.categoryId}>
+                            <option key={category.categoryId} value={category.courseCategoryId}>
                                 {category.courseCategoryName}
                             </option>
                         ))}

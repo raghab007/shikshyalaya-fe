@@ -9,7 +9,6 @@ import {
   FaCog, 
   FaSignOutAlt, 
   FaGraduationCap,
-  FaWallet,
   FaChartLine
 } from "react-icons/fa";
 import axios from "axios";
@@ -88,23 +87,16 @@ const OverviewTab = ({ state, courses }) => (
           </ul>
         </div>
         <div className="bg-green-50 p-4 rounded-lg border border-green-100">
-          <h3 className="text-lg font-medium text-green-800">Wallet Summary</h3>
+          <h3 className="text-lg font-medium text-green-800">Recent Transactions</h3>
           <div className="mt-3">
-            <div className="flex justify-between items-center">
-              <span className="text-gray-600">Balance:</span>
-              <span className="text-2xl font-bold text-green-700">NPR 5000</span>
-            </div>
-            <div className="mt-4">
-              <h4 className="text-sm font-medium text-gray-600">Recent Transactions</h4>
-              <ul className="mt-2 space-y-2 text-sm">
-                {courses.slice(0, 2).map((course) => (
-                  <li key={course.courseID} className="flex justify-between">
-                    <span>{course.courseName}</span>
-                    <span className="font-medium">NPR {course.coursePrice}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
+            <ul className="mt-2 space-y-2 text-sm">
+              {courses.slice(0, 2).map((course) => (
+                <li key={course.courseID} className="flex justify-between">
+                  <span>{course.courseName}</span>
+                  <span className="font-medium">NPR {course.coursePrice}</span>
+                </li>
+              ))}
+            </ul>
           </div>
         </div>
       </div>
@@ -194,16 +186,12 @@ const CoursesTab = ({ courses }) => (
   </div>
 );
 
-// WalletTab Component
-const WalletTab = ({ courses }) => (
+// TransactionsTab Component
+const TransactionsTab = ({ courses }) => (
   <div className="bg-white rounded-xl shadow-md p-6">
     <h2 className="text-xl font-bold mb-6 flex items-center">
-      <FaWallet className="text-blue-500 mr-2" /> Wallet & Transactions
+      Transactions
     </h2>
-    <div className="bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg p-6 text-white mb-6">
-      <h3 className="text-lg font-medium mb-2">Wallet Balance</h3>
-      <p className="text-3xl font-bold">NPR 5000</p>
-    </div>
     <div>
       <h3 className="text-lg font-medium mb-4">Transaction History</h3>
       <div className="overflow-x-auto">
@@ -356,22 +344,14 @@ const UserProfile = () => {
     return null;
   }
 
-  if (error) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-100">
-        <h1 className="text-3xl text-red-500">{error}</h1>
-      </div>
-    );
-  }
-
   const renderTabContent = () => {
     switch (activeTab) {
       case "overview":
         return <OverviewTab state={state} courses={courses} />;
       case "courses":
         return <CoursesTab courses={courses} />;
-      case "wallet":
-        return <WalletTab courses={courses} />;
+      case "transactions":
+        return <TransactionsTab courses={courses} />;
       case "settings":
         return <SettingsTab state={state} />;
       default:
@@ -415,10 +395,10 @@ const UserProfile = () => {
                   onClick={() => setActiveTab("courses")}
                 />
                 <NavItem 
-                  icon={<FaWallet className="text-blue-500" />} 
-                  label="Wallet" 
-                  isActive={activeTab === "wallet"}
-                  onClick={() => setActiveTab("wallet")}
+                  icon={<FaChartLine className="text-blue-500" />} 
+                  label="Transactions" 
+                  isActive={activeTab === "transactions"}
+                  onClick={() => setActiveTab("transactions")}
                 />
                 <NavItem 
                   icon={<FaCog className="text-blue-500" />} 
@@ -432,6 +412,12 @@ const UserProfile = () => {
           
           {/* Main Content Area */}
           <div className="md:col-span-3">
+            {error && (
+              <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-6" role="alert">
+                <strong className="font-bold">Error:</strong>
+                <span className="block sm:inline"> {error}</span>
+              </div>
+            )}
             {renderTabContent()}
           </div>
         </div>

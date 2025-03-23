@@ -8,6 +8,7 @@ function ChatPage() {
   const messageRef = useRef();
   const chatContainerRef = useRef();
   const {courseId} = useParams()
+  
   console.log("Course id")
   console.log(courseId)
   // Auto-scroll to bottom when new messages arrive
@@ -61,8 +62,8 @@ function ChatPage() {
     if (ws && ws.readyState === WebSocket.OPEN) {
       const msg = messageRef.current.value.trim();
       if (msg) {
-        ws.send(JSON.stringify({ type: "message", message: msg, roomcode: courseId }));
-        setMessages((prevMessages) => [...prevMessages, { text: msg, sender: "user" }]);
+        ws.send(JSON.stringify({ type: "message", message: msg, roomcode: courseId}));
+        setMessages((prevMessages) => [...prevMessages, { text: msg, seder: "user" }]);
         messageRef.current.value = "";
       }
     } else {

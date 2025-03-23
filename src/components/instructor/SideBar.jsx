@@ -13,6 +13,10 @@ import {
   export default function Sidebar() {
     const location = useLocation();
     
+    function logout(){
+      localStorage.removeItem("token");
+      window.location.href = "/login"
+    }
     return (
       <div className="sticky top-0 flex-shrink-0 w-64 h-screen bg-gradient-to-b from-blue-50 to-blue-100 p-6 shadow-lg flex flex-col">
         {/* Logo */}
@@ -85,13 +89,7 @@ import {
         
         {/* Logout (at bottom) */}
         <div className="pt-6 border-t border-blue-200 mt-auto">
-          <NavItem 
-            to="/instructor/logout" 
-            icon={<FaSignOutAlt />} 
-            label="Logout" 
-            isActive={false}
-            className="text-blue-700 hover:bg-blue-200 hover:text-blue-900"
-          />
+          <button onClick={logout} className='text-black'>Logout</button>
         </div>
       </div>
     );

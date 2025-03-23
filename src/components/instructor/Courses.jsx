@@ -30,6 +30,7 @@ function Courses() {
             Authorization: "Bearer " + localStorage.getItem("token")
           }
         });
+        console.log(response.data);
         setCourses(response.data);
         setError(null);
       } catch (error) {
@@ -103,7 +104,6 @@ function Courses() {
 
   return (
     <main className="min-h-screen bg-gradient-to-br from-orange-50 to-orange-100 pb-12">
-   
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-8">
         {/* Action bar */}
         <div className="flex flex-col sm:flex-row justify-between items-center gap-4 mb-8 bg-white rounded-xl p-4 shadow-sm">
@@ -176,7 +176,7 @@ function Courses() {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
               {currentCourses.map((course) => (
                 <div
-                  key={course.courseId}
+                  key={course.courseID}
                   className="bg-white border border-gray-100 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden group"
                 >
                   <div className="relative h-48 w-full overflow-hidden">
@@ -208,13 +208,13 @@ function Courses() {
                         <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                         </svg>
-                        {course.duration || "Not specified"}
+                        {course.courseDuration || "Not specified"}
                       </span>
                       <span className="flex items-center ml-4">
                         <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
                         </svg>
-                        {course.enrollments || 0} students
+                        {course.enrollments ? course.enrollments.length : 0} students
                       </span>
                     </div>
                     <Link

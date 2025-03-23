@@ -4,9 +4,12 @@ import Chart from 'chart.js/auto';
 import axios from "axios";
 
 const Dashboard = () => {
-  // Static data for courses, enrollments, notifications, and events
-  const [courses,setCourses] = useState(null);
+  // State for total students and courses
+  const [totalStudents, setTotalStudents] = useState(0);
+  const [totalCourses, setTotalCourses] = useState(0);
 
+  // Static data for courses, enrollments, notifications, and events
+  const [courses, setCourses] = useState([]);
   const [recentEnrollments] = useState([
     { id: 1, studentName: "John Doe", studentAvatar: "https://via.placeholder.com/40", courseName: "React Basics" },
     { id: 2, studentName: "Jane Smith", studentAvatar: "https://via.placeholder.com/40", courseName: "Advanced JavaScript" },
@@ -32,14 +35,11 @@ const Dashboard = () => {
   const studentChartRef = useRef(null);
   const revenueChartRef = useRef(null);
   const progressChartRef = useRef(null);
-  
+
   // Chart instances
   const [studentChart, setStudentChart] = useState(null);
   const [revenueChart, setRevenueChart] = useState(null);
   const [progressChart, setProgressChart] = useState(null);
-
-  const totalStudents = 1
-  const totalRevenue = 2;
 
   // Format number with commas
   const formatNumber = (num) => {
@@ -63,176 +63,162 @@ const Dashboard = () => {
   const PROGRESS_COLORS = ["#FF6384", "#36A2EB", "#4CAF50"];
   const COURSE_COLORS = ["#4285F4", "#EA4335", "#FBBC05", "#34A853", "#8e24aa", "#16a085"];
 
+  // Fetch total students and courses
+  useEffect(() => {
+    async function fetchStats() {
+      try {
+        const response = await axios.get("http://localhost:8085/instructor/courses/stats", {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        });
+        setTotalStudents(response.data.TotalStudents);
+        setTotalCourses(response.data.TotalCourses);
+      } catch (error) {
+        console.error("Error fetching stats:", error);
+      }
+    }
+
+    fetchStats();
+  }, []);
+
+  // Fetch courses
+  useEffect(() => {
+    async function fetchCourses() {
+      try {
+        const response = await axios.get("http://localhost:8085/instructor/course", {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        });
+        setCourses(response.data);
+      } catch (error) {
+        console.error("Error fetching courses:", error);
+      }
+    }
+
+    fetchCourses();
+  }, []);
+
   // Initialize Charts
   useEffect(() => {
-    // Students by Course Bar Chart
-    if (studentChartRef.current) {
-      // Destroy existing chart if it exists
-      if (studentChart) {
-        studentChart.destroy();
-      }
+    if (courses.length > 0) {
+      // Students by Course Bar Chart
+      if (studentChartRef.current) {
+        if (studentChart) studentChart.destroy();
 
-      const ctx = studentChartRef.current.getContext('2d');
-      const newStudentChart = new Chart(ctx, {
-        type: 'bar',
-        data: {
-          labels: courses.map(course => course.courseName),
-          datasets: [{
-            label: 'Number of Students',
-            data: courses.map(course => course.students),
-            backgroundColor: '#4285F4',
-            borderColor: '#3367d6',
-            borderWidth: 1,
-            borderRadius: 4,
-            barPercentage: 0.6,
-          }]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: {
-            legend: {
-              display: false,
-            },
-            tooltip: {
-              callbacks: {
-                label: function(context) {
-                  return `${context.raw} students`;
-                }
-              }
-            }
+        const ctx = studentChartRef.current.getContext('2d');
+        const newStudentChart = new Chart(ctx, {
+          type: 'bar',
+          data: {
+            labels: courses.map(course => course.courseName),
+            datasets: [{
+              label: 'Number of Students',
+              data: courses.map(course => course.students),
+              backgroundColor: '#4285F4',
+              borderColor: '#3367d6',
+              borderWidth: 1,
+              borderRadius: 4,
+              barPercentage: 0.6,
+            }]
           },
-          scales: {
-            y: {
-              beginAtZero: true,
-              grid: {
-                drawBorder: false,
-              }
-            }
-          }
-        }
-      });
-      setStudentChart(newStudentChart);
-    }
-
-    // Revenue by Course Pie Chart
-    if (revenueChartRef.current) {
-      // Destroy existing chart if it exists
-      if (revenueChart) {
-        revenueChart.destroy();
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: { display: false },
+              tooltip: {
+                callbacks: {
+                  label: (context) => `${context.raw} students`,
+                },
+              },
+            },
+            scales: {
+              y: { beginAtZero: true, grid: { drawBorder: false } },
+            },
+          },
+        });
+        setStudentChart(newStudentChart);
       }
 
-      const ctx = revenueChartRef.current.getContext('2d');
-      const newRevenueChart = new Chart(ctx, {
-        type: 'pie',
-        data: {
-          labels: courses.map(course => course.courseName),
-          datasets: [{
-            data: courses.map(course => course.coursePrice * course.students),
-            backgroundColor: COURSE_COLORS.slice(0, courses.length),
-            borderWidth: 1,
-            borderColor: '#fff'
-          }]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: {
-            legend: {
-              position: 'bottom',
-              labels: {
-                boxWidth: 12,
-                padding: 15
-              }
-            },
-            tooltip: {
-              callbacks: {
-                label: function(context) {
-                  const value = context.raw;
-                  const total = context.dataset.data.reduce((a, b) => a + b, 0);
-                  const percentage = Math.round((value / total) * 100);
-                  return `₹${formatNumber(value)} (${percentage}%)`;
-                }
-              }
-            }
-          }
-        }
-      });
-      setRevenueChart(newRevenueChart);
-    }
+      // Revenue by Course Pie Chart
+      if (revenueChartRef.current) {
+        if (revenueChart) revenueChart.destroy();
 
-    // Course Progress Doughnut Chart
-    if (progressChartRef.current) {
-      // Destroy existing chart if it exists
-      if (progressChart) {
-        progressChart.destroy();
+        const ctx = revenueChartRef.current.getContext('2d');
+        const newRevenueChart = new Chart(ctx, {
+          type: 'pie',
+          data: {
+            labels: courses.map(course => course.courseName),
+            datasets: [{
+              data: courses.map(course => course.coursePrice * course.students),
+              backgroundColor: COURSE_COLORS.slice(0, courses.length),
+              borderWidth: 1,
+              borderColor: '#fff',
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: { position: 'bottom', labels: { boxWidth: 12, padding: 15 } },
+              tooltip: {
+                callbacks: {
+                  label: (context) => {
+                    const value = context.raw;
+                    const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                    const percentage = Math.round((value / total) * 100);
+                    return `₹${formatNumber(value)} (${percentage}%)`;
+                  },
+                },
+              },
+            },
+          },
+        });
+        setRevenueChart(newRevenueChart);
       }
 
-      const ctx = progressChartRef.current.getContext('2d');
-      const newProgressChart = new Chart(ctx, {
-        type: 'doughnut',
-        data: {
-          labels: progressData.map(item => item.name),
-          datasets: [{
-            data: progressData.map(item => item.value),
-            backgroundColor: PROGRESS_COLORS,
-            borderWidth: 1,
-            borderColor: '#fff'
-          }]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          cutout: '60%',
-          plugins: {
-            legend: {
-              position: 'bottom',
-              labels: {
-                boxWidth: 12,
-                padding: 15
-              }
+      // Course Progress Doughnut Chart
+      if (progressChartRef.current) {
+        if (progressChart) progressChart.destroy();
+
+        const ctx = progressChartRef.current.getContext('2d');
+        const newProgressChart = new Chart(ctx, {
+          type: 'doughnut',
+          data: {
+            labels: progressData.map(item => item.name),
+            datasets: [{
+              data: progressData.map(item => item.value),
+              backgroundColor: PROGRESS_COLORS,
+              borderWidth: 1,
+              borderColor: '#fff',
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            cutout: '60%',
+            plugins: {
+              legend: { position: 'bottom', labels: { boxWidth: 12, padding: 15 } },
+              tooltip: {
+                callbacks: {
+                  label: (context) => `${context.raw}%`,
+                },
+              },
             },
-            tooltip: {
-              callbacks: {
-                label: function(context) {
-                  return `${context.raw}%`;
-                }
-              }
-            }
-          }
-        }
-      });
-      setProgressChart(newProgressChart);
+          },
+        });
+        setProgressChart(newProgressChart);
+      }
     }
 
-    // Cleanup function
+    // Cleanup
     return () => {
       if (studentChart) studentChart.destroy();
       if (revenueChart) revenueChart.destroy();
       if (progressChart) progressChart.destroy();
     };
-  }, []);
-
-  useEffect(function (){
-    async function getCourses() {
-      const response = await axios.get("http://localhost:8085/instructor/course", {
-        headers:{
-          Authorization:`Bearer ${localStorage.getItem("token")}`
-        }
-      })
-      setCourses(response.data)
-     
-    }
-    getCourses()
-   
-  },[])
-
-  if(!courses){
-    return <>
-    
-      <h1>Loading courses...</h1>
-    </>
-  }
+  }, [courses]);
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -242,7 +228,7 @@ const Dashboard = () => {
           <div className="flex justify-between items-center">
             <h1 className="text-2xl font-bold text-gray-800">Instructor Dashboard</h1>
             <div className="flex items-center space-x-4">
-              <button 
+              <button
                 className="relative p-2 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors duration-200"
                 onClick={() => setShowNotificationsModal(true)}
               >
@@ -262,6 +248,7 @@ const Dashboard = () => {
       <main className="max-w-7xl mx-auto py-6 px-6">
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          {/* Total Courses Card */}
           <div className="bg-white rounded-lg shadow p-6 transition-all duration-300 hover:shadow-lg transform hover:-translate-y-1">
             <div className="flex items-center space-x-4">
               <div className="p-3 bg-blue-100 rounded-lg">
@@ -269,10 +256,12 @@ const Dashboard = () => {
               </div>
               <div>
                 <p className="text-sm text-gray-500 mb-1">Total Courses</p>
-                <p className="text-2xl font-bold text-gray-800">{courses.length}</p>
+                <p className="text-2xl font-bold text-gray-800">{formatNumber(totalCourses)}</p>
               </div>
             </div>
           </div>
+
+          {/* Total Students Card */}
           <div className="bg-white rounded-lg shadow p-6 transition-all duration-300 hover:shadow-lg transform hover:-translate-y-1">
             <div className="flex items-center space-x-4">
               <div className="p-3 bg-green-100 rounded-lg">
@@ -284,6 +273,8 @@ const Dashboard = () => {
               </div>
             </div>
           </div>
+
+          {/* Total Revenue Card */}
           <div className="bg-white rounded-lg shadow p-6 transition-all duration-300 hover:shadow-lg transform hover:-translate-y-1">
             <div className="flex items-center space-x-4">
               <div className="p-3 bg-purple-100 rounded-lg">
@@ -291,10 +282,12 @@ const Dashboard = () => {
               </div>
               <div>
                 <p className="text-sm text-gray-500 mb-1">Total Revenue</p>
-                <p className="text-2xl font-bold text-gray-800">₹{formatNumber(totalRevenue)}</p>
+                <p className="text-2xl font-bold text-gray-800">₹{formatNumber(5000)}</p>
               </div>
             </div>
           </div>
+
+          {/* Avg. Revenue/Student Card */}
           <div className="bg-white rounded-lg shadow p-6 transition-all duration-300 hover:shadow-lg transform hover:-translate-y-1">
             <div className="flex items-center space-x-4">
               <div className="p-3 bg-amber-100 rounded-lg">
@@ -302,7 +295,7 @@ const Dashboard = () => {
               </div>
               <div>
                 <p className="text-sm text-gray-500 mb-1">Avg. Revenue/Student</p>
-                <p className="text-2xl font-bold text-gray-800">₹{formatNumber(Math.round(totalRevenue / totalStudents))}</p>
+                <p className="text-2xl font-bold text-gray-800">₹{formatNumber(Math.round(5000 / totalStudents))}</p>
               </div>
             </div>
           </div>
@@ -318,7 +311,7 @@ const Dashboard = () => {
             </div>
           </div>
 
-          {/* Earnings by Course Pie Chart */}
+          {/* Revenue by Course Pie Chart */}
           <div className="bg-white rounded-lg shadow p-6">
             <h2 className="text-lg font-semibold text-gray-800 mb-4">Revenue by Course</h2>
             <div className="h-80">
@@ -360,28 +353,7 @@ const Dashboard = () => {
             </button>
           </div>
 
-          {/* Upcoming Events */}
-          <div className="bg-white rounded-lg shadow p-6">
-            <h2 className="text-lg font-semibold text-gray-800 mb-4">Upcoming Events</h2>
-            <div className="divide-y">
-              {upcomingEvents.map((event) => (
-                <div key={event.id} className="py-3">
-                  <div className="flex items-start">
-                    <div className="p-2 bg-blue-50 rounded-lg mr-3">
-                      <Calendar className="text-blue-600" />
-                    </div>
-                    <div>
-                      <p className="font-medium text-gray-800">{event.title}</p>
-                      <p className="text-sm text-gray-500">{formatDate(event.date)}</p>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-            <button className="mt-4 w-full py-2 bg-blue-50 hover:bg-blue-100 transition-colors duration-200 rounded text-sm font-medium text-blue-700 flex items-center justify-center">
-              <Calendar className="mr-2" /> View Calendar
-            </button>
-          </div>
+    
         </div>
 
         {/* Recent Courses Table */}
@@ -444,7 +416,7 @@ const Dashboard = () => {
                 <Bell className="text-blue-600 mr-2" />
                 Notifications
               </h2>
-              <button 
+              <button
                 onClick={() => setShowNotificationsModal(false)}
                 className="text-gray-400 hover:text-gray-500 transition-colors duration-200"
               >
