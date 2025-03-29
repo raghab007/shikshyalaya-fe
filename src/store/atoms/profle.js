@@ -25,6 +25,9 @@ const userProfileSelector = selector({
       }
 
       const response = await axios.get("http://localhost:8085/user", {
+
+
+        
         headers: {
           Authorization: `Bearer ${token}`,
         },

@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useRecoilState } from 'recoil';
 import { userProfileSelector } from '../store/atoms/profle';
+import axios from 'axios';
 
 function ChatPage() {
   const [ws, setWebSocket] = useState(null);
@@ -11,8 +12,19 @@ function ChatPage() {
   const chatContainerRef = useRef();
   const {courseId} = useParams();
   const [userInfo, setUserInfo] = useRecoilState(userProfileSelector);
-  console.log(userInfo.userName)
+  const [isLoading, setIsLoading] = useState(true);
   
+  // Theme colors
+  const primaryColor = 'rgb(33, 146, 185)';
+  const primaryColorLight = 'rgba(33, 146, 185, 0.1)';
+  const primaryColorDark = 'rgb(25, 115, 145)';
+  
+  // Format date to display
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    return date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+  };
+
   // Auto-scroll to bottom when new messages arrive
   useEffect(() => {
     if (chatContainerRef.current) {
@@ -20,59 +32,113 @@ function ChatPage() {
     }
   }, [messages]);
 
+  // Fetch previous messages when component mounts
+  useEffect(() => {
+    const fetchPreviousMessages = async () => {
+      try {
+        const response = await axios.get(`http://localhost:8085/messages/${courseId}`);
+        const formattedMessages = response.data.map(msg => ({
+          text: msg.message,
+          sender: msg.userName,
+          isCurrentUser: msg.userName === userInfo.userName,
+          timestamp: formatDate(msg.date),
+          fullDate: msg.date
+        }));
+        
+        formattedMessages.sort((a, b) => new Date(a.fullDate) - new Date(b.fullDate));
+        setMessages(formattedMessages);
+      } catch (error) {
+        console.error("Error fetching previous messages:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchPreviousMessages();
+  }, [courseId, userInfo.userName]);
+
+  // WebSocket connection
   useEffect(() => {
     const token = localStorage.getItem("token");
     if(token){
-    try {
-      const webSocket = new WebSocket("ws://localhost:8086");
+      try {
+        const webSocket = new WebSocket("ws://localhost:8086");
 
-      webSocket.onopen = () => {
-        console.log("WebSocket connection established.");
-        setIsConnected(true);
-        webSocket.send(JSON.stringify({ type: "join", roomcode: courseId, userName:userInfo.userName}));
-      };
+        webSocket.onopen = () => {
+          console.log("WebSocket connection established.");
+          setIsConnected(true);
+          webSocket.send(JSON.stringify({ 
+            type: "join", 
+            roomcode: courseId, 
+            userName: userInfo.userName 
+          }));
+        };
 
-      webSocket.onmessage = (e) => {
-        console.log("Received message:", e.data);
-        setMessages((prevMessages) => [...prevMessages, { 
-          text: e.data, 
-          sender: "server",  // Keep your original sender identification
-          timestamp: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) 
-        }]);
-      };
+        webSocket.onmessage = (e) => {
+          try {
+            const data = JSON.parse(e.data);
+            console.log("Received message:", data);
+            
+            setMessages((prevMessages) => [...prevMessages, { 
+              text: data.message, 
+              sender: data.username,
+              isCurrentUser: data.username === userInfo.userName,
+              timestamp: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}),
+              fullDate: new Date().toISOString()
+            }]);
+          } catch (error) {
+            console.error("Error parsing message:", error);
+            setMessages((prevMessages) => [...prevMessages, { 
+              text: e.data, 
+              sender: "system",
+              isCurrentUser: false,
+              timestamp: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}),
+              fullDate: new Date().toISOString()
+            }]);
+          }
+        };
 
-      webSocket.onerror = (error) => {
-        console.error("WebSocket error:", error);
+        webSocket.onerror = (error) => {
+          console.error("WebSocket error:", error);
+          setIsConnected(false);
+        };
+
+        webSocket.onclose = () => {
+          console.log("WebSocket connection closed.");
+          setIsConnected(false);
+        };
+
+        setWebSocket(webSocket);
+
+        return () => {
+          webSocket.close();
+        };
+      } catch (error) {
+        console.log(error);
         setIsConnected(false);
-      };
-
-      webSocket.onclose = () => {
-        console.log("WebSocket connection closed.");
-        setIsConnected(false);
-      };
-
-      setWebSocket(webSocket);
-
-      return () => {
-        webSocket.close();
-      };
-    } catch (error) {
-      console.log(error);
-      setIsConnected(false);
-    }}else{
-      location.href = "/"
+      }
+    } else {
+      location.href = "/";
     }
-  }, []);
+  }, [courseId, userInfo.userName]);
 
   function sendMessage() {
     if (ws && ws.readyState === WebSocket.OPEN) {
       const msg = messageRef.current.value.trim();
       if (msg) {
-        ws.send(JSON.stringify({ type: "message", message: msg, roomcode: courseId,userName:userInfo.userName}));
+        ws.send(JSON.stringify({ 
+          type: "message", 
+          message: msg, 
+          roomcode: courseId,
+          userName: userInfo.userName 
+        }));
+        
         setMessages((prevMessages) => [...prevMessages, { 
           text: msg, 
-          sender: "user",  // Keep your original sender identification
-          timestamp: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})
+          sender: userInfo.userName,
+          isCurrentUser: true,
+          timestamp: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}),
+          fullDate: new Date().toISOString()
         }]);
         messageRef.current.value = "";
       }
@@ -88,72 +154,112 @@ function ChatPage() {
   };
 
   return (
-    <div className="flex flex-col h-screen bg-gray-100">
+    <div className="flex flex-col h-screen bg-gray-50">
       {/* Header */}
-      <div className="bg-blue-600 text-white p-4 shadow-md">
-        <h1 className="text-xl font-bold">Chat Room</h1>
-        <div className="text-sm flex items-center mt-1">
-          <span className={`w-3 h-3 rounded-full mr-2 ${isConnected ? 'bg-green-400' : 'bg-red-500'}`}></span>
-          <span>{isConnected ? 'Connected' : 'Disconnected'}</span>
+      <div 
+        className="p-4 shadow-sm border-b border-gray-200"
+        style={{ backgroundColor: primaryColor }}
+      >
+        <div className="max-w-4xl mx-auto flex justify-between items-center">
+          <div>
+            <h1 className="text-xl font-bold text-white">Course Chat: {courseId}</h1>
+            <div className="text-sm text-blue-100 mt-1">
+              <span className={`inline-block w-2 h-2 rounded-full mr-2 ${isConnected ? 'bg-green-300' : 'bg-red-300'}`}></span>
+              {isConnected ? 'Live connection' : 'Disconnected'}
+            </div>
+          </div>
+          <div className="flex items-center">
+            <span className="text-sm text-white bg-blue-400 px-3 py-1 rounded-full">
+              {userInfo.userName}
+            </span>
+          </div>
         </div>
       </div>
 
       {/* Chat Messages */}
       <div 
         ref={chatContainerRef}
-        className="flex-1 p-4 overflow-y-auto space-y-2"
+        className="flex-1 overflow-y-auto p-4 bg-gradient-to-b from-blue-50 to-white"
         style={{ scrollBehavior: 'smooth' }}
       >
-        {messages.length === 0 ? (
-          <div className="flex items-center justify-center h-full text-gray-400">
-            No messages yet. Start a conversation!
-          </div>
-        ) : (
-          messages.map((msg, index) => (
-            <div 
-              key={index} 
-              className={`flex ${msg.sender === "user" ? "justify-end" : "justify-start"}`}
-            >
-              <div 
-                className={`relative max-w-xs md:max-w-md lg:max-w-lg rounded-lg p-3 ${msg.sender === "user" 
-                  ? "bg-blue-500 text-white rounded-br-none" 
-                  : "bg-gray-200 text-gray-800 rounded-bl-none"}`}
-              >
-                <div className="break-words">{msg.text}</div>
-                <div className={`text-xs mt-1 flex ${msg.sender === "user" ? "justify-end" : "justify-start"} text-opacity-80 ${msg.sender === "user" ? "text-blue-100" : "text-gray-500"}`}>
-                  {msg.timestamp}
-                </div>
-                {/* Triangle indicator */}
-                {msg.sender === "user" ? (
-                  <div className="absolute right-0 bottom-0 w-3 h-3 -mr-1 overflow-hidden">
-                    <div className="h-full bg-blue-500 transform origin-bottom-right rotate-45"></div>
-                  </div>
-                ) : (
-                  <div className="absolute left-0 bottom-0 w-3 h-3 -ml-1 overflow-hidden">
-                    <div className="h-full bg-gray-200 transform origin-bottom-left rotate-45"></div>
-                  </div>
-                )}
-              </div>
+        <div className="max-w-4xl mx-auto space-y-3">
+          {isLoading ? (
+            <div className="flex items-center justify-center h-64">
+              <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2" style={{ borderColor: primaryColor }}></div>
             </div>
-          ))
-        )}
+          ) : messages.length === 0 ? (
+            <div className="flex flex-col items-center justify-center h-64 text-gray-400">
+              <svg className="w-12 h-12 mb-2 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+              </svg>
+              <p>No messages yet</p>
+              <p className="text-sm">Start the conversation</p>
+            </div>
+          ) : (
+            messages.map((msg, index) => (
+              <div 
+                key={index} 
+                className={`flex ${msg.isCurrentUser ? "justify-end" : "justify-start"}`}
+              >
+                <div className={`max-w-xs md:max-w-md lg:max-w-lg ${msg.isCurrentUser ? "ml-6" : "mr-6"}`}>
+                  {!msg.isCurrentUser && (
+                    <div className="text-xs font-medium text-gray-500 mb-1 ml-1">
+                      {msg.sender}
+                    </div>
+                  )}
+                  <div 
+                    className={`relative rounded-2xl p-3 shadow-sm ${msg.isCurrentUser 
+                      ? "rounded-br-none text-white" 
+                      : "rounded-bl-none bg-white text-gray-800 border border-gray-100"}`}
+                    style={msg.isCurrentUser ? { backgroundColor: primaryColor } : {}}
+                  >
+                    <div className="break-words">{msg.text}</div>
+                    <div 
+                      className={`text-xs mt-1 flex ${msg.isCurrentUser ? "justify-end" : "justify-start"} ${msg.isCurrentUser ? "text-blue-100" : "text-gray-400"}`}
+                    >
+                      {msg.timestamp}
+                    </div>
+                    {msg.isCurrentUser ? (
+                      <div className="absolute right-0 bottom-0 w-3 h-3 -mr-1 overflow-hidden">
+                        <div className="h-full" style={{ backgroundColor: primaryColor }}></div>
+                      </div>
+                    ) : (
+                      <div className="absolute left-0 bottom-0 w-3 h-3 -ml-1 overflow-hidden">
+                        <div className="h-full bg-white"></div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            ))
+          )}
+        </div>
       </div>
 
       {/* Input Area */}
-      <div className="p-4 bg-white border-t shadow-inner">
-        <div className="flex items-center">
+      <div className="p-4 bg-white border-t border-gray-200 shadow-sm">
+        <div className="max-w-4xl mx-auto flex items-center">
           <input
             ref={messageRef}
             type="text"
-            placeholder="Type a message..."
-            className="flex-1 p-3 border border-gray-300 rounded-l-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+            placeholder="Type your message..."
+            className="flex-1 p-3 border border-gray-300 rounded-l-xl focus:outline-none focus:ring-2 focus:border-transparent"
+            style={{ 
+              backgroundColor: primaryColorLight,
+              focusRingColor: primaryColor 
+            }}
             onKeyPress={handleKeyPress}
+            disabled={!isConnected || isLoading}
           />
           <button
             onClick={sendMessage}
-            className="px-6 py-3 bg-blue-500 text-white rounded-r-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600 transition-colors"
+            className="px-5 py-3 text-white rounded-r-xl hover:opacity-90 focus:outline-none focus:ring-2 transition-all"
+            style={{ backgroundColor: primaryColor }}
+            disabled={!isConnected || isLoading}
           >
-            Send
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+            </svg>
           </button>
         </div>
       </div>
