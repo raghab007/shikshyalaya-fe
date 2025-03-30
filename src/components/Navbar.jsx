@@ -80,6 +80,8 @@ export default function Navbar() {
             <NavLinkItem to="/courses" label="Courses" />
             <NavLinkItem to="/about-us" label="About Us" />
             
+            {userState && <NavLinkItem to="/enrolled" label="Enrolled Courses" />}
+            
             {!userState ? (
               <div className="flex items-center space-x-3">
                 <LinkButton to="/login" label="Login" primary />
@@ -154,7 +156,7 @@ export default function Navbar() {
             <div className="flex flex-col items-start space-y-6 py-6 px-8">
               <MobileNavLink to="/" label="Home" onClick={() => setIsMenuOpen(false)} />
               <MobileNavLink to="/courses" label="Courses" onClick={() => setIsMenuOpen(false)} />
-              <MobileNavLink to="/enrolled-courses" label="Enrolled Courses" onClick={() => setIsMenuOpen(false)} />
+              {userState && <MobileNavLink to="/enrolled-courses" label="Enrolled Courses" onClick={() => setIsMenuOpen(false)} />}
               <MobileNavLink to="/about-us" label="About Us" onClick={() => setIsMenuOpen(false)} />
               
               <div className="w-full border-t border-blue-500/30 pt-6 mt-4"></div>
