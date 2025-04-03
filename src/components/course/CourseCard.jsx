@@ -7,7 +7,7 @@ export default function CourseCard({
   price, 
   originalPrice, 
   title, 
-  instructor, 
+  instructorName, 
   imageSrc, 
   rating, 
   studentsEnrolled, 
@@ -15,7 +15,6 @@ export default function CourseCard({
   categories = [],
   duration = "10h 30m", // New prop with default value
   level = "Beginner", // New prop with default value
-  instructorAvatar = null // New prop for instructor image
 }) {
   const [isBookmarked, setIsBookmarked] = useState(false);
   
@@ -132,13 +131,9 @@ export default function CourseCard({
       <div className="p-4 flex-grow">
         <div className="flex items-center justify-between mb-2">
           <div className="flex items-center">
-            <img 
-              src={instructorAvatar || "/images/instructor-placeholder.jpg"}
-              alt={instructor}
-              className="w-6 h-6 rounded-full mr-2 object-cover border border-gray-200"
-            />
+         
             <p className="text-sm text-gray-700 font-medium truncate">
-              {instructor || "Unknown Instructor"}
+              {instructorName}
             </p>
           </div>
         </div>

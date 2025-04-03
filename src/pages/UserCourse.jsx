@@ -115,6 +115,7 @@ const VideoPlayer = ({ selectedVideo, onMarkCompleted, isCompleted }) => {
   const [rating, setRating] = useState(0);
   const [userRating, setUserRating] = useState(0);
   const [hoverRating, setHoverRating] = useState(0);
+  const [showComments, setShowComments] = useState(true);
 
   useEffect(() => {
     if (selectedVideo) {
@@ -213,7 +214,7 @@ const VideoPlayer = ({ selectedVideo, onMarkCompleted, isCompleted }) => {
 
   // Format date function
   const formatDate = (dateString) => {
-    if (!dateString) return "Just now";
+    if (!dateString) return "2025";
     const date = new Date(dateString);
     return date.toLocaleString();
   };
@@ -287,46 +288,68 @@ const VideoPlayer = ({ selectedVideo, onMarkCompleted, isCompleted }) => {
       </div>
       
       <div className="mt-8">
-        <h2 className="text-xl font-semibold text-gray-800 mb-4">Comments</h2>
-        
-        <form onSubmit={handleCommentSubmit} className="mb-6">
-          <textarea
-            value={comment}
-            onChange={(e) => setComment(e.target.value)}
-            placeholder="Add a comment..."
-            className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-            rows="3"
-          />
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-xl font-semibold text-gray-800">Comments</h2>
           <button
-            type="submit"
-            className="mt-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-all duration-200"
+            onClick={() => setShowComments(!showComments)}
+            className="flex items-center text-blue-600 hover:text-blue-800 transition-colors duration-200"
           >
-            Post Comment
+            {showComments ? (
+              <>
+                <ExpandLess className="mr-1" />
+                Hide Comments
+              </>
+            ) : (
+              <>
+                <ExpandMore className="mr-1" />
+                Show Comments
+              </>
+            )}
           </button>
-        </form>
-        
-        <div className="space-y-4">
-          {comments.length > 0 ? (
-            comments.map((comment) => (
-              <div key={comment.id || Math.random()} className="border-b border-gray-200 pb-4">
-                <div className="flex items-center mb-2">
-                  <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 font-bold">
-                    {comment.userName?.charAt(0)?.toUpperCase() || 'U'}
-                  </div>
-                  <div className="ml-3">
-                    <p className="font-medium text-gray-800">{comment.userName || 'User'}</p>
-                    <p className="text-xs text-gray-500">
-                      {formatDate(comment.date)}
-                    </p>
-                  </div>
-                </div>
-                <p className="text-gray-700">{comment.comment}</p>
-              </div>
-            ))
-          ) : (
-            <p className="text-gray-500">No comments yet. Be the first to comment!</p>
-          )}
         </div>
+        
+        {showComments && (
+          <>
+            <form onSubmit={handleCommentSubmit} className="mb-6">
+              <textarea
+                value={comment}
+                onChange={(e) => setComment(e.target.value)}
+                placeholder="Add a comment..."
+                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                rows="3"
+              />
+              <button
+                type="submit"
+                className="mt-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-all duration-200"
+              >
+                Post Comment
+              </button>
+            </form>
+            
+            <div className="space-y-4">
+              {comments.length > 0 ? (
+                comments.map((comment) => (
+                  <div key={comment.id || Math.random()} className="border-b border-gray-200 pb-4">
+                    <div className="flex items-center mb-2">
+                      <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 font-bold">
+                        {comment.userName?.charAt(0)?.toUpperCase() || 'U'}
+                      </div>
+                      <div className="ml-3">
+                        <p className="font-medium text-gray-800">{comment.userName || 'User'}</p>
+                        <p className="text-xs text-gray-500">
+                          {formatDate(comment.date)}
+                        </p>
+                      </div>
+                    </div>
+                    <p className="text-gray-700">{comment.comment}</p>
+                  </div>
+                ))
+              ) : (
+                <p className="text-gray-500">No comments yet. Be the first to comment!</p>
+              )}
+            </div>
+          </>
+        )}
       </div>
     </div>
   );

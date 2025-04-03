@@ -3,17 +3,15 @@ import { useRecoilState } from "recoil";
 import { useNavigate } from "react-router-dom";
 import { 
   FaHome, 
-  FaBook, 
   FaUserEdit, 
   FaLock, 
   FaCog, 
-  FaSignOutAlt, 
-  FaGraduationCap,
-  FaChartLine
+  FaSignOutAlt,
+  FaCreditCard,
+  FaHistory
 } from "react-icons/fa";
 import axios from "axios";
 import { userProfileSelector } from "../store/atoms/profle";
-import { h1 } from "framer-motion/client";
 
 // NavItem Component
 const NavItem = ({ icon, label, isActive, onClick }) => (
@@ -59,159 +57,112 @@ const ProfileCard = ({ state, logout }) => (
 );
 
 // OverviewTab Component
-const OverviewTab = ({ state, courses }) => (
+const OverviewTab = ({ state }) => (
   <div className="space-y-6">
     <div className="bg-white rounded-xl shadow-md p-6">
-      <h2 className="text-xl font-bold mb-4 flex items-center">
-        <FaChartLine className="text-blue-500 mr-2" /> Overview
-      </h2>
+      <h2 className="text-xl font-bold mb-4">Welcome Back, {state.firstName}!</h2>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="bg-blue-50 p-4 rounded-lg border border-blue-100">
-          <h3 className="text-lg font-medium text-blue-800">Basic Information</h3>
+          <h3 className="text-lg font-medium text-blue-800">Account Summary</h3>
           <ul className="mt-3 space-y-2">
             <li className="flex justify-between">
-              <span className="text-gray-600">Full Name:</span>
-              <span className="font-medium">{state.firstName} {state.lastName}</span>
+              <span className="text-gray-600">Member Since:</span>
+              <span className="font-medium">Jan 2023</span>
             </li>
             <li className="flex justify-between">
-              <span className="text-gray-600">Email:</span>
-              <span className="font-medium">{state.email}</span>
+              <span className="text-gray-600">Last Login:</span>
+              <span className="font-medium">Today</span>
             </li>
-            <li className="flex justify-between">
-              <span className="text-gray-600">Phone:</span>
-              <span className="font-medium">{state.contactNumber}</span>
-            </li>
-            
           </ul>
         </div>
-        <div className="bg-green-50 p-4 rounded-lg border border-green-100">
-          <h3 className="text-lg font-medium text-green-800">Recent Transactions</h3>
-          <div className="mt-3">
-            <ul className="mt-2 space-y-2 text-sm">
-              {courses.slice(0, 2).map((course) => (
-                <li key={course.courseID} className="flex justify-between">
-                  <span>{course.courseName}</span>
-                  <span className="font-medium">NPR {course.coursePrice}</span>
-                </li>
-              ))}
-            </ul>
+        <div className="bg-indigo-50 p-4 rounded-lg border border-indigo-100">
+          <h3 className="text-lg font-medium text-indigo-800">Quick Actions</h3>
+          <div className="mt-3 grid grid-cols-2 gap-2">
+            <button className="p-2 bg-white rounded border border-gray-200 hover:bg-gray-50">
+              Update Profile
+            </button>
+            <button className="p-2 bg-white rounded border border-gray-200 hover:bg-gray-50">
+              Change Password
+            </button>
           </div>
         </div>
       </div>
     </div>
     
     <div className="bg-white rounded-xl shadow-md p-6">
-      <h2 className="text-xl font-bold mb-4 flex items-center">
-        <FaGraduationCap className="text-blue-500 mr-2" /> My Courses
-      </h2>
+      <h2 className="text-xl font-bold mb-4">Personal Information</h2>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {courses.map((course) => (
-          <div key={course.courseID} className="border border-gray-200 rounded-lg overflow-hidden hover:shadow-md transition duration-300">
-            <div className="h-32 bg-gray-100 flex items-center justify-center">
-              <img
-                src={course.imageUrl || "https://via.placeholder.com/150"}
-                alt={course.courseName}
-                className="w-full h-full object-cover"
-              />
-            </div>
-            <div className="p-4">
-              <h3 className="text-lg font-bold">{course.courseName}</h3>
-              <div className="mt-2">
-                <div className="flex justify-between text-sm text-gray-600 mb-1">
-                  <span>Progress</span>
-                  <span>{course.progress || "0%"}%</span>
-                </div>
-                <div className="w-full bg-gray-200 rounded-full h-2">
-                  <div
-                    className="bg-blue-500 h-2 rounded-full"
-                    style={{ width: `${course.progress || 0}%` }}
-                  ></div>
-                </div>
-              </div>
-              <button className="mt-4 w-full px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition duration-300">
-                Continue Learning
-              </button>
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  </div>
-);
-
-// CoursesTab Component
-const CoursesTab = ({ courses }) => (
-  <div className="bg-white rounded-xl shadow-md p-6">
-    <h2 className="text-xl font-bold mb-6 flex items-center">
-      <FaBook className="text-blue-500 mr-2" /> My Courses
-    </h2>
-    <div className="space-y-6">
-      {courses.map((course) => (
-        <div key={course.courseID} className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition duration-300">
-          <div className="flex flex-col md:flex-row md:items-center">
-            <div className="w-16 h-16 rounded-lg bg-gray-100 flex items-center justify-center overflow-hidden">
-              <img
-                src={`http://localhost:8085/images/course/${course.imageUrl}`}
-                alt={course.courseName}
-                className="w-full h-full object-cover"
-              />
-            </div>
-            <div className="flex-grow mt-4 md:mt-0">
-              <h3 className="text-lg font-bold">{course.courseName}</h3>
-              <p className="text-gray-600 text-sm">{course.courseDescription}</p>
-              <div className="mt-2">
-                <div className="flex justify-between text-sm text-gray-600 mb-1">
-                  <span>Progress</span>
-                  <span>{course.progress || "0%"}%</span>
-                </div>
-                <div className="w-full bg-gray-200 rounded-full h-2">
-                  <div
-                    className="bg-blue-500 h-2 rounded-full"
-                    style={{ width: `${course.progress || 0}%` }}
-                  ></div>
-                </div>
-              </div>
-            </div>
-            <div className="mt-4 md:mt-0 md:ml-4 flex-shrink-0">
-              <button className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition duration-300">
-                Continue Learning
-              </button>
-            </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">First Name</label>
+          <div className="w-full px-3 py-2 bg-gray-50 rounded-md">
+            {state.firstName}
           </div>
         </div>
-      ))}
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Last Name</label>
+          <div className="w-full px-3 py-2 bg-gray-50 rounded-md">
+            {state.lastName}
+          </div>
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+          <div className="w-full px-3 py-2 bg-gray-50 rounded-md">
+            {state.email}
+          </div>
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Phone</label>
+          <div className="w-full px-3 py-2 bg-gray-50 rounded-md">
+            {state.contactNumber || "Not provided"}
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 );
 
 // TransactionsTab Component
-const TransactionsTab = ({ courses }) => (
+const TransactionsTab = () => (
   <div className="bg-white rounded-xl shadow-md p-6">
     <h2 className="text-xl font-bold mb-6 flex items-center">
-      Transactions
+      <FaHistory className="text-blue-500 mr-2" /> Transaction History
     </h2>
-    <div>
-      <h3 className="text-lg font-medium mb-4">Transaction History</h3>
-      <div className="overflow-x-auto">
-        <table className="min-w-full bg-white">
-          <thead>
-            <tr className="bg-gray-100 text-gray-600 uppercase text-sm leading-normal">
-              <th className="py-3 px-4 text-left">Course</th>
-              <th className="py-3 px-4 text-left">Date</th>
-              <th className="py-3 px-4 text-right">Amount</th>
-            </tr>
-          </thead>
-          <tbody className="text-gray-600 text-sm">
-            {courses.slice(0, 2).map((course) => (
-              <tr key={course.courseID} className="border-b border-gray-200 hover:bg-gray-50">
-                <td className="py-3 px-4">{course.courseName}</td>
-                <td className="py-3 px-4">12/12/2024</td>
-                <td className="py-3 px-4 text-right">NPR {course.coursePrice}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+    <div className="overflow-x-auto">
+      <table className="min-w-full bg-white">
+        <thead>
+          <tr className="bg-gray-100 text-gray-600 uppercase text-sm leading-normal">
+            <th className="py-3 px-4 text-left">Date</th>
+            <th className="py-3 px-4 text-left">Description</th>
+            <th className="py-3 px-4 text-right">Amount</th>
+            <th className="py-3 px-4 text-left">Status</th>
+          </tr>
+        </thead>
+        <tbody className="text-gray-600 text-sm">
+          <tr className="border-b border-gray-200 hover:bg-gray-50">
+            <td className="py-3 px-4">2023-10-15</td>
+            <td className="py-3 px-4">Premium Membership</td>
+            <td className="py-3 px-4 text-right">$9.99</td>
+            <td className="py-3 px-4">
+              <span className="bg-green-100 text-green-800 py-1 px-2 rounded-full text-xs">
+                Completed
+              </span>
+            </td>
+          </tr>
+          <tr className="border-b border-gray-200 hover:bg-gray-50">
+            <td className="py-3 px-4">2023-09-01</td>
+            <td className="py-3 px-4">Service Fee</td>
+            <td className="py-3 px-4 text-right">$4.99</td>
+            <td className="py-3 px-4">
+              <span className="bg-green-100 text-green-800 py-1 px-2 rounded-full text-xs">
+                Completed
+              </span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div className="mt-4 text-center text-sm text-gray-500">
+      Showing 2 of 5 transactions
     </div>
   </div>
 );
@@ -220,11 +171,11 @@ const TransactionsTab = ({ courses }) => (
 const SettingsTab = ({ state }) => (
   <div className="bg-white rounded-xl shadow-md p-6">
     <h2 className="text-xl font-bold mb-6 flex items-center">
-      <FaCog className="text-blue-500 mr-2" /> Settings
+      <FaCog className="text-blue-500 mr-2" /> Account Settings
     </h2>
-    <div className="space-y-6">
-      <div className="border-b border-gray-200 pb-6">
-        <h3 className="text-lg font-medium mb-4">Update Profile</h3>
+    <div className="space-y-8">
+      <div>
+        <h3 className="text-lg font-medium mb-4">Profile Information</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">First Name</label>
@@ -232,7 +183,6 @@ const SettingsTab = ({ state }) => (
               type="text" 
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               value={state.firstName}
-              readOnly
             />
           </div>
           <div>
@@ -241,7 +191,6 @@ const SettingsTab = ({ state }) => (
               type="text" 
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               value={state.lastName}
-              readOnly
             />
           </div>
           <div>
@@ -250,7 +199,6 @@ const SettingsTab = ({ state }) => (
               type="email" 
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               value={state.email}
-              readOnly
             />
           </div>
           <div>
@@ -258,8 +206,8 @@ const SettingsTab = ({ state }) => (
             <input 
               type="text" 
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              value={state.contactNumber}
-              readOnly
+              value={state.contactNumber || ""}
+              placeholder="Add phone number"
             />
           </div>
         </div>
@@ -268,8 +216,8 @@ const SettingsTab = ({ state }) => (
         </button>
       </div>
       
-      <div>
-        <h3 className="text-lg font-medium mb-4">Change Password</h3>
+      <div className="border-t border-gray-200 pt-6">
+        <h3 className="text-lg font-medium mb-4">Security Settings</h3>
         <div className="space-y-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Current Password</label>
@@ -309,67 +257,51 @@ const UserProfile = () => {
   const [state, setUserState] = useRecoilState(userProfileSelector);
   const [error, setError] = useState(null);
   const [activeTab, setActiveTab] = useState("overview");
-  const [courses, setCourses] = useState([]);
   const token = localStorage.getItem("token");
-  const [loading,setLoading] = useState(true);
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   
   useEffect(() => {
     if (!state) {
-      location.href = "/login";
+      navigate("/login");
     } else {
-      fetchCourses();
+      setLoading(false);
     }
-  }, [state]);
-
-  const fetchCourses = async () => {
-    try {
-      const response = await axios.get("http://localhost:8085/enrollment", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      setCourses(response.data);
-      setLoading(false)
-    } catch (error) {
-      setError("Failed to fetch courses. Please try again later.");
-      console.error("Error fetching courses:", error);
-    }
-  };
+  }, [state, navigate]);
 
   const logout = () => {
     localStorage.removeItem("token");
     navigate("/login");
   };
 
-
-
   const renderTabContent = () => {
     switch (activeTab) {
       case "overview":
-        return <OverviewTab state={state} courses={courses} />;
-      case "courses":
-        return <CoursesTab courses={courses} />;
+        return <OverviewTab state={state} />;
       case "transactions":
-        return <TransactionsTab courses={courses} />;
+        return <TransactionsTab />;
       case "settings":
         return <SettingsTab state={state} />;
       default:
-        return <div>Select a tab</div>;
+        return <OverviewTab state={state} />;
     }
   };
 
-  if(loading){
-    return <h1>Loading</h1>
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+      </div>
+    );
   }
 
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div className="min-h-screen bg-gray-50">
       {/* Header */}
       <header className="bg-white shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-           <div className="flex justify-between h-16 items-center">
-          
-            <div className="hidden md:flex items-center space-x-4">             
-            </div> 
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+          <div className="flex justify-between items-center">
+            <h1 className="text-xl font-bold text-gray-800">My Account</h1>
           </div>
         </div>
       </header>
@@ -378,7 +310,7 @@ const UserProfile = () => {
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
           {/* Left Sidebar */}
-          <div className="md:col-span-1 space-y-6 sticky top-8">
+          <div className="md:col-span-1 space-y-6">
             <ProfileCard state={state} logout={logout} />
             
             <div className="bg-white rounded-xl shadow-md p-4">
@@ -391,13 +323,7 @@ const UserProfile = () => {
                   onClick={() => setActiveTab("overview")}
                 />
                 <NavItem 
-                  icon={<FaBook className="text-blue-500" />} 
-                  label="My Courses" 
-                  isActive={activeTab === "courses"}
-                  onClick={() => setActiveTab("courses")}
-                />
-                <NavItem 
-                  icon={<FaChartLine className="text-blue-500" />} 
+                  icon={<FaCreditCard className="text-blue-500" />} 
                   label="Transactions" 
                   isActive={activeTab === "transactions"}
                   onClick={() => setActiveTab("transactions")}
