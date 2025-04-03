@@ -13,6 +13,8 @@ import ErrorPage from "../pages/Error";
 import PaymentPage from "../pages/PaymentDetails";
 import UserCourse from "../pages/UserCourse";
 import ChatPage from "../pages/Chat";
+import PaymentSuccessPage from "../pages/PaymentSuccess";
+import PaymentFailedPage from "../pages/PaymentFail";
 export default function UserRoutes() {
     return (
         <Routes> {/* Wrap routes inside <Routes> */}
@@ -24,6 +26,8 @@ export default function UserRoutes() {
             <Route path="/coursedetails/:courseId" element={<CourseDetails />} />
             <Route path="/forgotpassword" element={<ForgotPassword />} />
             <Route path="/profile" element={<UserProfile />} />
+            <Route path="/paymentsuccess" element={<PaymentSuccessPage></PaymentSuccessPage>}></Route>
+            <Route path = "/paymentfail" element={<PaymentFailedPage></PaymentFailedPage>}></Route>
             <Route path="/changepassword" element={<ChangePassword />} />
             <Route path="/chat/:courseId" element={<ChatPage></ChatPage>}></Route>
             <Route path="/course/:courseId" element={<UserCourse></UserCourse>}></Route>

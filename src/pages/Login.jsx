@@ -17,7 +17,7 @@ export default function Login() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (state) {
+    if (userState) {
       location.href = "/";
     }
   }, []);

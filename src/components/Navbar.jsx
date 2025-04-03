@@ -10,7 +10,6 @@ export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
-  const [userState, setUserState] = useRecoilState(userRecoilState);
   const [state, setState] = useRecoilState(userProfileSelector);
   const [scrolled, setScrolled] = useState(false);
 
@@ -80,9 +79,9 @@ export default function Navbar() {
             <NavLinkItem to="/courses" label="Courses" />
             <NavLinkItem to="/about-us" label="About Us" />
             
-            {userState && <NavLinkItem to="/enrolled" label="Enrolled Courses" />}
+            {state && <NavLinkItem to="/enrolled" label="Enrolled Courses" />}
             
-            {!userState ? (
+            {!state ? (
               <div className="flex items-center space-x-3">
                 <LinkButton to="/login" label="Login" primary />
                 <LinkButton to="/signup" label="Signup" />

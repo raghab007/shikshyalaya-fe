@@ -3,14 +3,7 @@ import { atom, selector } from "recoil";
 
 const userProfileState = atom({
   key: "userProfileState",
-  default: {
-    userName: null,
-    email: null,
-    firstName: null,
-    lastName: null,
-    contactNumber: null,
-    role: null,
-  },
+  default:null
 });
 
 const userProfileSelector = selector({

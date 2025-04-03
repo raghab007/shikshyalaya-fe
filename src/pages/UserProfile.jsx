@@ -13,6 +13,7 @@ import {
 } from "react-icons/fa";
 import axios from "axios";
 import { userProfileSelector } from "../store/atoms/profle";
+import { h1 } from "framer-motion/client";
 
 // NavItem Component
 const NavItem = ({ icon, label, isActive, onClick }) => (
@@ -70,7 +71,7 @@ const OverviewTab = ({ state, courses }) => (
           <ul className="mt-3 space-y-2">
             <li className="flex justify-between">
               <span className="text-gray-600">Full Name:</span>
-              <span className="font-medium">{state.fullName}</span>
+              <span className="font-medium">{state.firstName} {state.lastName}</span>
             </li>
             <li className="flex justify-between">
               <span className="text-gray-600">Email:</span>
@@ -80,10 +81,7 @@ const OverviewTab = ({ state, courses }) => (
               <span className="text-gray-600">Phone:</span>
               <span className="font-medium">{state.contactNumber}</span>
             </li>
-            <li className="flex justify-between">
-              <span className="text-gray-600">Date of Birth:</span>
-              <span className="font-medium">January 1, 2000</span>
-            </li>
+            
           </ul>
         </div>
         <div className="bg-green-50 p-4 rounded-lg border border-green-100">
@@ -153,7 +151,7 @@ const CoursesTab = ({ courses }) => (
           <div className="flex flex-col md:flex-row md:items-center">
             <div className="w-16 h-16 rounded-lg bg-gray-100 flex items-center justify-center overflow-hidden">
               <img
-                src={course.imageUrl || "https://via.placeholder.com/150"}
+                src={`http://localhost:8085/images/course/${course.imageUrl}`}
                 alt={course.courseName}
                 className="w-full h-full object-cover"
               />
@@ -313,10 +311,11 @@ const UserProfile = () => {
   const [activeTab, setActiveTab] = useState("overview");
   const [courses, setCourses] = useState([]);
   const token = localStorage.getItem("token");
+  const [loading,setLoading] = useState(true);
   const navigate = useNavigate();
   
   useEffect(() => {
-    if (!token) {
+    if (!state) {
       location.href = "/login";
     } else {
       fetchCourses();
@@ -329,6 +328,7 @@ const UserProfile = () => {
         headers: { Authorization: `Bearer ${token}` },
       });
       setCourses(response.data);
+      setLoading(false)
     } catch (error) {
       setError("Failed to fetch courses. Please try again later.");
       console.error("Error fetching courses:", error);
@@ -340,9 +340,7 @@ const UserProfile = () => {
     navigate("/login");
   };
 
-  if (!token) {
-    return null;
-  }
+
 
   const renderTabContent = () => {
     switch (activeTab) {
@@ -358,6 +356,10 @@ const UserProfile = () => {
         return <div>Select a tab</div>;
     }
   };
+
+  if(loading){
+    return <h1>Loading</h1>
+  }
 
   return (
     <div className="min-h-screen bg-gray-100">
