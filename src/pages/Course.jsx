@@ -230,6 +230,7 @@ export default function Course() {
                       category={course.category}
                       instructorName = {course.instructorName}
                       studentsEnrolled = {course.totalEnrollments}
+                      level={course.courseDifficulty}
                     />
                   </div>
                 ))}

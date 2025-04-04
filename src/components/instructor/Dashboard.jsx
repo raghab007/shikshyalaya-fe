@@ -102,114 +102,119 @@ const Dashboard = () => {
 
   // Initialize Charts
   useEffect(() => {
-    if (courses.length > 0) {
+    if (courses.length > 0 && studentChartRef.current && revenueChartRef.current && progressChartRef.current) {
       // Students by Course Bar Chart
-      if (studentChartRef.current) {
-        if (studentChart) studentChart.destroy();
-
-        const ctx = studentChartRef.current.getContext('2d');
-        const newStudentChart = new Chart(ctx, {
-          type: 'bar',
-          data: {
-            labels: courses.map(course => course.courseName),
-            datasets: [{
-              label: 'Number of Students',
-              data: courses.map(course => course.students),
-              backgroundColor: '#4285F4',
-              borderColor: '#3367d6',
-              borderWidth: 1,
-              borderRadius: 4,
-              barPercentage: 0.6,
-            }]
+      if (studentChart) studentChart.destroy();
+      
+      const studentCtx = studentChartRef.current.getContext('2d');
+      const newStudentChart = new Chart(studentCtx, {
+        type: 'bar',
+        data: {
+          labels: courses.map(course => course.courseName),
+          datasets: [{
+            label: 'Number of Students',
+            data: courses.map(course => Math.round(course.students)),
+            backgroundColor: '#4285F4',
+            borderColor: '#3367d6',
+            borderWidth: 1,
+            borderRadius: 4,
+            barPercentage: 0.6,
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              callbacks: {
+                label: function(context) {
+                  return `${context.raw} students`;
+                }
+              }
+            }
           },
-          options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-              legend: { display: false },
-              tooltip: {
-                callbacks: {
-                  label: (context) => `${context.raw} students`,
-                },
-              },
+          scales: {
+            y: { 
+              beginAtZero: true, 
+              grid: { drawBorder: false },
+              ticks: {
+                precision: 0 // Ensure whole numbers
+              }
             },
-            scales: {
-              y: { beginAtZero: true, grid: { drawBorder: false } },
-            },
+            x: {
+              grid: { display: false }
+            }
           },
-        });
-        setStudentChart(newStudentChart);
-      }
+        },
+      });
+      setStudentChart(newStudentChart);
 
       // Revenue by Course Pie Chart
-      if (revenueChartRef.current) {
-        if (revenueChart) revenueChart.destroy();
+      if (revenueChart) revenueChart.destroy();
 
-        const ctx = revenueChartRef.current.getContext('2d');
-        const newRevenueChart = new Chart(ctx, {
-          type: 'pie',
-          data: {
-            labels: courses.map(course => course.courseName),
-            datasets: [{
-              data: courses.map(course => course.coursePrice * course.students),
-              backgroundColor: COURSE_COLORS.slice(0, courses.length),
-              borderWidth: 1,
-              borderColor: '#fff',
-            }]
-          },
-          options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-              legend: { position: 'bottom', labels: { boxWidth: 12, padding: 15 } },
-              tooltip: {
-                callbacks: {
-                  label: (context) => {
-                    const value = context.raw;
-                    const total = context.dataset.data.reduce((a, b) => a + b, 0);
-                    const percentage = Math.round((value / total) * 100);
-                    return `₹${formatNumber(value)} (${percentage}%)`;
-                  },
+      const revenueCtx = revenueChartRef.current.getContext('2d');
+      const newRevenueChart = new Chart(revenueCtx, {
+        type: 'pie',
+        data: {
+          labels: courses.map(course => course.courseName),
+          datasets: [{
+            data: courses.map(course => Math.round(course.coursePrice * course.students)),
+            backgroundColor: COURSE_COLORS.slice(0, courses.length),
+            borderWidth: 1,
+            borderColor: '#fff',
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { position: 'bottom', labels: { boxWidth: 12, padding: 15 } },
+            tooltip: {
+              callbacks: {
+                label: (context) => {
+                  const value = context.raw;
+                  const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                  const percentage = Math.round((value / total) * 100);
+                  return `₹${formatNumber(value)} (${percentage}%)`;
                 },
               },
             },
           },
-        });
-        setRevenueChart(newRevenueChart);
-      }
+        },
+      });
+      setRevenueChart(newRevenueChart);
 
       // Course Progress Doughnut Chart
-      if (progressChartRef.current) {
-        if (progressChart) progressChart.destroy();
+      if (progressChart) progressChart.destroy();
 
-        const ctx = progressChartRef.current.getContext('2d');
-        const newProgressChart = new Chart(ctx, {
-          type: 'doughnut',
-          data: {
-            labels: progressData.map(item => item.name),
-            datasets: [{
-              data: progressData.map(item => item.value),
-              backgroundColor: PROGRESS_COLORS,
-              borderWidth: 1,
-              borderColor: '#fff',
-            }]
-          },
-          options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            cutout: '60%',
-            plugins: {
-              legend: { position: 'bottom', labels: { boxWidth: 12, padding: 15 } },
-              tooltip: {
-                callbacks: {
-                  label: (context) => `${context.raw}%`,
-                },
+      const progressCtx = progressChartRef.current.getContext('2d');
+      const newProgressChart = new Chart(progressCtx, {
+        type: 'doughnut',
+        data: {
+          labels: progressData.map(item => item.name),
+          datasets: [{
+            data: progressData.map(item => item.value),
+            backgroundColor: PROGRESS_COLORS,
+            borderWidth: 1,
+            borderColor: '#fff',
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          cutout: '60%',
+          plugins: {
+            legend: { position: 'bottom', labels: { boxWidth: 12, padding: 15 } },
+            tooltip: {
+              callbacks: {
+                label: (context) => `${context.raw}%`,
               },
             },
           },
-        });
-        setProgressChart(newProgressChart);
-      }
+        },
+      });
+      setProgressChart(newProgressChart);
     }
 
     // Cleanup
@@ -295,7 +300,7 @@ const Dashboard = () => {
               </div>
               <div>
                 <p className="text-sm text-gray-500 mb-1">Avg. Revenue/Student</p>
-                <p className="text-2xl font-bold text-gray-800">₹{formatNumber(Math.round(5000 / totalStudents))}</p>
+                <p className="text-2xl font-bold text-gray-800">₹{formatNumber(Math.round(5000 / Math.max(1, totalStudents)))}</p>
               </div>
             </div>
           </div>
@@ -353,7 +358,7 @@ const Dashboard = () => {
             </button>
           </div>
 
-    
+         
         </div>
 
         {/* Recent Courses Table */}

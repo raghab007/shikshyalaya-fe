@@ -117,7 +117,7 @@ export default function CourseCard({
           {/* Course Level */}
           <div className="flex items-center mt-1 text-xs text-gray-200">
             <span className="px-2 py-0.5 bg-gray-700/60 rounded-full">
-              {level}
+              {level? level:"Not specified"}
             </span>
             <span className="flex items-center ml-2">
               <FaClock className="mr-1" size={10} />

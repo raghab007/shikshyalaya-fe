@@ -6,6 +6,7 @@ function AddCourse() {
     const courseDescription = useRef(null);
     const coursePrice = useRef(null);
     const courseImage = useRef(null);
+    const courseDifficulty = useRef(null);
     const [courseCategory, setCourseCategory] = useState("");
     const [allCategories, setAllCategories] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
@@ -35,40 +36,21 @@ function AddCourse() {
         const description = courseDescription.current.value;
         const price = coursePrice.current.value;
         const image = courseImage.current.files[0];
+        const difficulty = courseDifficulty.current.value;
+        console.log(difficulty)
+        console.log(difficulty)
 
         if (!image) {
             alert("Please upload a course image.");
             return;
         }
-
-        
-        console.log(courseCategory)
-        console.log(courseCategory)
-        console.log(courseCategory)
-        console.log(courseCategory)
-        console.log(courseCategory)
-        console.log(courseCategory)
-        console.log(courseCategory)
-        console.log(courseCategory)
-        console.log(courseCategory)
-        console.log(courseCategory)
-        console.log(courseCategory)
-        console.log(courseCategory)
-        console.log(courseCategory)
-        console.log(courseCategory)
-        console.log(courseCategory)
-        console.log(courseCategory)
-        console.log(courseCategory)
-        console.log(courseCategory)
-        console.log(courseCategory)
-        console.log(courseCategory)
-        console.log(courseCategory)
         const formData = new FormData();
         formData.append("categoryId", courseCategory);
         formData.append("courseName", name);
         formData.append("courseDescription", description);
         formData.append("coursePrice", price);
         formData.append("courseImage", image);
+        formData.append("courseDifficulty",difficulty)
 
         const token = localStorage.getItem("token");
 
@@ -127,6 +109,17 @@ function AddCourse() {
                     />
                 </div>
 
+                
+                <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Difficulty</label>
+                    <select ref={courseDifficulty} name="cars" id="cars">
+                        <option value="BASIC">BASIC</option>
+                        <option value="INTERMEDIATE">INTERMEDIATE</option>
+                        <option value="ADVANCED">ADVANCED</option>
+                    </select>
+                </div>
+
+
                 <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">Course Image</label>
                     <input
@@ -135,6 +128,7 @@ function AddCourse() {
                         className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
                 </div>
+
 
                 <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">Course Category</label>
