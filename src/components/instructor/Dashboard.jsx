@@ -2,11 +2,13 @@ import React, { useState, useEffect, useRef } from "react";
 import { BookOpen, User, PieChart, Bell, Calendar, X, Eye, GraduationCap, DollarSign } from "lucide-react";
 import Chart from 'chart.js/auto';
 import axios from "axios";
+import {useNavigate} from "react-router-dom";
 
 const Dashboard = () => {
   // State for total students and courses
   const [totalStudents, setTotalStudents] = useState(0);
   const [totalCourses, setTotalCourses] = useState(0);
+  const [totalRevenue, setTotalRevenue] = useState(0);
 
   // Static data for courses, enrollments, notifications, and events
   const [courses, setCourses] = useState([]);
@@ -52,6 +54,8 @@ const Dashboard = () => {
     return new Date(dateString).toLocaleDateString(undefined, options);
   };
 
+  const navigate = useNavigate();
+
   // Progress data
   const progressData = [
     { name: "Not Started", value: 20 },
@@ -74,6 +78,7 @@ const Dashboard = () => {
         });
         setTotalStudents(response.data.TotalStudents);
         setTotalCourses(response.data.TotalCourses);
+        setTotalRevenue(response.data.TotalRevenue);
       } catch (error) {
         console.error("Error fetching stats:", error);
       }
@@ -287,7 +292,7 @@ const Dashboard = () => {
               </div>
               <div>
                 <p className="text-sm text-gray-500 mb-1">Total Revenue</p>
-                <p className="text-2xl font-bold text-gray-800">₹{formatNumber(5000)}</p>
+                <p className="text-2xl font-bold text-gray-800">{formatNumber(totalRevenue)}</p>
               </div>
             </div>
           </div>
@@ -364,7 +369,6 @@ const Dashboard = () => {
         {/* Recent Courses Table */}
         <div className="bg-white rounded-lg shadow mb-8">
           <div className="p-6 border-b">
-            <h2 className="text-lg font-semibold text-gray-800">Course Performance</h2>
           </div>
           <div className="overflow-x-auto">
             <table className="min-w-full bg-white">
@@ -387,7 +391,7 @@ const Dashboard = () => {
                     <td className="py-4 px-6 whitespace-nowrap text-gray-600">₹{formatNumber(course.coursePrice)}</td>
                     <td className="py-4 px-6 whitespace-nowrap text-gray-600">₹{formatNumber(course.coursePrice * course.students)}</td>
                     <td className="py-4 px-6 whitespace-nowrap">
-                      <button className="text-blue-600 hover:text-blue-800 font-medium text-sm">
+                      <button onClick={()=> navigate("/instructor/coursedetails/"+course.courseID)} className="text-blue-600 hover:text-blue-800 font-medium text-sm">
                         View Details
                       </button>
                     </td>

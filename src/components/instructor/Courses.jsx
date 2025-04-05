@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
-import { 
-  Button, 
-  TextField, 
+import {
+  Button,
+  TextField,
   CircularProgress,
   Tooltip,
   Chip,
@@ -47,7 +47,7 @@ function Courses() {
   // Sort and filter courses
   const processedCourses = courses
     ? courses
-        .filter((course) => 
+        .filter((course) =>
           course.courseName.toLowerCase().includes(searchTerm.toLowerCase())
         )
         .sort((a, b) => {
@@ -89,9 +89,9 @@ function Courses() {
         <div className="bg-red-50 border border-red-200 rounded-lg p-6 max-w-lg">
           <h2 className="text-2xl font-bold text-red-700 mb-2">Oops!</h2>
           <p className="text-red-600">{error}</p>
-          <Button 
-            variant="contained" 
-            color="primary" 
+          <Button
+            variant="contained"
+            color="primary"
             className="mt-4"
             onClick={() => window.location.reload()}
           >
@@ -119,7 +119,7 @@ function Courses() {
               New Course
             </Button>
           </Tooltip>
-          
+
           <div className="flex items-center gap-2 w-full sm:w-auto">
             <div className="relative flex-grow sm:flex-grow-0 sm:w-64">
               <TextField
@@ -136,9 +136,9 @@ function Courses() {
               />
             </div>
             <Tooltip title={`Sort ${sortOrder === 'asc' ? 'Z-A' : 'A-Z'}`} arrow>
-              <Button 
-                variant="outlined" 
-                color="primary" 
+              <Button
+                variant="outlined"
+                color="primary"
                 onClick={toggleSortOrder}
                 className="min-w-[50px]"
               >
@@ -155,18 +155,10 @@ function Courses() {
             <p className="text-2xl font-bold">{courses ? courses.length : 0}</p>
           </div>
           <div className="bg-white rounded-xl p-4 shadow-sm">
-            <p className="text-gray-500 text-sm">Active Courses</p>
-            <p className="text-2xl font-bold text-green-600">{courses ? courses.filter(c => c.isActive).length : 0}</p>
-          </div>
-          <div className="bg-white rounded-xl p-4 shadow-sm">
             <p className="text-gray-500 text-sm">Average Price</p>
             <p className="text-2xl font-bold">
               {courses ? `Rs ${Math.round(courses.reduce((acc, course) => acc + course.coursePrice, 0) / courses.length)}` : 'N/A'}
             </p>
-          </div>
-          <div className="bg-white rounded-xl p-4 shadow-sm">
-            <p className="text-gray-500 text-sm">Recent Activity</p>
-            <p className="text-2xl font-bold text-blue-600">Today</p>
           </div>
         </div>
 
@@ -193,9 +185,9 @@ function Courses() {
                         </svg>
                       </div>
                     )}
-                    <Chip 
+                    <Chip
                       label={`Rs ${course.coursePrice}`}
-                      className="absolute top-3 right-3 bg-white shadow-md" 
+                      className="absolute top-3 right-3 bg-white shadow-md"
                       size="small"
                     />
                   </div>
@@ -214,7 +206,7 @@ function Courses() {
                         <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
                         </svg>
-                        {course.enrollments ? course.enrollments.length : 0} students
+                        {course.totalEnrollments? course.totalEnrollments:0} students
                       </span>
                     </div>
                     <Link
@@ -231,8 +223,8 @@ function Courses() {
             {/* Pagination */}
             {pageCount > 1 && (
               <Box display="flex" justifyContent="center" mt={6}>
-                <Pagination 
-                  count={pageCount} 
+                <Pagination
+                  count={pageCount}
                   page={currentPage}
                   onChange={handlePageChange}
                   color="primary"
@@ -254,8 +246,8 @@ function Courses() {
               {searchTerm ? "No courses match your search." : "No courses available yet"}
             </h3>
             <p className="text-gray-600 mb-6 max-w-md mx-auto">
-              {searchTerm 
-                ? "Try a different search term or clear the search field to see all courses." 
+              {searchTerm
+                ? "Try a different search term or clear the search field to see all courses."
                 : "Start creating your first course to build your teaching portfolio."}
             </p>
             <Button

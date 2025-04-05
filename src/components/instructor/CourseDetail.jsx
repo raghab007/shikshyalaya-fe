@@ -13,6 +13,8 @@ export default function CourseDetails() {
     const [sectionDescription, setSectionDescription] = useState("");
     const [course, setCourse] = useState(null);
     const [editedCourse, setEditedCourse] = useState(null);
+    const [totalEnrollments, setTotalEnrollments] = useState(0);
+    const [courseDescription, setCourseDescription] = useState("");
     const token = localStorage.getItem("token");
 
     useEffect(() => {
@@ -34,6 +36,8 @@ export default function CourseDetails() {
             const response = await axios.get(`http://localhost:8085/course/${courseId}`);
             setCourse(response.data);
             setSections(response.data.sections || []);
+            setTotalEnrollments(response.data.totalEnrollments)
+            setCourseDescription(response.data.courseDescription);
         } catch (error) {
             console.error("Error fetching course details:", error);
             setError(true);
@@ -224,9 +228,6 @@ export default function CourseDetails() {
                                 <span className="bg-white/20 text-white px-4 py-2 rounded-full text-lg font-semibold">
                                     Price: {course.coursePrice}
                                 </span>
-                                <span className="bg-white/10 text-indigo-100 px-4 py-2 rounded-full text-sm">
-                                    Course ID: {courseId}
-                                </span>
                             </div>
                         </div>
                     </div>
@@ -245,8 +246,7 @@ export default function CourseDetails() {
                                 Course Overview
                             </h2>
                             <p className="text-gray-600 leading-relaxed">
-                                This course provides in-depth knowledge on modern web development.
-                                Instructors can add sections, manage content, and track student progress.
+                                {courseDescription}
                             </p>
                         </div>
 
@@ -325,12 +325,6 @@ export default function CourseDetails() {
                                     </svg>
                                     Edit Course Details
                                 </button>
-                                <button className="w-full px-4 py-3 border-2 border-blue-600 text-blue-600 rounded-lg hover:bg-blue-50 transition flex items-center justify-center font-medium">
-                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
-                                        <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z" />
-                                    </svg>
-                                    View Student Progress
-                                </button>
                                 <button
                                     className="w-full px-4 py-3 border-2 border-red-600 text-red-600 rounded-lg hover:bg-red-50 transition flex items-center justify-center font-medium"
                                     onClick={() => setIsDeleteConfirmationOpen(true)}
@@ -382,20 +376,10 @@ export default function CourseDetails() {
                                         Enrolled Students
                                     </dt>
                                     <dd className="text-gray-800 font-medium bg-indigo-100 py-1 px-3 rounded-full">
-                                        1,234
+                                        {totalEnrollments}
                                     </dd>
                                 </div>
-                                <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
-                                    <dt className="text-gray-600 flex items-center">
-                                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2 text-indigo-500" viewBox="0 0 20 20" fill="currentColor">
-                                            <path fillRule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clipRule="evenodd" />
-                                        </svg>
-                                        Last Updated
-                                    </dt>
-                                    <dd className="text-gray-800 font-medium bg-indigo-100 py-1 px-3 rounded-full">
-                                        March 15, 2024
-                                    </dd>
-                                </div>
+
                             </dl>
                         </div>
                     </div>
