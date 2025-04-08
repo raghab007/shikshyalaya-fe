@@ -35,7 +35,6 @@ const ProfileCard = ({ state, logout }) => (
       {state.firstName?.charAt(0) || "U"}
     </div>
     <h2 className="text-xl font-bold">{state.firstName + " " + state.lastName}</h2>
-    <p className="text-gray-500">{state.role}</p>
     <div className="w-full border-t border-gray-200 my-4"></div>
     <div className="space-y-2 w-full">
       <div className="flex items-center text-gray-600">
@@ -132,37 +131,25 @@ const TransactionsTab = () => (
         <thead>
           <tr className="bg-gray-100 text-gray-600 uppercase text-sm leading-normal">
             <th className="py-3 px-4 text-left">Date</th>
-            <th className="py-3 px-4 text-left">Description</th>
+            <th className="py-3 px-4 text-left">Course</th>
             <th className="py-3 px-4 text-right">Amount</th>
-            <th className="py-3 px-4 text-left">Status</th>
           </tr>
         </thead>
         <tbody className="text-gray-600 text-sm">
           <tr className="border-b border-gray-200 hover:bg-gray-50">
             <td className="py-3 px-4">2023-10-15</td>
-            <td className="py-3 px-4">Premium Membership</td>
-            <td className="py-3 px-4 text-right">$9.99</td>
-            <td className="py-3 px-4">
-              <span className="bg-green-100 text-green-800 py-1 px-2 rounded-full text-xs">
-                Completed
-              </span>
-            </td>
+            <td className="py-3 px-4">Java</td>
+            <td className="py-3 px-4 text-right">2100</td>
+
           </tr>
           <tr className="border-b border-gray-200 hover:bg-gray-50">
             <td className="py-3 px-4">2023-09-01</td>
-            <td className="py-3 px-4">Service Fee</td>
-            <td className="py-3 px-4 text-right">$4.99</td>
-            <td className="py-3 px-4">
-              <span className="bg-green-100 text-green-800 py-1 px-2 rounded-full text-xs">
-                Completed
-              </span>
-            </td>
+            <td className="py-3 px-4">Python</td>
+            <td className="py-3 px-4 text-right">4099</td>
+
           </tr>
         </tbody>
       </table>
-    </div>
-    <div className="mt-4 text-center text-sm text-gray-500">
-      Showing 2 of 5 transactions
     </div>
   </div>
 );

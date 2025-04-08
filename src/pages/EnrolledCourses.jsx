@@ -39,6 +39,7 @@ function EnrolledCourses() {
             Authorization: "Bearer " + localStorage.getItem("token")
           }
         });
+        console.log(response.data)
         setEnrolledCourses(response.data);
         setIsLoading(false);
       } catch (err) {
@@ -99,13 +100,13 @@ function EnrolledCourses() {
           <EnrolledCourseCard
             key={course.courseId}
             courseId={course.courseId}
-            courseDescription={course.courseDescription}
+            courseDescription={course.description}
             courseInstructor={course.courseInstructor}
             courseImageSrc={course.image}
-            courseName={course.courseName}
-            progress={Math.floor(Math.random() * 100)} // Replace with actual progress
-            totalLessons={Math.floor(Math.random() * 20) + 5} // Replace with actual total
-            completedLessons={Math.floor(Math.random() * 10)} // Replace with actual completed
+            courseName={course.name}
+            progress={course.totalFinished} // Replace with actual progress
+            totalLessons={course.totalLectures} // Replace with actual total
+            completedLessons={course.totalFinished} // Replace with actual completed
           />
         ))}
       </div>
@@ -179,12 +180,12 @@ function EnrollCourseTab() {
   const [currentTab, setCurrentTab] = useState(!isArchived);
 
   return (
-    <div className="inline-flex bg-blue-700/30 backdrop-blur-sm rounded-lg p-1 shadow">
+    <div className="inline-flex  500/30 backdrop-blur-sm rounded-lg p-1 shadow">
       <Link 
         to="/enrolled"  
         className={`flex items-center py-2 px-4 rounded-md text-sm transition-all duration-200 ${
           currentTab 
-            ? "bg-white text-blue-800 font-medium shadow" 
+            ? "bg-white text-blue-500 font-medium shadow" 
             : "text-blue-100 hover:bg-blue-700/30"
         }`}
         onClick={() => setCurrentTab(true)}

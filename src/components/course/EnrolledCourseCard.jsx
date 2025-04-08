@@ -19,6 +19,9 @@ function EnrolledCourseCard({
     navigate(`/course/${courseId}`);
   };
 
+  console.log("data")
+  console.log(totalLessons, completedLessons, progress);
+
   // Calculate progress percentage for the progress bar
   const progressPercentage = totalLessons > 0 ? (completedLessons / totalLessons) * 100 : progress;
 

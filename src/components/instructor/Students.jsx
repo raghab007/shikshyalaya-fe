@@ -1,13 +1,13 @@
-import React, { useState } from "react";
+import React, {useEffect, useState} from "react";
 
 function EnrolledStudents() {
     // Static data for enrolled students
     const enrolledStudents = [
-        { id: 1, name: "Raghab Pokhrel", email: "john.doe@example.com", course: "React Basics", enrollmentDate: "2023-10-01", status: "Active" },
-        { id: 2, name: "Aastha Aryal", email: "jane.smith@example.com", course: "Advanced JavaScript", enrollmentDate: "2023-10-02", status: "Active" },
-        { id: 3, name: "Niroj Panta", email: "alice.johnson@example.com", course: "React Basics", enrollmentDate: "2023-10-03", status: "On Hold" },
-        { id: 4, name: "Pemba Lama", email: "bob.brown@example.com", course: "Node.js Fundamentals", enrollmentDate: "2023-10-04", status: "Active" },
-        { id: 5, name: "Alish Sunuwar", email: "charlie.davis@example.com", course: "Advanced JavaScript", enrollmentDate: "2023-10-05", status: "Inactive" },
+        { id: 1, name: "Raghab Pokhrel", email: "raghab@email.com", course: "React Basics", enrollmentDate: "2023-10-01"  },
+        { id: 2, name: "Aastha Aryal", email: "aastha@gmail.com", course: "Advanced JavaScript", enrollmentDate: "2023-10-02"  },
+        { id: 3, name: "Niroj Panta", email: "niroj@gmail.com", course: "React Basics", enrollmentDate: "2023-10-03" },
+        { id: 4, name: "Pemba Lama", email: "pemba@gmail.com", course: "Node.js Fundamentals", enrollmentDate: "2023-10-04" },
+        { id: 5, name: "Alish Sunuwar", email: "alish@gmail.com", course: "Advanced JavaScript", enrollmentDate: "2023-10-05" },
     ];
 
     // States
@@ -22,6 +22,9 @@ function EnrolledStudents() {
     const uniqueCourses = [...new Set(enrolledStudents.map((student) => student.course))];
     const uniqueStatuses = [...new Set(enrolledStudents.map((student) => student.status))];
 
+    useEffect(() => {
+
+    })
     // Handle sort
     const requestSort = (key) => {
         let direction = 'ascending';
@@ -143,6 +146,10 @@ function EnrolledStudents() {
                                 <div className="font-semibold text-lg text-blue-600">{enrolledStudents.length}</div>
                                 <div className="text-gray-500">Total</div>
                             </div>
+
+
+
+
                             <div className="text-center">
                                 <div className="font-semibold text-lg text-green-600">
                                     {enrolledStudents.filter(s => s.status === 'Active').length}
@@ -187,21 +194,7 @@ function EnrolledStudents() {
                                     className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                                 />
                             </div>
-                            <div className="flex-1">
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
-                                <select
-                                    value={statusFilter}
-                                    onChange={(e) => setStatusFilter(e.target.value)}
-                                    className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                >
-                                    <option value="">All Statuses</option>
-                                    {uniqueStatuses.map((status, index) => (
-                                        <option key={index} value={status}>
-                                            {status}
-                                        </option>
-                                    ))}
-                                </select>
-                            </div>
+
                         </div>
                         <div className="mt-4 flex justify-end">
                             <button
@@ -252,14 +245,6 @@ function EnrolledStudents() {
                                             Enrollment Date {getSortDirectionIndicator('enrollmentDate')}
                                         </div>
                                     </th>
-                                    <th 
-                                        className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
-                                        onClick={() => requestSort('status')}
-                                    >
-                                        <div className="flex items-center gap-1">
-                                            Status {getSortDirectionIndicator('status')}
-                                        </div>
-                                    </th>
                                 </tr>
                             </thead>
                             <tbody className="bg-white divide-y divide-gray-200">
@@ -273,11 +258,7 @@ function EnrolledStudents() {
                                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
                                             {new Date(student.enrollmentDate).toLocaleDateString()}
                                         </td>
-                                        <td className="px-6 py-4 whitespace-nowrap">
-                                            <span className={`px-2 py-1 text-xs rounded-full ${getStatusBadgeClass(student.status)}`}>
-                                                {student.status}
-                                            </span>
-                                        </td>
+
                                     </tr>
                                 ))}
                             </tbody>

@@ -125,7 +125,7 @@ export default function CourseDetails() {
               <p className="opacity-90 mt-1">Master {course.courseName} with hands-on projects</p>
             </div>
             <div className="bg-white/20 backdrop-blur-sm px-4 py-2 rounded-lg">
-              <span className="text-lg font-semibold">₹{course.coursePrice}</span>
+              <span className="text-lg font-semibold">Rs {course.coursePrice}</span>
             </div>
           </div>
         </div>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { BookOpen, User, PieChart, Bell, Calendar, X, Eye, GraduationCap, DollarSign } from "lucide-react";
+import { BookOpen, User, PieChart, Bell, Calendar, X, Eye, GraduationCap, DollarSign, ChevronLeft, ChevronRight, Check } from "lucide-react";
 import Chart from 'chart.js/auto';
 import axios from "axios";
 import {useNavigate} from "react-router-dom";
@@ -346,11 +346,7 @@ const Dashboard = () => {
             <div className="divide-y">
               {recentEnrollments.map((enrollment) => (
                 <div key={enrollment.id} className="py-3 flex items-center space-x-3">
-                  <img
-                    src={enrollment.studentAvatar}
-                    alt={enrollment.studentName}
-                    className="w-10 h-10 rounded-full object-cover border border-gray-200"
-                  />
+
                   <div>
                     <p className="font-medium text-gray-800">{enrollment.studentName}</p>
                     <p className="text-sm text-gray-500">Enrolled in {enrollment.courseName}</p>
@@ -401,15 +397,15 @@ const Dashboard = () => {
             </table>
           </div>
           <div className="p-4 border-t flex justify-between items-center">
-            <button className="px-4 py-2 text-sm text-blue-600 hover:text-blue-800 transition-colors duration-200 font-medium">
-              View All Courses
+            <button className="flex items-center px-4 py-2 text-sm text-blue-600 hover:text-blue-800 transition-transform transform hover:scale-105 duration-200 font-medium">
+              <Eye className="mr-2" /> View All Courses
             </button>
             <div className="flex space-x-2">
-              <button className="px-4 py-2 text-sm bg-white border border-gray-300 rounded text-gray-700 hover:bg-gray-50 transition-colors duration-200">
-                Previous
+              <button className="flex items-center px-4 py-2 text-sm bg-white border border-gray-300 rounded text-gray-700 hover:bg-gray-50 transition-transform transform hover:scale-105 duration-200">
+                <ChevronLeft className="mr-2" /> Previous
               </button>
-              <button className="px-4 py-2 text-sm bg-blue-600 rounded text-white hover:bg-blue-700 transition-colors duration-200">
-                Next
+              <button className="flex items-center px-4 py-2 text-sm bg-blue-600 rounded text-white hover:bg-blue-700 transition-transform transform hover:scale-105 duration-200">
+                Next <ChevronRight className="ml-2" />
               </button>
             </div>
           </div>
@@ -418,16 +414,16 @@ const Dashboard = () => {
 
       {/* Notifications Modal */}
       {showNotificationsModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg w-full max-w-md overflow-hidden">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4 animate-fade-in">
+          <div className="bg-white rounded-lg w-full max-w-md overflow-hidden shadow-lg">
             <div className="flex items-center justify-between p-4 border-b">
               <h2 className="text-lg font-semibold text-gray-800 flex items-center">
-                <Bell className="text-blue-600 mr-2" />
-                Notifications
+                <Bell className="text-blue-600 mr-2" /> Notifications
               </h2>
               <button
                 onClick={() => setShowNotificationsModal(false)}
-                className="text-gray-400 hover:text-gray-500 transition-colors duration-200"
+                className="text-gray-400 hover:text-gray-500 transition-transform transform hover:scale-110 duration-200"
+                title="Close notifications"
               >
                 <X className="text-xl" />
               </button>
@@ -435,12 +431,16 @@ const Dashboard = () => {
             <div className="max-h-96 overflow-y-auto">
               {notifications.length === 0 ? (
                 <div className="p-4 text-center text-gray-500">
+                  <Bell className="text-4xl text-gray-300 mb-2" />
                   No notifications yet
                 </div>
               ) : (
                 <div className="divide-y">
                   {notifications.map((notification) => (
-                    <div key={notification.id} className="p-4 hover:bg-gray-50 transition-colors duration-200">
+                    <div
+                      key={notification.id}
+                      className="p-4 hover:bg-gray-50 transition-colors duration-200"
+                    >
                       <div className="flex items-start">
                         <div className="flex-shrink-0 pt-1">
                           <div className="w-2 h-2 bg-blue-600 rounded-full"></div>
@@ -458,14 +458,16 @@ const Dashboard = () => {
             <div className="p-4 border-t flex justify-between">
               <button
                 onClick={() => setShowNotificationsModal(false)}
-                className="px-4 py-2 bg-white text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors duration-200 text-sm font-medium"
+                className="flex items-center px-4 py-2 bg-white text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50 transition-transform transform hover:scale-105 duration-200 text-sm font-medium"
+                title="Close notifications"
               >
-                Close
+                <X className="mr-2" /> Close
               </button>
               <button
-                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 text-sm font-medium"
+                className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-transform transform hover:scale-105 duration-200 text-sm font-medium"
+                title="Mark all notifications as read"
               >
-                Mark All as Read
+                <Check className="mr-2" /> Mark All as Read
               </button>
             </div>
           </div>

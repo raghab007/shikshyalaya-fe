@@ -14,7 +14,7 @@ const VideoCard = ({ title, image = "https://images.unsplash.com/photo-150150490
       <div className="w-full h-44 rounded-lg overflow-hidden relative">
         {image ? (
           <img
-            src={image}
+            src={"http://localhost:8085/images/thumbnails/" +image }
             alt={title}
             className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
           />
@@ -110,6 +110,7 @@ export default function UploadLecture() {
           Authorization: `Bearer ${localStorage.getItem("token")}`
         }
       });
+      console.log(response.data);
       setVideos(response.data);
     } catch (error) {
       setError("Failed to fetch videos. Showing static examples.");
