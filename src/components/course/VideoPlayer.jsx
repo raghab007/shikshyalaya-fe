@@ -8,11 +8,9 @@ import axios from "axios";
 const VideoPlayer = ({ selectedVideo }) => {
   const [showComments, setShowComments] = useState(true);
   const [comments, setComments] = useState([]);
-  const [rating, setRating] = useState(0);
-  const [userRating, setUserRating] = useState(0);
-  const [hoverRating, setHoverRating] = useState(0);
-  const [isCompleted, setIsCompleted] = useState(selectedVideo.completed);
+  const [isCompleted, setIsCompleted] = useState(false);
 
+  console.log("Selected Video:", selectedVideo);
   useEffect(() => {
     if (selectedVideo?.id) {
       fetchComments();
@@ -62,7 +60,7 @@ const VideoPlayer = ({ selectedVideo }) => {
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold text-gray-900">{selectedVideo.title}</h1>
         <div className="flex items-center space-x-4">
-          {!isCompleted ? (
+          {!selectedVideo.completed ? (
             <motion.button
               onClick={() => onMarkCompleted()}
               className="flex items-center bg-[#42ACD0] text-white px-4 py-2 rounded-lg hover:bg-[#368cb1] transition-all duration-200"

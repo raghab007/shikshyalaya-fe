@@ -6,7 +6,8 @@ import {
     FaUsers, 
     FaSignOutAlt, 
     FaChartLine, 
-    FaMoneyBill 
+    FaMoneyBill, 
+    FaComment
   } from 'react-icons/fa';
   import { Link, useLocation } from 'react-router-dom';
   
@@ -59,9 +60,9 @@ import {
             <h3 className="text-xs uppercase text-blue-500 font-semibold mb-2 px-4">Analytics</h3>
             <div className="space-y-1">
               <NavItem 
-                to="/instructor/reports" 
-                icon={<FaChartLine />} 
-                label="Feedback" 
+                to="/instructor/comments" 
+                icon={<FaComment />} 
+                label="Comments" 
                 isActive={location.pathname.includes("/instructor/reports")}
               />
               <NavItem 

@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import VideoList from "../components/course/VideoList";
 import VideoPlayer from "../components/course/VideoPlayer";
+import { useEffect, useState } from "react";
 
 const UserCourse = () => {
   const { courseId } = useParams();
@@ -11,7 +11,7 @@ const UserCourse = () => {
   const [completedVideos, setCompletedVideos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [expandedSection, setExpandedSection] = useState(null);
-
+  console.log("Selected Video:", selectedVideo);
   const getSections = async () => {
     try {
       const response = await axios.get(
@@ -22,7 +22,6 @@ const UserCourse = () => {
           },
         }
       );
-      console.log
       setSections(response.data.sections);
       
       // Get completed videos
@@ -88,4 +87,4 @@ const UserCourse = () => {
   );
 };
 
-export default UserCourse;
+export default UserCourse

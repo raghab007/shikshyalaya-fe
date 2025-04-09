@@ -9,52 +9,54 @@ const Dashboard = () => {
   const [totalStudents, setTotalStudents] = useState(0);
   const [totalCourses, setTotalCourses] = useState(0);
   const [totalRevenue, setTotalRevenue] = useState(0);
-
-  // Static data for courses, enrollments, notifications, and events
   const [courses, setCourses] = useState([]);
+
+  // Static data for charts
+  const staticChartData = [
+    {
+      courseName: "React Fundamentals",
+      students: 85,
+      coursePrice: 2999
+    },
+    {
+      courseName: "Advanced JavaScript",
+      students: 62,
+      coursePrice: 3499
+    },
+    {
+      courseName: "Node.js Backend",
+      students: 45,
+      coursePrice: 3999
+    },
+    {
+      courseName: "CSS Mastery",
+      students: 53,
+      coursePrice: 2499
+    }
+  ];
+
+  // Other static data
   const [recentEnrollments] = useState([
-    { id: 1, studentName: "John Doe", studentAvatar: "https://via.placeholder.com/40", courseName: "React Basics" },
-    { id: 2, studentName: "Jane Smith", studentAvatar: "https://via.placeholder.com/40", courseName: "Advanced JavaScript" },
-    { id: 3, studentName: "Alice Johnson", studentAvatar: "https://via.placeholder.com/40", courseName: "Node.js Fundamentals" },
+    { id: 1, studentName: "John Doe", courseName: "React Fundamentals" },
+    { id: 2, studentName: "Jane Smith", courseName: "Advanced JavaScript" },
+    { id: 3, studentName: "Alice Johnson", courseName: "Node.js Backend" },
   ]);
 
   const [notifications] = useState([
-    { id: 1, message: "New enrollment in React Basics", time: "2 hours ago" },
-    { id: 2, message: "Course Node.js Fundamentals updated", time: "5 hours ago" },
+    { id: 1, message: "New enrollment in React Fundamentals", time: "2 hours ago" },
+    { id: 2, message: "Course Node.js Backend updated", time: "5 hours ago" },
     { id: 3, message: "New message from Jane Smith", time: "1 day ago" },
   ]);
 
-  const [upcomingEvents] = useState([
-    { id: 1, title: "Webinar: Advanced React", date: "2023-10-15" },
-    { id: 2, title: "Workshop: Node.js Best Practices", date: "2023-10-20" },
-    { id: 3, title: "Live Q&A Session", date: "2023-10-25" },
-  ]);
-
   const [showNotificationsModal, setShowNotificationsModal] = useState(false);
-  const [activeTab, setActiveTab] = useState("courses");
 
-  // Chart.js refs
+  // Chart refs and instances
   const studentChartRef = useRef(null);
   const revenueChartRef = useRef(null);
   const progressChartRef = useRef(null);
-
-  // Chart instances
   const [studentChart, setStudentChart] = useState(null);
   const [revenueChart, setRevenueChart] = useState(null);
   const [progressChart, setProgressChart] = useState(null);
-
-  // Format number with commas
-  const formatNumber = (num) => {
-    return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-  };
-
-  // Format date
-  const formatDate = (dateString) => {
-    const options = { year: 'numeric', month: 'short', day: 'numeric' };
-    return new Date(dateString).toLocaleDateString(undefined, options);
-  };
-
-  const navigate = useNavigate();
 
   // Progress data
   const progressData = [
@@ -63,11 +65,14 @@ const Dashboard = () => {
     { name: "Completed", value: 30 },
   ];
 
-  // Colors for charts
+  // Colors
   const PROGRESS_COLORS = ["#FF6384", "#36A2EB", "#4CAF50"];
-  const COURSE_COLORS = ["#4285F4", "#EA4335", "#FBBC05", "#34A853", "#8e24aa", "#16a085"];
+  const COURSE_COLORS = ["#4285F4", "#EA4335", "#FBBC05", "#34A853"];
 
-  // Fetch total students and courses
+  const formatNumber = (num) => num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  const navigate = useNavigate();
+
+  // Fetch dynamic data
   useEffect(() => {
     async function fetchStats() {
       try {
@@ -84,11 +89,6 @@ const Dashboard = () => {
       }
     }
 
-    fetchStats();
-  }, []);
-
-  // Fetch courses
-  useEffect(() => {
     async function fetchCourses() {
       try {
         const response = await axios.get("http://localhost:8085/instructor/course", {
@@ -102,12 +102,13 @@ const Dashboard = () => {
       }
     }
 
+    fetchStats();
     fetchCourses();
   }, []);
 
-  // Initialize Charts
+  // Initialize Charts with static data
   useEffect(() => {
-    if (courses.length > 0 && studentChartRef.current && revenueChartRef.current && progressChartRef.current) {
+    if (studentChartRef.current && revenueChartRef.current && progressChartRef.current) {
       // Students by Course Bar Chart
       if (studentChart) studentChart.destroy();
       
@@ -115,10 +116,10 @@ const Dashboard = () => {
       const newStudentChart = new Chart(studentCtx, {
         type: 'bar',
         data: {
-          labels: courses.map(course => course.courseName),
+          labels: staticChartData.map(course => course.courseName),
           datasets: [{
             label: 'Number of Students',
-            data: courses.map(course => Math.round(course.students)),
+            data: staticChartData.map(course => course.students),
             backgroundColor: '#4285F4',
             borderColor: '#3367d6',
             borderWidth: 1,
@@ -133,9 +134,7 @@ const Dashboard = () => {
             legend: { display: false },
             tooltip: {
               callbacks: {
-                label: function(context) {
-                  return `${context.raw} students`;
-                }
+                label: context => `${context.raw} students`
               }
             }
           },
@@ -143,13 +142,9 @@ const Dashboard = () => {
             y: { 
               beginAtZero: true, 
               grid: { drawBorder: false },
-              ticks: {
-                precision: 0 // Ensure whole numbers
-              }
+              ticks: { precision: 0 }
             },
-            x: {
-              grid: { display: false }
-            }
+            x: { grid: { display: false } }
           },
         },
       });
@@ -162,10 +157,10 @@ const Dashboard = () => {
       const newRevenueChart = new Chart(revenueCtx, {
         type: 'pie',
         data: {
-          labels: courses.map(course => course.courseName),
+          labels: staticChartData.map(course => course.courseName),
           datasets: [{
-            data: courses.map(course => Math.round(course.coursePrice * course.students)),
-            backgroundColor: COURSE_COLORS.slice(0, courses.length),
+            data: staticChartData.map(course => course.coursePrice * course.students),
+            backgroundColor: COURSE_COLORS,
             borderWidth: 1,
             borderColor: '#fff',
           }]
@@ -177,16 +172,11 @@ const Dashboard = () => {
             legend: { position: 'bottom', labels: { boxWidth: 12, padding: 15 } },
             tooltip: {
               callbacks: {
-                label: (context) => {
-                  const value = context.raw;
-                  const total = context.dataset.data.reduce((a, b) => a + b, 0);
-                  const percentage = Math.round((value / total) * 100);
-                  return `₹${formatNumber(value)} (${percentage}%)`;
-                },
-              },
-            },
-          },
-        },
+                label: context => `₹${formatNumber(context.raw)}`
+              }
+            }
+          }
+        }
       });
       setRevenueChart(newRevenueChart);
 
@@ -213,22 +203,21 @@ const Dashboard = () => {
             legend: { position: 'bottom', labels: { boxWidth: 12, padding: 15 } },
             tooltip: {
               callbacks: {
-                label: (context) => `${context.raw}%`,
-              },
-            },
-          },
-        },
+                label: context => `${context.raw}%`
+              }
+            }
+          }
+        }
       });
       setProgressChart(newProgressChart);
     }
 
-    // Cleanup
     return () => {
       if (studentChart) studentChart.destroy();
       if (revenueChart) revenueChart.destroy();
       if (progressChart) progressChart.destroy();
     };
-  }, [courses]);
+  }, []);
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -239,15 +228,10 @@ const Dashboard = () => {
             <h1 className="text-2xl font-bold text-gray-800">Instructor Dashboard</h1>
             <div className="flex items-center space-x-4">
               <button
-                className="relative p-2 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors duration-200"
+                className="relative p-2 rounded-full bg-gray-100 hover:bg-gray-200"
                 onClick={() => setShowNotificationsModal(true)}
               >
-                <Bell className="text-xl text-gray-600" />
-                {notifications.length > 0 && (
-                  <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full">
-                    {notifications.length}
-                  </span>
-                )}
+               
               </button>
             </div>
           </div>
@@ -259,7 +243,7 @@ const Dashboard = () => {
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           {/* Total Courses Card */}
-          <div className="bg-white rounded-lg shadow p-6 transition-all duration-300 hover:shadow-lg transform hover:-translate-y-1">
+          <div className="bg-white rounded-lg shadow p-6 hover:shadow-lg transition-all">
             <div className="flex items-center space-x-4">
               <div className="p-3 bg-blue-100 rounded-lg">
                 <BookOpen className="text-2xl text-blue-600" />
@@ -272,7 +256,7 @@ const Dashboard = () => {
           </div>
 
           {/* Total Students Card */}
-          <div className="bg-white rounded-lg shadow p-6 transition-all duration-300 hover:shadow-lg transform hover:-translate-y-1">
+          <div className="bg-white rounded-lg shadow p-6 hover:shadow-lg transition-all">
             <div className="flex items-center space-x-4">
               <div className="p-3 bg-green-100 rounded-lg">
                 <User className="text-2xl text-green-600" />
@@ -285,7 +269,7 @@ const Dashboard = () => {
           </div>
 
           {/* Total Revenue Card */}
-          <div className="bg-white rounded-lg shadow p-6 transition-all duration-300 hover:shadow-lg transform hover:-translate-y-1">
+          <div className="bg-white rounded-lg shadow p-6 hover:shadow-lg transition-all">
             <div className="flex items-center space-x-4">
               <div className="p-3 bg-purple-100 rounded-lg">
                 <DollarSign className="text-2xl text-purple-600" />
@@ -298,14 +282,16 @@ const Dashboard = () => {
           </div>
 
           {/* Avg. Revenue/Student Card */}
-          <div className="bg-white rounded-lg shadow p-6 transition-all duration-300 hover:shadow-lg transform hover:-translate-y-1">
+          <div className="bg-white rounded-lg shadow p-6 hover:shadow-lg transition-all">
             <div className="flex items-center space-x-4">
               <div className="p-3 bg-amber-100 rounded-lg">
                 <GraduationCap className="text-2xl text-amber-600" />
               </div>
               <div>
                 <p className="text-sm text-gray-500 mb-1">Avg. Revenue/Student</p>
-                <p className="text-2xl font-bold text-gray-800">₹{formatNumber(Math.round(5000 / Math.max(1, totalStudents)))}</p>
+                <p className="text-2xl font-bold text-gray-800">
+                  ₹{totalStudents > 0 ? formatNumber(Math.round(totalRevenue / totalStudents)) : 0}
+                </p>
               </div>
             </div>
           </div>
@@ -345,26 +331,23 @@ const Dashboard = () => {
             <h2 className="text-lg font-semibold text-gray-800 mb-4">Recent Enrollments</h2>
             <div className="divide-y">
               {recentEnrollments.map((enrollment) => (
-                <div key={enrollment.id} className="py-3 flex items-center space-x-3">
-
-                  <div>
-                    <p className="font-medium text-gray-800">{enrollment.studentName}</p>
-                    <p className="text-sm text-gray-500">Enrolled in {enrollment.courseName}</p>
-                  </div>
+                <div key={enrollment.id} className="py-3">
+                  <p className="font-medium text-gray-800">{enrollment.studentName}</p>
+                  <p className="text-sm text-gray-500">Enrolled in {enrollment.courseName}</p>
                 </div>
               ))}
             </div>
-            <button className="mt-4 w-full py-2 bg-blue-50 hover:bg-blue-100 transition-colors duration-200 rounded text-sm font-medium text-blue-700 flex items-center justify-center">
+            <button className="mt-4 w-full py-2 bg-blue-50 hover:bg-blue-100 rounded text-sm font-medium text-blue-700 flex items-center justify-center">
               <Eye className="mr-2" /> View All Enrollments
             </button>
           </div>
 
-         
         </div>
 
         {/* Recent Courses Table */}
-        <div className="bg-white rounded-lg shadow mb-8">
+        <div className="bg-white rounded-lg shadow mb-8 overflow-hidden">
           <div className="p-6 border-b">
+            <h2 className="text-lg font-semibold text-gray-800">Your Courses</h2>
           </div>
           <div className="overflow-x-auto">
             <table className="min-w-full bg-white">
@@ -380,14 +363,17 @@ const Dashboard = () => {
               </thead>
               <tbody className="divide-y divide-gray-200">
                 {courses.map((course) => (
-                  <tr key={course.id} className="hover:bg-gray-50 transition-colors duration-100">
+                  <tr key={course.id} className="hover:bg-gray-50">
                     <td className="py-4 px-6 whitespace-nowrap font-medium text-gray-800">{course.courseName}</td>
                     <td className="py-4 px-6 whitespace-nowrap text-gray-600">{course.courseDescription}</td>
                     <td className="py-4 px-6 whitespace-nowrap text-gray-600">{course.students}</td>
                     <td className="py-4 px-6 whitespace-nowrap text-gray-600">₹{formatNumber(course.coursePrice)}</td>
                     <td className="py-4 px-6 whitespace-nowrap text-gray-600">₹{formatNumber(course.coursePrice * course.students)}</td>
                     <td className="py-4 px-6 whitespace-nowrap">
-                      <button onClick={()=> navigate("/instructor/coursedetails/"+course.courseID)} className="text-blue-600 hover:text-blue-800 font-medium text-sm">
+                      <button 
+                        onClick={() => navigate(`/instructor/coursedetails/${course.courseID}`)} 
+                        className="text-blue-600 hover:text-blue-800 font-medium text-sm"
+                      >
                         View Details
                       </button>
                     </td>
@@ -397,14 +383,14 @@ const Dashboard = () => {
             </table>
           </div>
           <div className="p-4 border-t flex justify-between items-center">
-            <button className="flex items-center px-4 py-2 text-sm text-blue-600 hover:text-blue-800 transition-transform transform hover:scale-105 duration-200 font-medium">
+            <button className="flex items-center px-4 py-2 text-sm text-blue-600 hover:text-blue-800 font-medium">
               <Eye className="mr-2" /> View All Courses
             </button>
             <div className="flex space-x-2">
-              <button className="flex items-center px-4 py-2 text-sm bg-white border border-gray-300 rounded text-gray-700 hover:bg-gray-50 transition-transform transform hover:scale-105 duration-200">
+              <button className="flex items-center px-4 py-2 text-sm bg-white border border-gray-300 rounded text-gray-700 hover:bg-gray-50">
                 <ChevronLeft className="mr-2" /> Previous
               </button>
-              <button className="flex items-center px-4 py-2 text-sm bg-blue-600 rounded text-white hover:bg-blue-700 transition-transform transform hover:scale-105 duration-200">
+              <button className="flex items-center px-4 py-2 text-sm bg-blue-600 rounded text-white hover:bg-blue-700">
                 Next <ChevronRight className="ml-2" />
               </button>
             </div>
@@ -413,8 +399,8 @@ const Dashboard = () => {
       </main>
 
       {/* Notifications Modal */}
-      {showNotificationsModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4 animate-fade-in">
+      {/* {showNotificationsModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-lg w-full max-w-md overflow-hidden shadow-lg">
             <div className="flex items-center justify-between p-4 border-b">
               <h2 className="text-lg font-semibold text-gray-800 flex items-center">
@@ -422,8 +408,7 @@ const Dashboard = () => {
               </h2>
               <button
                 onClick={() => setShowNotificationsModal(false)}
-                className="text-gray-400 hover:text-gray-500 transition-transform transform hover:scale-110 duration-200"
-                title="Close notifications"
+                className="text-gray-400 hover:text-gray-500"
               >
                 <X className="text-xl" />
               </button>
@@ -437,10 +422,7 @@ const Dashboard = () => {
               ) : (
                 <div className="divide-y">
                   {notifications.map((notification) => (
-                    <div
-                      key={notification.id}
-                      className="p-4 hover:bg-gray-50 transition-colors duration-200"
-                    >
+                    <div key={notification.id} className="p-4 hover:bg-gray-50">
                       <div className="flex items-start">
                         <div className="flex-shrink-0 pt-1">
                           <div className="w-2 h-2 bg-blue-600 rounded-full"></div>
@@ -458,21 +440,19 @@ const Dashboard = () => {
             <div className="p-4 border-t flex justify-between">
               <button
                 onClick={() => setShowNotificationsModal(false)}
-                className="flex items-center px-4 py-2 bg-white text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50 transition-transform transform hover:scale-105 duration-200 text-sm font-medium"
-                title="Close notifications"
+                className="flex items-center px-4 py-2 bg-white text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50 text-sm font-medium"
               >
                 <X className="mr-2" /> Close
               </button>
               <button
-                className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-transform transform hover:scale-105 duration-200 text-sm font-medium"
-                title="Mark all notifications as read"
+                className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm font-medium"
               >
                 <Check className="mr-2" /> Mark All as Read
               </button>
             </div>
           </div>
         </div>
-      )}
+      )} */}
     </div>
   );
 };
