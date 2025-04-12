@@ -8,7 +8,6 @@ const UserCourse = () => {
   const { courseId } = useParams();
   const [sections, setSections] = useState([]);
   const [selectedVideo, setSelectedVideo] = useState(null);
-  const [completedVideos, setCompletedVideos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [expandedSection, setExpandedSection] = useState(null);
   console.log("Selected Video:", selectedVideo);
@@ -24,16 +23,7 @@ const UserCourse = () => {
       );
       setSections(response.data.sections);
       
-      // Get completed videos
-      const completedResponse = await axios.get(
-        `http://localhost:8085/enrollment/course/${courseId}/completed-videos`,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
-      setCompletedVideos(completedResponse.data.map(v => v.id));
+    
       
       // Expand first section by default if exists
       if (response.data.length > 0) {
@@ -64,7 +54,6 @@ const UserCourse = () => {
       <VideoList
         sections={sections}
         onSelectVideo={setSelectedVideo}
-        completedVideos={completedVideos}
         selectedVideo={selectedVideo}
         expandedSection={expandedSection}
         setExpandedSection={setExpandedSection}
@@ -75,7 +64,6 @@ const UserCourse = () => {
         {selectedVideo ? (
           <VideoPlayer
             selectedVideo={selectedVideo}
-            isCompleted={completedVideos.includes(selectedVideo.id)}
           />
         ) : (
           <div className="flex items-center justify-center h-full bg-white rounded-xl shadow-lg p-8">

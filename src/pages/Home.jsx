@@ -326,46 +326,7 @@ export default function Home() {
         </div>
       </main>
 
-      {/* Footer - Matched with navbar color */}
-      <footer className="bg-[#1c5f8f] text-white py-12 mt-auto">
-        <div className="max-w-6xl mx-auto px-6">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
-            <div>
-              <h3 className="text-xl font-bold mb-4">Sikshyalaya</h3>
-              <p className="text-gray-200">Empowering learners worldwide with quality education.</p>
-            </div>
-            <div>
-              <h3 className="text-xl font-bold mb-4">Quick Links</h3>
-              <ul className="space-y-2 text-gray-200">
-                <li><Link to="/courses" className="hover:text-white transition">Courses</Link></li>
-                <li><Link to="/about-us" className="hover:text-white transition">About Us</Link></li>
-                <li><Link to="/instructors" className="hover:text-white transition">Instructors</Link></li>
-                <li><Link to="/contact" className="hover:text-white transition">Contact</Link></li>
-              </ul>
-            </div>
-            <div>
-              <h3 className="text-xl font-bold mb-4">Support</h3>
-              <ul className="space-y-2 text-gray-200">
-                <li><Link to="/faq" className="hover:text-white transition">FAQ</Link></li>
-                <li><Link to="/help" className="hover:text-white transition">Help Center</Link></li>
-                <li><Link to="/privacy" className="hover:text-white transition">Privacy Policy</Link></li>
-                <li><Link to="/terms" className="hover:text-white transition">Terms of Service</Link></li>
-              </ul>
-            </div>
-            <div>
-              <h3 className="text-xl font-bold mb-4">Contact Us</h3>
-              <address className="text-gray-200 not-italic">
-                <p>Kathmandu, Nepal</p>
-                <p>Email: info@sikshyalaya.com</p>
-                <p>Phone: +977 1234567890</p>
-              </address>
-            </div>
-          </div>
-          <div className="border-t border-[#246890] pt-8 text-center text-gray-200">
-            <p>&copy; {new Date().getFullYear()} Sikshyalaya. All rights reserved.</p>
-          </div>
-        </div>
-      </footer>
+     
     </div>
   );
 }

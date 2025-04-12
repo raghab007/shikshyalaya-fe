@@ -77,7 +77,6 @@ const VideoSection = ({
                 <VideoItem
                   key={video.id}
                   video={video}
-                  isCompleted={completedVideos.includes(video.id)}
                   onSelect={onSelectVideo}
                   isSelected={selectedVideo?.id === video.id}
                 />
