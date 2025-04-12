@@ -33,6 +33,9 @@ export default function Navbar() {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [isProfileDropdownOpen]);
 
+
+  
+
   return (
     <nav 
       style={{ backgroundColor: "#2e7dad" }} 
@@ -276,8 +279,9 @@ function UserProfile({ username, isOpen, setIsOpen }) {
           <div className="border-t border-gray-200 my-1"></div>
           <button 
             onClick={() => {
-              // Add logout functionality here
-              setIsOpen(false);
+           
+      localStorage.setItem("token", null);
+        window.location.href = "login"
             }}
             className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100 transition-colors duration-300"
           >
@@ -315,10 +319,7 @@ function MobileUserProfile({ username, onClick }) {
       </Link>
       
       <button 
-        onClick={() => {
-          // Add logout functionality here
-          onClick();
-        }}
+        onClick={logout}
         className="block w-full text-left text-red-300 hover:text-red-200 p-3 hover:bg-blue-600/50 rounded-lg transition-colors duration-300"
       >
         Log out

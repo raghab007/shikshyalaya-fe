@@ -29,6 +29,7 @@ const userProfileSelector = selector({
 
       return response.data;
     } catch (error) {
+      localStorage.setItem("token", null);
       console.error("Error fetching user profile:", error.response?.data || error.message);
       return get(userProfileState); // Return default state if request fails
     }

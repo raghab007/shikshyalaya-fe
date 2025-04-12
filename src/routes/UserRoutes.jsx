@@ -8,7 +8,7 @@ import CourseDetails from "../components/course/CourseDetails";
 import UserProfile from "../pages/UserProfile";
 import ChangePassword from "../components/ChangePassword";
 import ForgotPassword from "../pages/Forgotpassword";
-import {ArchivedCourses, EnrolledCourses, EnrolledCoursesPage} from "../pages/EnrolledCourses";
+import { EnrolledCourses, EnrolledCoursesPage} from "../pages/EnrolledCourses";
 import ErrorPage from "../pages/Error";
 import PaymentPage from "../pages/PaymentDetails";
 import UserCourse from "../pages/UserCourse";
@@ -34,8 +34,6 @@ export default function UserRoutes() {
             <Route path="/enrolled" element={<EnrolledCoursesPage/>}>
 
                 <Route index element={<EnrolledCourses/>}></Route>
-
-                <Route path="archived" element={<ArchivedCourses/>}></Route>
             </Route>
             <Route path="/payment" element={<PaymentPage></PaymentPage>}></Route>
             <Route path="*" element={<ErrorPage></ErrorPage>}></Route>
