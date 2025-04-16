@@ -23,6 +23,7 @@ export default function Login() {
   }, []);
 
   async function handleLogin() {
+    let response;
     const user = {
       userName: userName.current.value,
       password: password.current.value,
@@ -36,7 +37,7 @@ export default function Login() {
     setLoading(true);
     
     try {
-      const response = await axios.post("http://localhost:8085/login", user, {
+       response = await axios.post("http://localhost:8085/login", user, {
         headers: {
           "Content-Type": "application/json",
         },
@@ -57,11 +58,12 @@ export default function Login() {
           location.href = "/instructor";
         }
       } else {
-        setError("Invalid credentials");
+        setError(response.data.message);
       }
     } catch (err) {
       console.log(err);
-      setError("Server error. Please try again later.");
+      console.log(response)
+      setError("Server error.");
     } finally {
       setLoading(false);
     }

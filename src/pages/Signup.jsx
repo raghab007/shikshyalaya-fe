@@ -1,14 +1,14 @@
-import { useFormik } from "formik";
-import * as Yup from "yup";
-import axios from "axios";
-import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
+import * as Yup from "yup";
+import { useFormik } from "formik";
 
 export default function Signup() {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
 
-  // Validation schema using Yup
+  // Validation schema
   const validationSchema = Yup.object().shape({
     userName: Yup.string().required("Username is required"),
     firstName: Yup.string().required("First Name is required"),
@@ -29,7 +29,7 @@ export default function Signup() {
     address: Yup.string().required("Address is required"),
   });
 
-  // Formik hook
+  // Using Formik with validateOnChange set to false
   const formik = useFormik({
     initialValues: {
       userName: "",
@@ -43,6 +43,8 @@ export default function Signup() {
       address: "",
     },
     validationSchema,
+    validateOnChange: false, // Only validate on blur and submit
+    validateOnBlur: true,
     onSubmit: async (values) => {
       try {
         const response = await axios.post("http://localhost:8085/signup", values, {
@@ -64,28 +66,10 @@ export default function Signup() {
     },
   });
 
-  const FormInput = ({ name, type, placeholder, ...props }) => {
-    return (
-      <div className="mb-3">
-        <input
-          type={type}
-          placeholder={placeholder}
-          name={name}
-          value={formik.values[name]}
-          onChange={formik.handleChange}
-          onBlur={formik.handleBlur}
-          className={`w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm transition-all duration-200 ${
-            formik.touched[name] && formik.errors[name] 
-              ? "border-red-400 bg-red-50" 
-              : "border-gray-300 hover:border-blue-300"
-          }`}
-          {...props}
-        />
-        {formik.touched[name] && formik.errors[name] && (
-          <p className="text-red-500 text-xs mt-1">{formik.errors[name]}</p>
-        )}
-      </div>
-    );
+  // Handle form field changes with a separate handler
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    formik.setFieldValue(name, value);
   };
 
   return (
@@ -116,37 +100,106 @@ export default function Signup() {
         </div>
 
         {/* Signup Form Section */}
-        <form onSubmit={formik.handleSubmit} className="w-1/2 p-8 bg-white">
+        <div className="w-1/2 p-8 bg-white">
           <div className="text-center mb-6">
             <h2 className="text-2xl font-bold text-gray-800">Create Account</h2>
             <p className="text-sm text-gray-500 mt-1">Fill in your details to get started</p>
           </div>
 
-          <div className="space-y-1">
+          <form onSubmit={formik.handleSubmit} className="space-y-3">
             {/* Username */}
-            <FormInput name="userName" type="text" placeholder="Username" />
+            <div className="mb-3">
+              <input
+                type="text"
+                placeholder="Username"
+                id="userName"
+                name="userName"
+                value={formik.values.userName}
+                onChange={handleChange}
+                onBlur={formik.handleBlur}
+                className={`w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm transition-all duration-200 ${
+                  formik.touched.userName && formik.errors.userName 
+                    ? "border-red-400 bg-red-50" 
+                    : "border-gray-300 hover:border-blue-300"
+                }`}
+              />
+              {formik.touched.userName && formik.errors.userName && (
+                <p className="text-red-500 text-xs mt-1">{formik.errors.userName}</p>
+              )}
+            </div>
 
             {/* First and Last Name */}
             <div className="flex gap-3">
-              <div className="w-1/2">
-                <FormInput name="firstName" type="text" placeholder="First Name" />
+              <div className="w-1/2 mb-3">
+                <input
+                  type="text"
+                  placeholder="First Name"
+                  id="firstName"
+                  name="firstName"
+                  value={formik.values.firstName}
+                  onChange={handleChange}
+                  onBlur={formik.handleBlur}
+                  className={`w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm transition-all duration-200 ${
+                    formik.touched.firstName && formik.errors.firstName 
+                      ? "border-red-400 bg-red-50" 
+                      : "border-gray-300 hover:border-blue-300"
+                  }`}
+                />
+                {formik.touched.firstName && formik.errors.firstName && (
+                  <p className="text-red-500 text-xs mt-1">{formik.errors.firstName}</p>
+                )}
               </div>
-              <div className="w-1/2">
-                <FormInput name="lastName" type="text" placeholder="Last Name" />
+              <div className="w-1/2 mb-3">
+                <input
+                  type="text"
+                  placeholder="Last Name"
+                  id="lastName"
+                  name="lastName"
+                  value={formik.values.lastName}
+                  onChange={handleChange}
+                  onBlur={formik.handleBlur}
+                  className={`w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm transition-all duration-200 ${
+                    formik.touched.lastName && formik.errors.lastName 
+                      ? "border-red-400 bg-red-50" 
+                      : "border-gray-300 hover:border-blue-300"
+                  }`}
+                />
+                {formik.touched.lastName && formik.errors.lastName && (
+                  <p className="text-red-500 text-xs mt-1">{formik.errors.lastName}</p>
+                )}
               </div>
             </div>
 
             {/* Email */}
-            <FormInput name="email" type="email" placeholder="Email Address" />
+            <div className="mb-3">
+              <input
+                type="email"
+                placeholder="Email Address"
+                id="email"
+                name="email"
+                value={formik.values.email}
+                onChange={handleChange}
+                onBlur={formik.handleBlur}
+                className={`w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm transition-all duration-200 ${
+                  formik.touched.email && formik.errors.email 
+                    ? "border-red-400 bg-red-50" 
+                    : "border-gray-300 hover:border-blue-300"
+                }`}
+              />
+              {formik.touched.email && formik.errors.email && (
+                <p className="text-red-500 text-xs mt-1">{formik.errors.email}</p>
+              )}
+            </div>
 
             {/* Password with toggle */}
             <div className="mb-3 relative">
               <input
                 type={showPassword ? "text" : "password"}
                 placeholder="Password"
+                id="password"
                 name="password"
                 value={formik.values.password}
-                onChange={formik.handleChange}
+                onChange={handleChange}
                 onBlur={formik.handleBlur}
                 className={`w-full p-3 pr-10 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm transition-all duration-200 ${
                   formik.touched.password && formik.errors.password 
@@ -176,20 +229,75 @@ export default function Signup() {
             </div>
 
             {/* Contact Number */}
-            <FormInput name="contactNumber" type="tel" placeholder="Contact Number (10 digits)" />
+            <div className="mb-3">
+              <input
+                type="tel"
+                placeholder="Contact Number (10 digits)"
+                id="contactNumber"
+                name="contactNumber"
+                value={formik.values.contactNumber}
+                onChange={handleChange}
+                onBlur={formik.handleBlur}
+                className={`w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm transition-all duration-200 ${
+                  formik.touched.contactNumber && formik.errors.contactNumber
+                    ? "border-red-400 bg-red-50" 
+                    : "border-gray-300 hover:border-blue-300"
+                }`}
+              />
+              {formik.touched.contactNumber && formik.errors.contactNumber && (
+                <p className="text-red-500 text-xs mt-1">{formik.errors.contactNumber}</p>
+              )}
+            </div>
 
             {/* Age */}
-            <FormInput name="age" type="number" placeholder="Age" />
+            <div className="mb-3">
+              <input
+                type="number"
+                placeholder="Age"
+                id="age"
+                name="age"
+                value={formik.values.age}
+                onChange={handleChange}
+                onBlur={formik.handleBlur}
+                className={`w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm transition-all duration-200 ${
+                  formik.touched.age && formik.errors.age 
+                    ? "border-red-400 bg-red-50" 
+                    : "border-gray-300 hover:border-blue-300"
+                }`}
+              />
+              {formik.touched.age && formik.errors.age && (
+                <p className="text-red-500 text-xs mt-1">{formik.errors.age}</p>
+              )}
+            </div>
 
             {/* Address */}
-            <FormInput name="address" type="text" placeholder="Address" />
+            <div className="mb-3">
+              <input
+                type="text"
+                placeholder="Address"
+                id="address"
+                name="address"
+                value={formik.values.address}
+                onChange={handleChange}
+                onBlur={formik.handleBlur}
+                className={`w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm transition-all duration-200 ${
+                  formik.touched.address && formik.errors.address 
+                    ? "border-red-400 bg-red-50" 
+                    : "border-gray-300 hover:border-blue-300"
+                }`}
+              />
+              {formik.touched.address && formik.errors.address && (
+                <p className="text-red-500 text-xs mt-1">{formik.errors.address}</p>
+              )}
+            </div>
 
             {/* Role Selection */}
             <div className="mb-3">
               <select
+                id="role"
                 name="role"
                 value={formik.values.role}
-                onChange={formik.handleChange}
+                onChange={handleChange}
                 onBlur={formik.handleBlur}
                 className={`w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm transition-all duration-200 ${
                   formik.touched.role && formik.errors.role 
@@ -207,24 +315,26 @@ export default function Signup() {
                 <p className="text-red-500 text-xs mt-1">{formik.errors.role}</p>
               )}
             </div>
-          </div>
 
-          {/* Submit Button */}
-          <button
-            type="submit"
-            className="w-full py-3 mt-2 bg-gradient-to-r from-blue-500 to-cyan-500 text-white font-semibold rounded-lg text-sm hover:from-blue-600 hover:to-cyan-600 transition-all duration-300 shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
-          >
-            Create Account
-          </button>
+            {/* Submit Button */}
+            <div className="pt-2">
+              <button
+                type="submit"
+                className="w-full py-3 bg-gradient-to-r from-blue-500 to-cyan-500 text-white font-semibold rounded-lg text-sm hover:from-blue-600 hover:to-cyan-600 transition-all duration-300 shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
+              >
+                Create Account
+              </button>
+            </div>
 
-          {/* Login Redirect */}
-          <p className="text-center mt-6 text-sm text-gray-600">
-            Already have an account?{" "}
-            <Link to="/login" className="text-blue-500 font-medium hover:text-blue-700 transition-colors">
-              Log In
-            </Link>
-          </p>
-        </form>
+            {/* Login Redirect */}
+            <p className="text-center mt-6 text-sm text-gray-600">
+              Already have an account?{" "}
+              <Link to="/login" className="text-blue-500 font-medium hover:text-blue-700 transition-colors">
+                Log In
+              </Link>
+            </p>
+          </form>
+        </div>
       </div>
     </div>
   );
