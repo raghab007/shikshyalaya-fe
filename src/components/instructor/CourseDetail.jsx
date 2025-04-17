@@ -10,15 +10,22 @@ export default function CourseDetails() {
     const [isEditingCourse, setIsEditingCourse] = useState(false);
     const [isDeleteConfirmationOpen, setIsDeleteConfirmationOpen] = useState(false);
     const [sectionName, setSectionName] = useState("");
-    const [sectionDescription, setSectionDescription] = useState("");
+    const [sectionDescription, setSectionDescription] = useState("`");
     const [course, setCourse] = useState(null);
-    const [editedCourse, setEditedCourse] = useState(null);
+    const [editedCourse, setEditedCourse] = useState({
+        name: "",
+        description: "",
+        price: 0,
+        difficulty: "BEGINNER",
+        categoryId: 1
+    });
     const [totalEnrollments, setTotalEnrollments] = useState(0);
-    const [courseDescription, setCourseDescription] = useState("");
+    const [categories, setCategories] = useState([]);
     const token = localStorage.getItem("token");
 
     useEffect(() => {
-        getSections();
+        getCourseDetails();
+        fetchCategories();
     }, []);
 
     useEffect(() => {
@@ -26,21 +33,31 @@ export default function CourseDetails() {
             setEditedCourse({
                 name: course.courseName,
                 description: course.courseDescription,
-                price: course.coursePrice
+                price: course.coursePrice,
+                difficulty: course.courseDifficulty,
+                categoryId: course.category?.courseCategoryId || 1
             });
         }
     }, [course]);
 
-    async function getSections() {
+    async function getCourseDetails() {
         try {
             const response = await axios.get(`http://localhost:8085/course/${courseId}`);
             setCourse(response.data);
             setSections(response.data.sections || []);
-            setTotalEnrollments(response.data.totalEnrollments)
-            setCourseDescription(response.data.courseDescription);
+            setTotalEnrollments(response.data.totalEnrollments || 0);
         } catch (error) {
             console.error("Error fetching course details:", error);
             setError(true);
+        }
+    }
+
+    async function fetchCategories() {
+        try {
+            const response = await axios.get("http://localhost:8085/course/categories");
+            setCategories(response.data);
+        } catch (error) {
+            console.error("Error fetching categories:", error);
         }
     }
 
@@ -64,31 +81,17 @@ export default function CourseDetails() {
             );
             
             if (response.status === 200) {
-                getSections();
+                getCourseDetails();
                 setIsAddingSection(false);
                 setSectionName("");
                 setSectionDescription("");
-                
-                // Show success message with fade out
-                const successMessage = document.createElement("div");
-                successMessage.innerText = "Section added successfully";
-                successMessage.className = "fixed top-4 right-4 bg-green-500 text-white py-2 px-4 rounded-md shadow-lg";
-                document.body.appendChild(successMessage);
-                
-                setTimeout(() => {
-                    successMessage.classList.add("opacity-0", "transition-opacity", "duration-500");
-                    setTimeout(() => document.body.removeChild(successMessage), 500);
-                }, 3000);
+                showSuccessMessage("Section added successfully");
             }
         } catch (error) {
             console.error("Error adding section:", error);
-            alert("Failed to add section. Please try again.");
+            showErrorMessage("Failed to add section. Please try again.");
         }
     }
-
-    const handleChangeImage = () => {
-        alert("Change image functionality to be implemented.");
-    };
 
     const handleEditCourseClick = () => {
         setIsEditingCourse(true);
@@ -110,8 +113,14 @@ export default function CourseDetails() {
         e.preventDefault();
         try {
             const response = await axios.put(
-                `http://localhost:8085/course/${courseId}`,
-                editedCourse,
+                `http://localhost:8085/instructor/course/${courseId}`,
+                {
+                    courseName: editedCourse.name,
+                    courseDescription: editedCourse.description,
+                    coursePrice: editedCourse.price,
+                    courseDifficulty: editedCourse.difficulty,
+                    categoryId: editedCourse.categoryId
+                },
                 {
                     headers: {
                         "Content-Type": "application/json",
@@ -119,51 +128,89 @@ export default function CourseDetails() {
                     }
                 }
             );
-            setCourse({
-                ...course,
-                courseName: editedCourse.name,
-                courseDescription: editedCourse.description,
-                coursePrice: editedCourse.price
-            });
+            
+            setCourse(response.data);
             setIsEditingCourse(false);
-            
-            // Show success notification
-            const successMessage = document.createElement("div");
-            successMessage.innerText = "Course updated successfully";
-            successMessage.className = "fixed top-4 right-4 bg-green-500 text-white py-2 px-4 rounded-md shadow-lg";
-            document.body.appendChild(successMessage);
-            
-            setTimeout(() => {
-                successMessage.classList.add("opacity-0", "transition-opacity", "duration-500");
-                setTimeout(() => document.body.removeChild(successMessage), 500);
-            }, 3000);
+            showSuccessMessage("Course updated successfully");
         } catch (error) {
             console.error('Error saving course details:', error);
-            alert("Failed to update course details. Please try again.");
+            showErrorMessage("Failed to update course details. Please try again.");
+        }
+    };
+
+    const handleChangeImage = async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        if (!file.type.match('image.*')) {
+            showErrorMessage("Please select an image file (JPEG, PNG, etc.)");
+            return;
+        }
+
+        if (file.size > 5 * 1024 * 1024) {
+            showErrorMessage("Image size should be less than 5MB");
+            return;
+        }
+
+        try {
+            const formData = new FormData();
+            formData.append('image', file);
+            
+            const response = await axios.patch(
+                `http://localhost:8085/instructor/course/${courseId}/image`,
+                formData,
+                {
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                        Authorization: `Bearer ${token}`
+                    }
+                }
+            );
+
+            setCourse(prev => ({
+                ...prev,
+                imageUrl: response.data
+            }));
+
+            showSuccessMessage("Course image updated successfully");
+        } catch (error) {
+            console.error('Error updating course image:', error);
+            showErrorMessage("Failed to update course image. Please try again.");
         }
     };
 
     const handleDeleteCourse = async () => {
         try {
-            await axios.delete(`http://localhost:8085/course/${courseId}`, {
+            await axios.delete(`http://localhost:8085/instructor/course/${courseId}`, {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
             });
             
-            // Show success notification
-            const successMessage = document.createElement("div");
-            successMessage.innerText = "Course deleted successfully";
-            successMessage.className = "fixed top-4 right-4 bg-green-500 text-white py-2 px-4 rounded-md shadow-lg";
-            document.body.appendChild(successMessage);
-            
+            showSuccessMessage("Course deleted successfully");
             setTimeout(() => {
-                window.location.href = "/courses";
+                window.location.href = "/instructor/courses";
             }, 1500);
         } catch (error) {
             console.error('Error deleting course:', error);
-            alert("Failed to delete the course.");
+            showErrorMessage("Failed to delete the course.");
         }
+    };
+
+    const showSuccessMessage = (message) => {
+        const successMessage = document.createElement("div");
+        successMessage.innerText = message;
+        successMessage.className = "fixed top-4 right-4 bg-green-500 text-white py-2 px-4 rounded-md shadow-lg";
+        document.body.appendChild(successMessage);
+        
+        setTimeout(() => {
+            successMessage.classList.add("opacity-0", "transition-opacity", "duration-500");
+            setTimeout(() => document.body.removeChild(successMessage), 500);
+        }, 3000);
+    };
+
+    const showErrorMessage = (message) => {
+        alert(message); // Or implement a nicer error display
     };
 
     if (error) {
@@ -207,17 +254,20 @@ export default function CourseDetails() {
                         {/* Course Image */}
                         <div className="relative group flex-shrink-0 w-72 h-48 rounded-lg overflow-hidden">
                             <img
-                                src={`http://localhost:8085/images/course/${course.imageUrl}`}
+                                src={`http://localhost:8085/files/course/images/${course.imageUrl}`}
                                 alt={course.courseName}
                                 className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                             />
                             <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end justify-center pb-4">
-                                <button
-                                    onClick={handleChangeImage}
-                                    className="text-white px-3 py-1 bg-indigo-600 rounded-md text-sm font-medium hover:bg-indigo-500 transition"
-                                >
+                                <label className="text-white px-3 py-1 bg-indigo-600 rounded-md text-sm font-medium hover:bg-indigo-500 transition cursor-pointer">
                                     Change Image
-                                </button>
+                                    <input 
+                                        type="file" 
+                                        className="hidden" 
+                                        accept="image/*"
+                                        onChange={handleChangeImage}
+                                    />
+                                </label>
                             </div>
                         </div>
                         {/* Course Details */}
@@ -228,6 +278,7 @@ export default function CourseDetails() {
                                 <span className="bg-white/20 text-white px-4 py-2 rounded-full text-lg font-semibold">
                                     Price: {course.coursePrice}
                                 </span>
+                               
                             </div>
                         </div>
                     </div>
@@ -246,7 +297,7 @@ export default function CourseDetails() {
                                 Course Overview
                             </h2>
                             <p className="text-gray-600 leading-relaxed">
-                                {courseDescription}
+                                {course.courseDescription}
                             </p>
                         </div>
 
@@ -379,7 +430,6 @@ export default function CourseDetails() {
                                         {totalEnrollments}
                                     </dd>
                                 </div>
-
                             </dl>
                         </div>
                     </div>
@@ -389,10 +439,7 @@ export default function CourseDetails() {
             {/* Add Section Modal */}
             {isAddingSection && (
                 <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50">
-                    <div 
-                        className="bg-white rounded-xl shadow-2xl p-8 w-full max-w-md transform transition-all animate-fadeIn"
-                        style={{animation: "fadeIn 0.3s ease-out"}}
-                    >
+                    <div className="bg-white rounded-xl shadow-2xl p-8 w-full max-w-md">
                         <div className="flex justify-between items-center mb-6">
                             <h3 className="text-xl font-bold text-indigo-800">Add New Section</h3>
                             <button 
@@ -457,10 +504,7 @@ export default function CourseDetails() {
             {/* Edit Course Modal */}
             {isEditingCourse && (
                 <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50">
-                    <div 
-                        className="bg-white rounded-xl shadow-2xl p-8 w-full max-w-md transform transition-all animate-fadeIn"
-                        style={{animation: "fadeIn 0.3s ease-out"}}
-                    >
+                    <div className="bg-white rounded-xl shadow-2xl p-8 w-full max-w-md">
                         <div className="flex justify-between items-center mb-6">
                             <h3 className="text-xl font-bold text-indigo-800">Edit Course Details</h3>
                             <button 
@@ -499,6 +543,7 @@ export default function CourseDetails() {
                                         onChange={handleEditInputChange}
                                         rows="3"
                                         className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                                        required
                                     ></textarea>
                                 </div>
                                 <div>
@@ -506,15 +551,34 @@ export default function CourseDetails() {
                                         Price
                                     </label>
                                     <input
-                                        type="text"
+                                        type="number"
                                         id="price"
                                         name="price"
                                         value={editedCourse.price}
                                         onChange={handleEditInputChange}
                                         className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
                                         required
+                                        min="0"
+                                        step="0.01"
                                     />
                                 </div>
+                                <div>
+                                    <label htmlFor="difficulty" className="block text-sm font-medium text-gray-700 mb-1">
+                                        Difficulty
+                                    </label>
+                                    <select
+                                        id="difficulty"
+                                        name="difficulty"
+                                        value={editedCourse.difficulty}
+                                        onChange={handleEditInputChange}
+                                        className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                                    >
+                                        <option value="BEGINNER">Beginner</option>
+                                        <option value="INTERMEDIATE">Intermediate</option>
+                                        <option value="ADVANCED">Advanced</option>
+                                    </select>
+                                </div>
+                                
                                 <div className="flex justify-end space-x-3">
                                     <button
                                         type="button"
@@ -539,10 +603,7 @@ export default function CourseDetails() {
             {/* Delete Confirmation Modal */}
             {isDeleteConfirmationOpen && (
                 <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50">
-                    <div 
-                        className="bg-white rounded-xl shadow-2xl p-8 w-full max-w-md transform transition-all animate-fadeIn"
-                        style={{animation: "fadeIn 0.3s ease-out"}}
-                    >
+                    <div className="bg-white rounded-xl shadow-2xl p-8 w-full max-w-md">
                         <h3 className="text-xl font-bold text-red-600 mb-6">Delete Course</h3>
                         <p className="text-gray-700 mb-8">Are you sure you want to delete this course? This action cannot be undone.</p>
                         <div className="flex justify-end space-x-3">
