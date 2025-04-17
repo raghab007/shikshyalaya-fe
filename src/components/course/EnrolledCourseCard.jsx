@@ -56,12 +56,6 @@ function EnrolledCourseCard({
         {/* Permanent subtle gradient overlay */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/10"></div>
 
-        {/* Status badge */}
-        <div className="absolute top-3 left-3 bg-blue-600 text-white text-xs font-semibold px-3 py-1 rounded-full flex items-center shadow-md">
-          <span className="w-2 h-2 bg-white rounded-full mr-1.5 animate-pulse"></span>
-          Enrolled
-        </div>
-
         {/* Continue watching button that appears on hover */}
         <div
           className={`absolute inset-0 flex items-center justify-center transition-opacity duration-300 ${isHovered ? "opacity-100" : "opacity-0"}`}
@@ -153,7 +147,7 @@ function EnrolledCourseCard({
                 {completedLessons} of {totalLessons} lessons completed
               </span>
               {progressPercentage === 100 && (
-                <span className="text-green-600 font-medium">Completed!</span>
+                <span className="text-green-600 font-medium">Completed</span>
               )}
             </div>
           )}

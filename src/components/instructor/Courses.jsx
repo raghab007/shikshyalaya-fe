@@ -8,9 +8,13 @@ import {
   Tooltip,
   Chip,
   Pagination,
-  Box
+  Box,
 } from "@mui/material";
-import { Search as SearchIcon, Add as AddIcon, SortByAlpha as SortIcon } from "@mui/icons-material";
+import {
+  Search as SearchIcon,
+  Add as AddIcon,
+  SortByAlpha as SortIcon,
+} from "@mui/icons-material";
 
 function Courses() {
   const [courses, setCourses] = useState(null);
@@ -25,11 +29,14 @@ function Courses() {
     const getCourses = async () => {
       setIsLoading(true);
       try {
-        const response = await axios.get("http://localhost:8085/instructor/course", {
-          headers: {
-            Authorization: "Bearer " + localStorage.getItem("token")
+        const response = await axios.get(
+          "http://localhost:8085/instructor/course",
+          {
+            headers: {
+              Authorization: "Bearer " + localStorage.getItem("token"),
+            },
           }
-        });
+        );
         console.log(response.data);
         setCourses(response.data);
         setError(null);
@@ -62,12 +69,15 @@ function Courses() {
   // Pagination
   const indexOfLastCourse = currentPage * coursesPerPage;
   const indexOfFirstCourse = indexOfLastCourse - coursesPerPage;
-  const currentCourses = processedCourses.slice(indexOfFirstCourse, indexOfLastCourse);
+  const currentCourses = processedCourses.slice(
+    indexOfFirstCourse,
+    indexOfLastCourse
+  );
   const pageCount = Math.ceil(processedCourses.length / coursesPerPage);
 
   const handlePageChange = (event, value) => {
     setCurrentPage(value);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const toggleSortOrder = () => {
@@ -130,19 +140,26 @@ function Courses() {
                 onChange={(e) => setSearchTerm(e.target.value)}
                 fullWidth
                 InputProps={{
-                  startAdornment: <SearchIcon color="action" className="mr-2" />,
+                  startAdornment: (
+                    <SearchIcon color="action" className="mr-2" />
+                  ),
                   className: "bg-white rounded-lg pr-2",
                 }}
               />
             </div>
-            <Tooltip title={`Sort ${sortOrder === 'asc' ? 'Z-A' : 'A-Z'}`} arrow>
+            <Tooltip
+              title={`Sort ${sortOrder === "asc" ? "Z-A" : "A-Z"}`}
+              arrow
+            >
               <Button
                 variant="outlined"
                 color="primary"
                 onClick={toggleSortOrder}
                 className="min-w-[50px]"
               >
-                <SortIcon className={sortOrder === 'desc' ? 'rotate-180' : ''} />
+                <SortIcon
+                  className={sortOrder === "desc" ? "rotate-180" : ""}
+                />
               </Button>
             </Tooltip>
           </div>
@@ -157,7 +174,9 @@ function Courses() {
           <div className="bg-white rounded-xl p-4 shadow-sm">
             <p className="text-gray-500 text-sm">Average Price</p>
             <p className="text-2xl font-bold">
-              {courses ? `Rs ${Math.round(courses.reduce((acc, course) => acc + course.coursePrice, 0) / courses.length)}` : 'N/A'}
+              {courses
+                ? `Rs ${Math.round(courses.reduce((acc, course) => acc + course.coursePrice, 0) / courses.length)}`
+                : "N/A"}
             </p>
           </div>
         </div>
@@ -180,8 +199,19 @@ function Courses() {
                       />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center bg-gray-100 text-gray-400">
-                        <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                        <svg
+                          className="w-12 h-12"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="2"
+                            d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+                          ></path>
                         </svg>
                       </div>
                     )}
@@ -197,16 +227,39 @@ function Courses() {
                     </h3>
                     <div className="flex items-center text-gray-500 text-sm mb-4">
                       <span className="flex items-center">
-                        <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        <svg
+                          className="w-4 h-4 mr-1"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="2"
+                            d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                          ></path>
                         </svg>
                         {course.courseDuration || "Not specified"}
                       </span>
                       <span className="flex items-center ml-4">
-                        <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                        <svg
+                          className="w-4 h-4 mr-1"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="2"
+                            d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                          ></path>
                         </svg>
-                        {course.totalEnrollments? course.totalEnrollments:0} students
+                        {course.totalEnrollments ? course.totalEnrollments : 0}{" "}
+                        students
                       </span>
                     </div>
                     <Link
@@ -238,12 +291,25 @@ function Courses() {
         ) : (
           <div className="bg-white rounded-xl shadow-sm p-10 text-center">
             <div className="inline-block p-6 rounded-full bg-gray-100 mb-4">
-              <svg className="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
+              <svg
+                className="w-12 h-12 text-gray-400"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"
+                ></path>
               </svg>
             </div>
             <h3 className="text-xl font-semibold mb-2">
-              {searchTerm ? "No courses match your search." : "No courses available yet"}
+              {searchTerm
+                ? "No courses match your search."
+                : "No courses available yet"}
             </h3>
             <p className="text-gray-600 mb-6 max-w-md mx-auto">
               {searchTerm

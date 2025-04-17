@@ -6,8 +6,10 @@ import axios from "axios";
 
 function EnrolledCoursesPage() {
   return (
-    <div className="font-sans bg-[#f5f9fc] min-h-screen">
-      <header className="bg-[#2D9EEB] py-10 px-6 shadow-md">
+    <div className="font-sans bg-[#f5f9fc] min-h-screen pt-16">
+      {" "}
+      {/* Added pt-16 to account for navbar */}
+      <div className="bg-[rgb(45,158,235)] py-10 px-6 shadow-md">
         <div className="max-w-6xl mx-auto">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between">
             <div className="mb-4 md:mb-0">
@@ -21,7 +23,7 @@ function EnrolledCoursesPage() {
             <EnrollCourseTab />
           </div>
         </div>
-      </header>
+      </div>
       <main className="max-w-6xl mx-auto px-4 py-8">
         <Outlet />
       </main>

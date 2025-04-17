@@ -15,48 +15,53 @@ export default function Home() {
     { name: "Business", icon: "📊" },
     { name: "Marketing", icon: "📱" },
     { name: "Photography", icon: "📷" },
-    { name: "Health", icon: "🏥" }
+    { name: "Health", icon: "🏥" },
   ];
 
   // Instructors with better descriptions
   const instructors = [
-    { 
-      name: "Alice Johnson", 
-      bio: "Senior Developer with 10+ years in tech. Expert in React, Node.js and cloud architecture.", 
-      imageUrl: "/images/instructor1.jpg" 
+    {
+      name: "Alice Johnson",
+      bio: "Senior Developer with 10+ years in tech. Expert in React, Node.js and cloud architecture.",
+      imageUrl: "/images/instructor1.jpg",
     },
-    { 
-      name: "Michael Brown", 
-      bio: "Expert in Business Strategy and Marketing. Former consultant at McKinsey with MBA from Harvard.", 
-      imageUrl: "/images/instructor2.jpg" 
+    {
+      name: "Michael Brown",
+      bio: "Expert in Business Strategy and Marketing. Former consultant at McKinsey with MBA from Harvard.",
+      imageUrl: "/images/instructor2.jpg",
     },
-    { 
-      name: "Emily Davis", 
-      bio: "Professional Photographer and Content Creator with work featured in National Geographic and Vogue.", 
-      imageUrl: "/images/instructor3.jpg" 
-    }
+    {
+      name: "Emily Davis",
+      bio: "Professional Photographer and Content Creator with work featured in National Geographic and Vogue.",
+      imageUrl: "/images/instructor3.jpg",
+    },
   ];
 
   const faqs = [
     {
       question: "What is Sikshyalaya?",
-      answer: "Sikshyalaya is an e-learning platform providing affordable and accessible courses designed to help you master new skills at your own pace. Our platform offers interactive content, real-world projects, and certificates upon completion."
+      answer:
+        "Sikshyalaya is an e-learning platform providing affordable and accessible courses designed to help you master new skills at your own pace. Our platform offers interactive content, real-world projects, and certificates upon completion.",
     },
     {
       question: "How can I enroll in a course?",
-      answer: "Simply sign up for a free account, browse our catalog of courses, and enroll in your preferred course. Once enrolled, you'll get immediate access to all course materials and can start learning right away."
+      answer:
+        "Simply sign up for a free account, browse our catalog of courses, and enroll in your preferred course. Once enrolled, you'll get immediate access to all course materials and can start learning right away.",
     },
     {
       question: "What payment methods are available?",
-      answer: "We accept eSewa, Khalti, major credit/debit cards, and various banking payment systems to ensure convenient transactions for all our users."
+      answer:
+        "We accept eSewa, Khalti, major credit/debit cards, and various banking payment systems to ensure convenient transactions for all our users.",
     },
     {
       question: "Do I get a certificate after completion?",
-      answer: "Yes! Upon successful completion of any course, you'll receive a verified certificate that you can share on your LinkedIn profile or resume to showcase your new skills."
+      answer:
+        "Yes! Upon successful completion of any course, you'll receive a verified certificate that you can share on your LinkedIn profile or resume to showcase your new skills.",
     },
     {
       question: "Can I access courses on mobile devices?",
-      answer: "Absolutely! Our platform is fully responsive and optimized for all devices. You can learn on your computer, tablet, or smartphone, making it easy to continue your education wherever you are."
+      answer:
+        "Absolutely! Our platform is fully responsive and optimized for all devices. You can learn on your computer, tablet, or smartphone, making it easy to continue your education wherever you are.",
     },
   ];
 
@@ -67,7 +72,7 @@ export default function Home() {
   useEffect(() => {
     // Ensure video autoplays without controls
     if (videoRef.current) {
-      videoRef.current.play().catch(error => {
+      videoRef.current.play().catch((error) => {
         console.log("Autoplay prevented:", error);
       });
     }
@@ -88,11 +93,12 @@ export default function Home() {
           <div className="absolute inset-0 bg-pattern opacity-10"></div>
           <div className="relative z-10 max-w-5xl animate-fadeIn">
             <h1 className="text-7xl font-extrabold text-white text-center leading-tight mb-6">
-              Unlock Your Potential with <span className="text-yellow-300">Sikshyalaya</span>
+              Unlock Your Potential with{" "}
+              <span className="text-yellow-300">Sikshyalaya</span>
             </h1>
             <p className="mt-6 text-2xl text-gray-100 text-center max-w-4xl leading-relaxed mx-auto">
-              Discover top-notch courses designed by industry experts. Learn new skills, enhance your
-              career, and achieve your goals with ease.
+              Discover top-notch courses designed by industry experts. Learn new
+              skills, enhance your career, and achieve your goals with ease.
             </p>
             <div className="mt-12 flex justify-center space-x-6">
               <Link to="/courses">
@@ -114,15 +120,16 @@ export default function Home() {
         <div className="py-20 px-6 bg-gradient-to-b from-white to-[#e8f1f8]">
           <div className="max-w-6xl mx-auto">
             <h2 className="text-5xl font-bold text-center text-gray-800 mb-12">
-              Experience <span className="text-[#2e7dad]">Learning</span> Like Never Before
+              Experience <span className="text-[#2e7dad]">Learning</span> Like
+              Never Before
             </h2>
             <div className="rounded-xl overflow-hidden shadow-2xl mx-auto">
-              <video 
-                ref={videoRef} 
-                className="w-full h-auto object-cover" 
-                autoPlay 
-                muted 
-                loop 
+              <video
+                ref={videoRef}
+                className="w-full h-auto object-cover"
+                autoPlay
+                muted
+                loop
                 playsInline
               >
                 <source src={video} type="video/mp4" />
@@ -139,7 +146,8 @@ export default function Home() {
               Explore Our Categories
             </h2>
             <p className="text-xl text-gray-600 text-center mb-12 max-w-3xl mx-auto">
-              Dive into our diverse range of courses designed to help you master new skills and advance your career
+              Dive into our diverse range of courses designed to help you master
+              new skills and advance your career
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
               {categories.map((category, index) => (
@@ -148,10 +156,12 @@ export default function Home() {
                   className="bg-white p-8 rounded-xl shadow-lg hover:shadow-2xl transition duration-300 transform hover:-translate-y-2 border border-gray-100"
                 >
                   <div className="text-4xl mb-4">{category.icon}</div>
-                  <h3 className="text-2xl font-bold text-gray-800 mb-3">{category.name}</h3>
+                  <h3 className="text-2xl font-bold text-gray-800 mb-3">
+                    {category.name}
+                  </h3>
                   <p className="text-gray-600 mb-5">
-                    Explore our wide range of {category.name.toLowerCase()} courses and learn from the
-                    best in the field.
+                    Explore our wide range of {category.name.toLowerCase()}{" "}
+                    courses and learn from the best in the field.
                   </p>
                   <Link
                     to={`/category/${category.name.toLowerCase()}`}
@@ -196,7 +206,8 @@ export default function Home() {
               Learn From The Best
             </h2>
             <p className="text-xl text-gray-600 text-center mb-12 max-w-3xl mx-auto">
-              Our instructors are industry leaders passionate about sharing their expertise
+              Our instructors are industry leaders passionate about sharing
+              their expertise
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
               {instructors.map((instructor, index) => (
@@ -207,7 +218,9 @@ export default function Home() {
                   <div className="w-24 h-24 mx-auto mb-6 rounded-full bg-[#e8f1f8] flex items-center justify-center text-[#2e7dad] text-3xl font-bold">
                     {instructor.name.charAt(0)}
                   </div>
-                  <h3 className="text-2xl font-bold text-center text-gray-800 mb-3">{instructor.name}</h3>
+                  <h3 className="text-2xl font-bold text-center text-gray-800 mb-3">
+                    {instructor.name}
+                  </h3>
                   <p className="text-gray-600 text-center">{instructor.bio}</p>
                 </div>
               ))}
@@ -227,13 +240,21 @@ export default function Home() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <div className="bg-white p-8 rounded-xl shadow-md">
                 <div className="text-yellow-500 text-2xl mb-4">★★★★★</div>
-                <p className="text-gray-700 mb-6 italic">"The programming course exceeded my expectations. I went from knowing nothing to building my own web applications in just 8 weeks!"</p>
+                <p className="text-gray-700 mb-6 italic">
+                  "The programming course exceeded my expectations. I went from
+                  knowing nothing to building my own web applications in just 8
+                  weeks!"
+                </p>
                 <div className="font-bold">Rajesh Sharma</div>
                 <div className="text-gray-500">Web Developer</div>
               </div>
               <div className="bg-white p-8 rounded-xl shadow-md">
                 <div className="text-yellow-500 text-2xl mb-4">★★★★★</div>
-                <p className="text-gray-700 mb-6 italic">"The photography course helped me turn my hobby into a profession. The instructor's guidance was invaluable and I now have my own studio."</p>
+                <p className="text-gray-700 mb-6 italic">
+                  "The photography course helped me turn my hobby into a
+                  profession. The instructor's guidance was invaluable and I now
+                  have my own studio."
+                </p>
                 <div className="font-bold">Priya Patel</div>
                 <div className="text-gray-500">Professional Photographer</div>
               </div>
@@ -256,18 +277,22 @@ export default function Home() {
                   key={index}
                   className="border border-gray-200 rounded-xl overflow-hidden transition-shadow duration-300 hover:shadow-md"
                 >
-                  <div 
+                  <div
                     className="flex justify-between items-center p-6 cursor-pointer bg-gray-50 hover:bg-gray-100 transition-colors duration-200"
                     onClick={() => toggleAnswer(index)}
                   >
-                    <h3 className="text-xl font-medium text-gray-800">{item.question}</h3>
+                    <h3 className="text-xl font-medium text-gray-800">
+                      {item.question}
+                    </h3>
                     <span className="text-[#2e7dad] text-2xl">
                       {openIndex === index ? "−" : "+"}
                     </span>
                   </div>
                   <div
                     className={`transition-all duration-300 ease-in-out ${
-                      openIndex === index ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
+                      openIndex === index
+                        ? "max-h-96 opacity-100"
+                        : "max-h-0 opacity-0"
                     } overflow-hidden`}
                   >
                     <p className="p-6 text-gray-600">{item.answer}</p>
@@ -281,18 +306,32 @@ export default function Home() {
         {/* Social Media Links Section */}
         <div className="bg-[#f1f7fb] py-16 px-6">
           <div className="max-w-4xl mx-auto text-center">
-            <h2 className="text-4xl font-bold text-gray-800 mb-8">Connect With Us</h2>
+            <h2 className="text-4xl font-bold text-gray-800 mb-8">
+              Connect With Us
+            </h2>
             <div className="flex justify-center gap-8">
-              <a href="https://facebook.com/sikshyalaya" className="p-4 bg-[#2e7dad] text-white rounded-full hover:bg-[#246890] transition-colors duration-300">
+              <a
+                href="https://facebook.com/sikshyalaya"
+                className="p-4 bg-[#2e7dad] text-white rounded-full hover:bg-[#246890] transition-colors duration-300"
+              >
                 Facebook
               </a>
-              <a href="https://twitter.com/sikshyalaya" className="p-4 bg-[#2e7dad] text-white rounded-full hover:bg-[#246890] transition-colors duration-300">
+              <a
+                href="https://twitter.com/sikshyalaya"
+                className="p-4 bg-[#2e7dad] text-white rounded-full hover:bg-[#246890] transition-colors duration-300"
+              >
                 Twitter
               </a>
-              <a href="https://linkedin.com/company/sikshyalaya" className="p-4 bg-[#2e7dad] text-white rounded-full hover:bg-[#246890] transition-colors duration-300">
+              <a
+                href="https://linkedin.com/company/sikshyalaya"
+                className="p-4 bg-[#2e7dad] text-white rounded-full hover:bg-[#246890] transition-colors duration-300"
+              >
                 LinkedIn
               </a>
-              <a href="https://instagram.com/sikshyalaya" className="p-4 bg-[#2e7dad] text-white rounded-full hover:bg-[#246890] transition-colors duration-300">
+              <a
+                href="https://instagram.com/sikshyalaya"
+                className="p-4 bg-[#2e7dad] text-white rounded-full hover:bg-[#246890] transition-colors duration-300"
+              >
                 Instagram
               </a>
             </div>
@@ -302,11 +341,17 @@ export default function Home() {
         {/* Call-to-Action Section - Matched with navbar color */}
         <div className="bg-[#2e7dad] text-white py-16 px-6">
           <div className="max-w-4xl mx-auto text-center">
-            <h2 className="text-4xl font-bold mb-4">Start Your Learning Journey Today</h2>
+            <h2 className="text-4xl font-bold mb-4">
+              Start Your Learning Journey Today
+            </h2>
             <p className="text-xl mb-8 max-w-2xl mx-auto">
-              Subscribe to our newsletter and get exclusive offers, learning tips, and early access to new courses.
+              Subscribe to our newsletter and get exclusive offers, learning
+              tips, and early access to new courses.
             </p>
-            <form className="flex flex-col sm:flex-row justify-center gap-4 max-w-xl mx-auto" onSubmit={handleSubmit}>
+            <form
+              className="flex flex-col sm:flex-row justify-center gap-4 max-w-xl mx-auto"
+              onSubmit={handleSubmit}
+            >
               <input
                 type="email"
                 placeholder="Enter your email"
@@ -325,8 +370,6 @@ export default function Home() {
           </div>
         </div>
       </main>
-
-     
     </div>
   );
 }
