@@ -3,7 +3,12 @@ import { ExpandMore, ExpandLess, Reply } from "@mui/icons-material";
 import axios from "axios";
 import { AnimatePresence, motion } from "framer-motion";
 
-const CommentSection = ({ videoId, showComments, setShowComments, comments: propComments }) => {
+const CommentSection = ({
+  videoId,
+  showComments,
+  setShowComments,
+  comments: propComments,
+}) => {
   const [comment, setComment] = useState("");
   const [replyText, setReplyText] = useState("");
   const [comments, setComments] = useState(propComments || []);
@@ -35,11 +40,11 @@ const CommentSection = ({ videoId, showComments, setShowComments, comments: prop
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
-            'Content-Type': 'application/json'
+            "Content-Type": "application/json",
           },
         }
       );
-      
+
       const commentsResponse = await axios.get(
         `http://localhost:8085/comment/${videoId}`,
         {
@@ -48,7 +53,7 @@ const CommentSection = ({ videoId, showComments, setShowComments, comments: prop
           },
         }
       );
-      
+
       setComments(commentsResponse.data);
       setComment("");
     } catch (error) {
@@ -70,11 +75,11 @@ const CommentSection = ({ videoId, showComments, setShowComments, comments: prop
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
-            'Content-Type': 'application/json'
+            "Content-Type": "application/json",
           },
         }
       );
-      
+
       const commentsResponse = await axios.get(
         `http://localhost:8085/comment/${videoId}`,
         {
@@ -83,7 +88,7 @@ const CommentSection = ({ videoId, showComments, setShowComments, comments: prop
           },
         }
       );
-      
+
       setComments(commentsResponse.data);
       setReplyText("");
       setReplyingTo(null);
@@ -95,14 +100,27 @@ const CommentSection = ({ videoId, showComments, setShowComments, comments: prop
   };
 
   const toggleReplies = (commentId) => {
-    setShowReplies(prev => ({
+    setShowReplies((prev) => ({
       ...prev,
-      [commentId]: !prev[commentId] // Toggle visibility for this comment's replies
+      [commentId]: !prev[commentId], // Toggle visibility for this comment's replies
     }));
   };
 
+  const renderUserName = (userName, role) => {
+    return (
+      <div className="flex items-center">
+        <span className="font-medium text-gray-800">{userName || "User"}</span>
+        {role === "INSTRUCTOR" && (
+          <span className="ml-2 px-2 py-0.5 bg-blue-100 text-blue-800 text-xs rounded-full">
+            Instructor
+          </span>
+        )}
+      </div>
+    );
+  };
+
   return (
-    <motion.div 
+    <motion.div
       className="mt-8"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
@@ -127,12 +145,12 @@ const CommentSection = ({ videoId, showComments, setShowComments, comments: prop
           )}
         </button>
       </div>
-      
+
       <AnimatePresence>
         {showComments && (
           <motion.div
             initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
+            animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.3 }}
           >
@@ -155,7 +173,7 @@ const CommentSection = ({ videoId, showComments, setShowComments, comments: prop
                 {loading ? "Posting..." : "Post Comment"}
               </motion.button>
             </form>
-            
+
             <div className="space-y-4">
               {comments.length > 0 ? (
                 comments.map((comment) => (
@@ -168,28 +186,32 @@ const CommentSection = ({ videoId, showComments, setShowComments, comments: prop
                   >
                     <div className="flex items-center mb-2">
                       <div className="w-8 h-8 bg-[#42ACD0] bg-opacity-10 rounded-full flex items-center justify-center text-[#42ACD0] font-bold">
-                        {comment.userName?.charAt(0)?.toUpperCase() || 'U'}
+                        {comment.userName?.charAt(0)?.toUpperCase() || "U"}
                       </div>
                       <div className="ml-3">
-                        <p className="font-medium text-gray-800">{comment.userName || 'User'}</p>
+                        {renderUserName(comment.userName, comment.role)}
                         <p className="text-xs text-gray-500">
                           {formatDate(comment.date)}
                         </p>
                       </div>
                     </div>
                     <p className="text-gray-700 mb-2">{comment.comment}</p>
-                    
+
                     <div className="flex items-center space-x-4 mb-2">
-                      <button 
-                        onClick={() => setReplyingTo(replyingTo === comment.id ? null : comment.id)}
+                      <button
+                        onClick={() =>
+                          setReplyingTo(
+                            replyingTo === comment.id ? null : comment.id
+                          )
+                        }
                         className="flex items-center text-sm text-[#42ACD0] hover:text-[#368cb1]"
                       >
                         <Reply className="mr-1" fontSize="small" />
                         Reply
                       </button>
-                      
+
                       {comment.commentReplies?.length > 0 && (
-                        <button 
+                        <button
                           onClick={() => toggleReplies(comment.id)}
                           className="flex items-center text-sm text-gray-500 hover:text-gray-700"
                         >
@@ -211,15 +233,18 @@ const CommentSection = ({ videoId, showComments, setShowComments, comments: prop
                     {replyingTo === comment.id && (
                       <motion.div
                         initial={{ opacity: 0, height: 0 }}
-                        animate={{ opacity: 1, height: 'auto' }}
+                        animate={{ opacity: 1, height: "auto" }}
                         exit={{ opacity: 0, height: 0 }}
                         className="mt-3 pl-4 border-l-2 border-[#42ACD0]"
                       >
-                        <form onSubmit={(e) => handleReplySubmit(e, comment.id)} className="mb-3">
+                        <form
+                          onSubmit={(e) => handleReplySubmit(e, comment.id)}
+                          className="mb-3"
+                        >
                           <textarea
                             value={replyText}
                             onChange={(e) => setReplyText(e.target.value)}
-                            placeholder={`Reply to ${comment.userName || 'this comment'}...`}
+                            placeholder={`Reply to ${comment.userName || "this comment"}...`}
                             className="w-full p-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#42ACD0] focus:border-[#42ACD0]"
                             rows="2"
                             disabled={loading}
@@ -247,43 +272,47 @@ const CommentSection = ({ videoId, showComments, setShowComments, comments: prop
                     )}
 
                     <AnimatePresence>
-                      {showReplies[comment.id] && comment.commentReplies?.length > 0 && (
-                        <motion.div
-                          initial={{ opacity: 0, height: 0 }}
-                          animate={{ opacity: 1, height: 'auto' }}
-                          exit={{ opacity: 0, height: 0 }}
-                          transition={{ duration: 0.2 }}
-                          className="mt-3 pl-4 border-l-2 border-gray-200 space-y-3"
-                        >
-                          {comment.commentReplies.map((reply, replyIndex) => (
-                            <motion.div
-                              key={replyIndex}
-                              className="pt-3"
-                              initial={{ opacity: 0 }}
-                              animate={{ opacity: 1 }}
-                              transition={{ delay: replyIndex * 0.05 }}
-                            >
-                              <div className="flex items-center mb-1">
-                                <div className="w-6 h-6 bg-[#42ACD0] bg-opacity-10 rounded-full flex items-center justify-center text-[#42ACD0] text-xs font-bold">
-                                  {reply.userName?.charAt(0)?.toUpperCase() || 'U'}
+                      {showReplies[comment.id] &&
+                        comment.commentReplies?.length > 0 && (
+                          <motion.div
+                            initial={{ opacity: 0, height: 0 }}
+                            animate={{ opacity: 1, height: "auto" }}
+                            exit={{ opacity: 0, height: 0 }}
+                            transition={{ duration: 0.2 }}
+                            className="mt-3 pl-4 border-l-2 border-gray-200 space-y-3"
+                          >
+                            {comment.commentReplies.map((reply, replyIndex) => (
+                              <motion.div
+                                key={replyIndex}
+                                className="pt-3"
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                transition={{ delay: replyIndex * 0.05 }}
+                              >
+                                <div className="flex items-center mb-1">
+                                  <div className="w-6 h-6 bg-[#42ACD0] bg-opacity-10 rounded-full flex items-center justify-center text-[#42ACD0] text-xs font-bold">
+                                    {reply.userName?.charAt(0)?.toUpperCase() ||
+                                      "U"}
+                                  </div>
+                                  <div className="ml-2">
+                                    {renderUserName(reply.userName, reply.role)}
+                                    <p className="text-xs text-gray-500">
+                                      {formatDate(reply.replyDate)}
+                                    </p>
+                                  </div>
                                 </div>
-                                <div className="ml-2">
-                                  <p className="text-sm font-medium text-gray-800">{reply.userName || 'User'}</p>
-                                  <p className="text-xs text-gray-500">
-                                    {formatDate(reply.replyDate)}
-                                  </p>
-                                </div>
-                              </div>
-                              <p className="text-sm text-gray-700">{reply.commentReply}</p>
-                            </motion.div>
-                          ))}
-                        </motion.div>
-                      )}
+                                <p className="text-sm text-gray-700">
+                                  {reply.commentReply}
+                                </p>
+                              </motion.div>
+                            ))}
+                          </motion.div>
+                        )}
                     </AnimatePresence>
                   </motion.div>
                 ))
               ) : (
-                <motion.p 
+                <motion.p
                   className="text-gray-500"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
