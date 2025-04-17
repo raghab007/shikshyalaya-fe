@@ -14,7 +14,7 @@ const VideoCard = ({ title, image = "https://images.unsplash.com/photo-150150490
       <div className="w-full h-44 rounded-lg overflow-hidden relative">
         {image ? (
           <img
-            src={"http://localhost:8085/images/thumbnails/" +image }
+            src={"http://localhost:8085/files/course/thumbnails/" +image }
             alt={title}
             className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
           />
@@ -62,7 +62,7 @@ const VideoCard = ({ title, image = "https://images.unsplash.com/photo-150150490
               </button>
             </div>
             <ReactPlayer
-              url={`http://localhost:8085/videos/course/${videorul}`}
+              url={`http://localhost:8085/files/course/videos/${videorul}`}
               controls={true}
               width="100%"
               height="450px"

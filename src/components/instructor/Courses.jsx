@@ -174,7 +174,7 @@ function Courses() {
                   <div className="relative h-48 w-full overflow-hidden">
                     {course.imageUrl ? (
                       <img
-                        src={`http://localhost:8085/images/course/${course.imageUrl}`}
+                        src={`http://localhost:8085/files/course/images/${course.imageUrl}`}
                         alt={course.courseName}
                         className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                       />
