@@ -4,10 +4,10 @@ import { CheckCircle, Star, StarBorder } from "@mui/icons-material";
 import CommentSection from "./CommentSection";
 import axios from "axios";
 
-const VideoPlayer = ({selectedVideo}) => {
+const VideoPlayer = ({ selectedVideo }) => {
   const [showComments, setShowComments] = useState(true);
   const [comments, setComments] = useState([]);
-   console.log(selectedVideo.completed)
+  console.log(selectedVideo.completed);
   const [isCompleted, setIsCompleted] = useState(selectedVideo.completed);
   useEffect(() => {
     setIsCompleted(selectedVideo.completed);
@@ -44,6 +44,7 @@ const VideoPlayer = ({selectedVideo}) => {
           },
         }
       );
+      console.log(response.data);
       setComments(response.data);
     } catch (error) {
       console.error("Error fetching comments:", error);
@@ -57,7 +58,7 @@ const VideoPlayer = ({selectedVideo}) => {
           {selectedVideo.title}
         </h1>
         <div className="flex items-center space-x-4">
-          {!isCompleted? (
+          {!isCompleted ? (
             <button
               onClick={() => onMarkCompleted()}
               className="flex items-center bg-[#42ACD0] text-white px-4 py-2 rounded-lg hover:bg-[#368cb1] transition-all duration-200 transform hover:scale-105 active:scale-95 shadow-md"
