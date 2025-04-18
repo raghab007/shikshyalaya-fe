@@ -3,8 +3,21 @@ import EnrolledCourseCard from "../components/course/EnrolledCourseCard";
 import FilterEnrolledCourse from "../components/course/FilterEnrolledCourse";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { useRecoilState } from "recoil";
+import { userProfileSelector } from "../store/atoms/profle";
 
 function EnrolledCoursesPage() {
+  const [state, setState] = useRecoilState(userProfileSelector);
+  useEffect(function () {
+    if (!state) {
+      console.log("state");
+      window.location.href = "/login";
+    }
+  });
+
+  if (!state) {
+    return null;
+  }
   return (
     <div className="font-sans bg-[#f5f9fc] min-h-screen pt-16">
       {" "}

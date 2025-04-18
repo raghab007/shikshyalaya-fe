@@ -132,6 +132,9 @@ const Dashboard = () => {
       progressChartRef.current &&
       chartData.length > 0
     ) {
+      // Filter out courses with zero students for the bar chart
+      const barChartData = chartData.filter((course) => course.students > 0);
+
       // Students by Course Bar Chart
       if (studentChart) studentChart.destroy();
 
@@ -139,11 +142,11 @@ const Dashboard = () => {
       const newStudentChart = new Chart(studentCtx, {
         type: "bar",
         data: {
-          labels: chartData.map((course) => course.courseName),
+          labels: barChartData.map((course) => course.courseName),
           datasets: [
             {
               label: "Number of Students",
-              data: chartData.map((course) => course.students),
+              data: barChartData.map((course) => course.students),
               backgroundColor: "#4285F4",
               borderColor: "#3367d6",
               borderWidth: 1,
@@ -175,7 +178,7 @@ const Dashboard = () => {
       });
       setStudentChart(newStudentChart);
 
-      // Revenue by Course Pie Chart
+      // Revenue by Course Pie Chart (shows all courses including zero students)
       if (revenueChart) revenueChart.destroy();
 
       const revenueCtx = revenueChartRef.current.getContext("2d");

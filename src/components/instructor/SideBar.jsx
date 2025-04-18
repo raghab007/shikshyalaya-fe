@@ -87,7 +87,7 @@ export default function Sidebar() {
           </h3>
           <div className="space-y-1">
             <NavItem
-              to="/instructor/settings"
+              to="/instructor/profile"
               icon={<FaCog />}
               label="Settings"
               isActive={location.pathname.includes("/instructor/settings")}

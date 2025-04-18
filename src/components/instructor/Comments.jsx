@@ -111,10 +111,22 @@ export default function InstructorCommentsPage() {
       <h1 className="text-2xl font-bold text-gray-800 mb-6">
         Student Comments
       </h1>
+      {/* Stats Summary */}
+      <div className="mt-8 p-4 bg-gray-50 rounded-lg">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="text-center p-3 bg-white rounded shadow">
+            <div className="text-2xl font-bold text-gray-800">
+              {comments.length}
+            </div>
+            <div className="text-sm text-gray-600">Total Comments</div>
+          </div>
+        </div>
+      </div>
 
       {/* Filters */}
       <div className="mb-8 bg-gray-50 p-4 rounded-lg">
         <h2 className="text-lg font-semibold text-gray-700 mb-3">Filters</h2>
+
         <div className="flex flex-wrap gap-4">
           <div className="w-64">
             <label
@@ -252,31 +264,6 @@ export default function InstructorCommentsPage() {
             <p>No comments found.</p>
           </div>
         )}
-      </div>
-
-      {/* Stats Summary */}
-      <div className="mt-8 p-4 bg-gray-50 rounded-lg">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="text-center p-3 bg-white rounded shadow">
-            <div className="text-2xl font-bold text-gray-800">
-              {comments.length}
-            </div>
-            <div className="text-sm text-gray-600">Total Comments</div>
-          </div>
-          <div className="text-center p-3 bg-white rounded shadow">
-            <div className="text-2xl font-bold text-green-600">
-              {comments.filter((c) => c.replies?.length > 0).length}
-            </div>
-            <div className="text-sm text-gray-600">Replied</div>
-          </div>
-          <div className="text-center p-3 bg-white rounded shadow">
-            <div className="text-2xl font-bold text-yellow-600">
-              {comments.length -
-                comments.filter((c) => c.replies?.length > 0).length}
-            </div>
-            <div className="text-sm text-gray-600">Pending</div>
-          </div>
-        </div>
       </div>
     </div>
   );
