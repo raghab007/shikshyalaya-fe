@@ -1,8 +1,21 @@
 import React, { useState, useEffect, useRef } from "react";
-import { BookOpen, User, PieChart, Bell, Calendar, X, Eye, GraduationCap, DollarSign, ChevronLeft, ChevronRight, Check } from "lucide-react";
-import Chart from 'chart.js/auto';
+import {
+  BookOpen,
+  User,
+  PieChart,
+  Bell,
+  Calendar,
+  X,
+  Eye,
+  GraduationCap,
+  DollarSign,
+  ChevronLeft,
+  ChevronRight,
+  Check,
+} from "lucide-react";
+import Chart from "chart.js/auto";
 import axios from "axios";
-import {useNavigate} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const Dashboard = () => {
   // State for total students and courses
@@ -10,30 +23,7 @@ const Dashboard = () => {
   const [totalCourses, setTotalCourses] = useState(0);
   const [totalRevenue, setTotalRevenue] = useState(0);
   const [courses, setCourses] = useState([]);
-
-  // Static data for charts
-  const staticChartData = [
-    {
-      courseName: "React Fundamentals",
-      students: 85,
-      coursePrice: 2999
-    },
-    {
-      courseName: "Advanced JavaScript",
-      students: 62,
-      coursePrice: 3499
-    },
-    {
-      courseName: "Node.js Backend",
-      students: 45,
-      coursePrice: 3999
-    },
-    {
-      courseName: "CSS Mastery",
-      students: 53,
-      coursePrice: 2499
-    }
-  ];
+  const [chartData, setChartData] = useState([]);
 
   // Other static data
   const [recentEnrollments] = useState([
@@ -43,7 +33,11 @@ const Dashboard = () => {
   ]);
 
   const [notifications] = useState([
-    { id: 1, message: "New enrollment in React Fundamentals", time: "2 hours ago" },
+    {
+      id: 1,
+      message: "New enrollment in React Fundamentals",
+      time: "2 hours ago",
+    },
     { id: 2, message: "Course Node.js Backend updated", time: "5 hours ago" },
     { id: 3, message: "New message from Jane Smith", time: "1 day ago" },
   ]);
@@ -69,18 +63,22 @@ const Dashboard = () => {
   const PROGRESS_COLORS = ["#FF6384", "#36A2EB", "#4CAF50"];
   const COURSE_COLORS = ["#4285F4", "#EA4335", "#FBBC05", "#34A853"];
 
-  const formatNumber = (num) => num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  const formatNumber = (num) =>
+    num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   const navigate = useNavigate();
 
   // Fetch dynamic data
   useEffect(() => {
     async function fetchStats() {
       try {
-        const response = await axios.get("http://localhost:8085/instructor/courses/stats", {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        });
+        const response = await axios.get(
+          "http://localhost:8085/instructor/courses/stats",
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
+        );
         setTotalStudents(response.data.TotalStudents);
         setTotalCourses(response.data.TotalCourses);
         setTotalRevenue(response.data.TotalRevenue);
@@ -91,41 +89,68 @@ const Dashboard = () => {
 
     async function fetchCourses() {
       try {
-        const response = await axios.get("http://localhost:8085/instructor/course", {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        });
+        const response = await axios.get(
+          "http://localhost:8085/instructor/course",
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
+        );
         setCourses(response.data);
       } catch (error) {
         console.error("Error fetching courses:", error);
       }
     }
 
+    async function fetchChartData() {
+      try {
+        const response = await axios.get(
+          "http://localhost:8085/instructor/courses/chart-data",
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
+        );
+        setChartData(response.data);
+      } catch (error) {
+        console.error("Error fetching chart data:", error);
+      }
+    }
+
     fetchStats();
     fetchCourses();
+    fetchChartData();
   }, []);
 
-  // Initialize Charts with static data
+  // Initialize Charts with dynamic data
   useEffect(() => {
-    if (studentChartRef.current && revenueChartRef.current && progressChartRef.current) {
+    if (
+      studentChartRef.current &&
+      revenueChartRef.current &&
+      progressChartRef.current &&
+      chartData.length > 0
+    ) {
       // Students by Course Bar Chart
       if (studentChart) studentChart.destroy();
-      
-      const studentCtx = studentChartRef.current.getContext('2d');
+
+      const studentCtx = studentChartRef.current.getContext("2d");
       const newStudentChart = new Chart(studentCtx, {
-        type: 'bar',
+        type: "bar",
         data: {
-          labels: staticChartData.map(course => course.courseName),
-          datasets: [{
-            label: 'Number of Students',
-            data: staticChartData.map(course => course.students),
-            backgroundColor: '#4285F4',
-            borderColor: '#3367d6',
-            borderWidth: 1,
-            borderRadius: 4,
-            barPercentage: 0.6,
-          }]
+          labels: chartData.map((course) => course.courseName),
+          datasets: [
+            {
+              label: "Number of Students",
+              data: chartData.map((course) => course.students),
+              backgroundColor: "#4285F4",
+              borderColor: "#3367d6",
+              borderWidth: 1,
+              borderRadius: 4,
+              barPercentage: 0.6,
+            },
+          ],
         },
         options: {
           responsive: true,
@@ -134,17 +159,17 @@ const Dashboard = () => {
             legend: { display: false },
             tooltip: {
               callbacks: {
-                label: context => `${context.raw} students`
-              }
-            }
+                label: (context) => `${context.raw} students`,
+              },
+            },
           },
           scales: {
-            y: { 
-              beginAtZero: true, 
+            y: {
+              beginAtZero: true,
               grid: { drawBorder: false },
-              ticks: { precision: 0 }
+              ticks: { precision: 0 },
             },
-            x: { grid: { display: false } }
+            x: { grid: { display: false } },
           },
         },
       });
@@ -153,61 +178,71 @@ const Dashboard = () => {
       // Revenue by Course Pie Chart
       if (revenueChart) revenueChart.destroy();
 
-      const revenueCtx = revenueChartRef.current.getContext('2d');
+      const revenueCtx = revenueChartRef.current.getContext("2d");
       const newRevenueChart = new Chart(revenueCtx, {
-        type: 'pie',
+        type: "pie",
         data: {
-          labels: staticChartData.map(course => course.courseName),
-          datasets: [{
-            data: staticChartData.map(course => course.coursePrice * course.students),
-            backgroundColor: COURSE_COLORS,
-            borderWidth: 1,
-            borderColor: '#fff',
-          }]
+          labels: chartData.map((course) => course.courseName),
+          datasets: [
+            {
+              data: chartData.map((course) => course.totalRevenue),
+              backgroundColor: COURSE_COLORS,
+              borderWidth: 1,
+              borderColor: "#fff",
+            },
+          ],
         },
         options: {
           responsive: true,
           maintainAspectRatio: false,
           plugins: {
-            legend: { position: 'bottom', labels: { boxWidth: 12, padding: 15 } },
+            legend: {
+              position: "bottom",
+              labels: { boxWidth: 12, padding: 15 },
+            },
             tooltip: {
               callbacks: {
-                label: context => `₹${formatNumber(context.raw)}`
-              }
-            }
-          }
-        }
+                label: (context) => `₹${formatNumber(context.raw)}`,
+              },
+            },
+          },
+        },
       });
       setRevenueChart(newRevenueChart);
 
-      // Course Progress Doughnut Chart
+      // Course Progress Doughnut Chart (kept static as per your request)
       if (progressChart) progressChart.destroy();
 
-      const progressCtx = progressChartRef.current.getContext('2d');
+      const progressCtx = progressChartRef.current.getContext("2d");
       const newProgressChart = new Chart(progressCtx, {
-        type: 'doughnut',
+        type: "doughnut",
         data: {
-          labels: progressData.map(item => item.name),
-          datasets: [{
-            data: progressData.map(item => item.value),
-            backgroundColor: PROGRESS_COLORS,
-            borderWidth: 1,
-            borderColor: '#fff',
-          }]
+          labels: progressData.map((item) => item.name),
+          datasets: [
+            {
+              data: progressData.map((item) => item.value),
+              backgroundColor: PROGRESS_COLORS,
+              borderWidth: 1,
+              borderColor: "#fff",
+            },
+          ],
         },
         options: {
           responsive: true,
           maintainAspectRatio: false,
-          cutout: '60%',
+          cutout: "60%",
           plugins: {
-            legend: { position: 'bottom', labels: { boxWidth: 12, padding: 15 } },
+            legend: {
+              position: "bottom",
+              labels: { boxWidth: 12, padding: 15 },
+            },
             tooltip: {
               callbacks: {
-                label: context => `${context.raw}%`
-              }
-            }
-          }
-        }
+                label: (context) => `${context.raw}%`,
+              },
+            },
+          },
+        },
       });
       setProgressChart(newProgressChart);
     }
@@ -217,7 +252,7 @@ const Dashboard = () => {
       if (revenueChart) revenueChart.destroy();
       if (progressChart) progressChart.destroy();
     };
-  }, []);
+  }, [chartData]); // Only re-run when chartData changes
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -225,14 +260,14 @@ const Dashboard = () => {
       <header className="bg-white shadow-md">
         <div className="max-w-7xl mx-auto py-4 px-6">
           <div className="flex justify-between items-center">
-            <h1 className="text-2xl font-bold text-gray-800">Instructor Dashboard</h1>
+            <h1 className="text-2xl font-bold text-gray-800">
+              Instructor Dashboard
+            </h1>
             <div className="flex items-center space-x-4">
               <button
                 className="relative p-2 rounded-full bg-gray-100 hover:bg-gray-200"
                 onClick={() => setShowNotificationsModal(true)}
-              >
-               
-              </button>
+              ></button>
             </div>
           </div>
         </div>
@@ -250,7 +285,9 @@ const Dashboard = () => {
               </div>
               <div>
                 <p className="text-sm text-gray-500 mb-1">Total Courses</p>
-                <p className="text-2xl font-bold text-gray-800">{formatNumber(totalCourses)}</p>
+                <p className="text-2xl font-bold text-gray-800">
+                  {formatNumber(totalCourses)}
+                </p>
               </div>
             </div>
           </div>
@@ -263,7 +300,9 @@ const Dashboard = () => {
               </div>
               <div>
                 <p className="text-sm text-gray-500 mb-1">Total Students</p>
-                <p className="text-2xl font-bold text-gray-800">{formatNumber(totalStudents)}</p>
+                <p className="text-2xl font-bold text-gray-800">
+                  {formatNumber(totalStudents)}
+                </p>
               </div>
             </div>
           </div>
@@ -276,7 +315,9 @@ const Dashboard = () => {
               </div>
               <div>
                 <p className="text-sm text-gray-500 mb-1">Total Revenue</p>
-                <p className="text-2xl font-bold text-gray-800">{formatNumber(totalRevenue)}</p>
+                <p className="text-2xl font-bold text-gray-800">
+                  {formatNumber(totalRevenue)}
+                </p>
               </div>
             </div>
           </div>
@@ -288,9 +329,13 @@ const Dashboard = () => {
                 <GraduationCap className="text-2xl text-amber-600" />
               </div>
               <div>
-                <p className="text-sm text-gray-500 mb-1">Avg. Revenue/Student</p>
+                <p className="text-sm text-gray-500 mb-1">
+                  Avg. Revenue/Student
+                </p>
                 <p className="text-2xl font-bold text-gray-800">
-                  {totalStudents > 0 ? formatNumber(Math.round(totalRevenue / totalStudents)) : 0}
+                  {totalStudents > 0
+                    ? formatNumber(Math.round(totalRevenue / totalStudents))
+                    : 0}
                 </p>
               </div>
             </div>
@@ -301,7 +346,9 @@ const Dashboard = () => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
           {/* Students by Course Bar Chart */}
           <div className="bg-white rounded-lg shadow p-6">
-            <h2 className="text-lg font-semibold text-gray-800 mb-4">Students by Course</h2>
+            <h2 className="text-lg font-semibold text-gray-800 mb-4">
+              Students by Course
+            </h2>
             <div className="h-80">
               <canvas ref={studentChartRef}></canvas>
             </div>
@@ -309,7 +356,9 @@ const Dashboard = () => {
 
           {/* Revenue by Course Pie Chart */}
           <div className="bg-white rounded-lg shadow p-6">
-            <h2 className="text-lg font-semibold text-gray-800 mb-4">Revenue by Course</h2>
+            <h2 className="text-lg font-semibold text-gray-800 mb-4">
+              Revenue by Course
+            </h2>
             <div className="h-80">
               <canvas ref={revenueChartRef}></canvas>
             </div>
@@ -320,7 +369,9 @@ const Dashboard = () => {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
           {/* Course Progress */}
           <div className="bg-white rounded-lg shadow p-6">
-            <h2 className="text-lg font-semibold text-gray-800 mb-4">Course Completion</h2>
+            <h2 className="text-lg font-semibold text-gray-800 mb-4">
+              Course Completion
+            </h2>
             <div className="h-60">
               <canvas ref={progressChartRef}></canvas>
             </div>
@@ -328,12 +379,18 @@ const Dashboard = () => {
 
           {/* Recent Enrollments */}
           <div className="bg-white rounded-lg shadow p-6">
-            <h2 className="text-lg font-semibold text-gray-800 mb-4">Recent Enrollments</h2>
+            <h2 className="text-lg font-semibold text-gray-800 mb-4">
+              Recent Enrollments
+            </h2>
             <div className="divide-y">
               {recentEnrollments.map((enrollment) => (
                 <div key={enrollment.id} className="py-3">
-                  <p className="font-medium text-gray-800">{enrollment.studentName}</p>
-                  <p className="text-sm text-gray-500">Enrolled in {enrollment.courseName}</p>
+                  <p className="font-medium text-gray-800">
+                    {enrollment.studentName}
+                  </p>
+                  <p className="text-sm text-gray-500">
+                    Enrolled in {enrollment.courseName}
+                  </p>
                 </div>
               ))}
             </div>
@@ -341,37 +398,64 @@ const Dashboard = () => {
               <Eye className="mr-2" /> View All Enrollments
             </button>
           </div>
-
         </div>
 
         {/* Recent Courses Table */}
         <div className="bg-white rounded-lg shadow mb-8 overflow-hidden">
           <div className="p-6 border-b">
-            <h2 className="text-lg font-semibold text-gray-800">Your Courses</h2>
+            <h2 className="text-lg font-semibold text-gray-800">
+              Your Courses
+            </h2>
           </div>
           <div className="overflow-x-auto">
             <table className="min-w-full bg-white">
               <thead>
                 <tr className="bg-gray-50">
-                  <th className="text-left py-3 px-6 text-xs font-medium text-gray-500 uppercase tracking-wider">Course Name</th>
-                  <th className="text-left py-3 px-6 text-xs font-medium text-gray-500 uppercase tracking-wider">Description</th>
-                  <th className="text-left py-3 px-6 text-xs font-medium text-gray-500 uppercase tracking-wider">Students</th>
-                  <th className="text-left py-3 px-6 text-xs font-medium text-gray-500 uppercase tracking-wider">Price</th>
-                  <th className="text-left py-3 px-6 text-xs font-medium text-gray-500 uppercase tracking-wider">Revenue</th>
-                  <th className="text-left py-3 px-6 text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                  <th className="text-left py-3 px-6 text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Course Name
+                  </th>
+                  <th className="text-left py-3 px-6 text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Description
+                  </th>
+                  <th className="text-left py-3 px-6 text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Students
+                  </th>
+                  <th className="text-left py-3 px-6 text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Price
+                  </th>
+                  <th className="text-left py-3 px-6 text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Revenue
+                  </th>
+                  <th className="text-left py-3 px-6 text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Actions
+                  </th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200">
                 {courses.map((course) => (
                   <tr key={course.id} className="hover:bg-gray-50">
-                    <td className="py-4 px-6 whitespace-nowrap font-medium text-gray-800">{course.courseName}</td>
-                    <td className="py-4 px-6 whitespace-nowrap text-gray-600">{course.courseDescription}</td>
-                    <td className="py-4 px-6 whitespace-nowrap text-gray-600">{course.students}</td>
-                    <td className="py-4 px-6 whitespace-nowrap text-gray-600">₹{formatNumber(course.coursePrice)}</td>
-                    <td className="py-4 px-6 whitespace-nowrap text-gray-600">₹{formatNumber(course.coursePrice * course.students)}</td>
+                    <td className="py-4 px-6 whitespace-nowrap font-medium text-gray-800">
+                      {course.courseName}
+                    </td>
+                    <td className="py-4 px-6 whitespace-nowrap text-gray-600">
+                      {course.courseDescription}
+                    </td>
+                    <td className="py-4 px-6 whitespace-nowrap text-gray-600">
+                      {course.students}
+                    </td>
+                    <td className="py-4 px-6 whitespace-nowrap text-gray-600">
+                      ₹{formatNumber(course.coursePrice)}
+                    </td>
+                    <td className="py-4 px-6 whitespace-nowrap text-gray-600">
+                      ₹{formatNumber(course.coursePrice * course.students)}
+                    </td>
                     <td className="py-4 px-6 whitespace-nowrap">
-                      <button 
-                        onClick={() => navigate(`/instructor/coursedetails/${course.courseID}`)} 
+                      <button
+                        onClick={() =>
+                          navigate(
+                            `/instructor/coursedetails/${course.courseID}`
+                          )
+                        }
                         className="text-blue-600 hover:text-blue-800 font-medium text-sm"
                       >
                         View Details
