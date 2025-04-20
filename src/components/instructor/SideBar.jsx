@@ -8,6 +8,7 @@ import {
   FaChartLine,
   FaMoneyBill,
   FaComment,
+  FaComments,
 } from "react-icons/fa";
 import { Link, useLocation } from "react-router-dom";
 
@@ -53,6 +54,12 @@ export default function Sidebar() {
               icon={<FaUserGraduate />}
               label="Students"
               isActive={location.pathname.includes("/instructor/students")}
+            />
+            <NavItem
+              to="/instructor/chat"
+              icon={<FaComments />}
+              label="Chat"
+              isActive={location.pathname.includes("/instructor/chat")}
             />
           </div>
         </div>

@@ -33,7 +33,7 @@ const theme = {
     success: "#10B981", // Green for success
     warning: "#F59E0B", // Yellow for warning
     error: "#EF4444", // Red for error
-  }
+  },
 };
 
 const CourseCard = ({
@@ -137,14 +137,10 @@ const CourseCard = ({
 
       <div className="flex items-center mt-2 gap-2 text-xs text-gray-200">
         <span className="px-2 py-0.5 bg-gray-700/60 rounded-full">{level}</span>
-        <span className="flex items-center">
+        {/* <span className="flex items-center">
           <FaClock className="mr-1" size={10} />
           {duration}
-        </span>
-        <span className="flex items-center">
-          <FaCertificate className="mr-1" size={10} />
-          Certificate
-        </span>
+        </span> */}
       </div>
     </div>
   );
