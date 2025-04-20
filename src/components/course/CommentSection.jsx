@@ -71,7 +71,7 @@ const CommentSection = ({
       setLoading(true);
       await axios.post(
         `http://localhost:8085/comments/${commentId}/reply`,
-        { comment: replyText },
+        { reply: replyText },
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,

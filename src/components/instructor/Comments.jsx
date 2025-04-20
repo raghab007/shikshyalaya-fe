@@ -50,7 +50,7 @@ export default function InstructorCommentsPage() {
 
       // Make API call to save the reply
       const response = await axios.post(
-        `http://localhost:8085/instructor/comments/${commentId}/replies`,
+        `http://localhost:8085/instructor/${commentId}/replies`,
         { reply: replyText },
         {
           headers: {
