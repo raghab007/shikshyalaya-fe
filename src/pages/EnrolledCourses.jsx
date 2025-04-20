@@ -1,6 +1,5 @@
 import { Link, Outlet, useLocation } from "react-router-dom";
 import EnrolledCourseCard from "../components/course/EnrolledCourseCard";
-import FilterEnrolledCourse from "../components/course/FilterEnrolledCourse";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useRecoilState } from "recoil";
@@ -132,7 +131,6 @@ function EnrolledCourses() {
 
   return (
     <>
-      <FilterEnrolledCourse />
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 py-8">
         {courses.map((course) => (
           <EnrolledCourseCard
