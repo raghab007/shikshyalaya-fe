@@ -10,6 +10,7 @@ import UploadLecture from "../components/instructor/CourseContent";
 import PaymentHistory from "../components/instructor/PaymentHistory";
 import InstructorCommentsPage from "../components/instructor/Comments";
 import InstructorProfilePage from "../components/instructor/Settings";
+import ChatPage from "../components/instructor/ChatPage";
 
 const InstructorRoutes = () => {
   return (
@@ -19,6 +20,7 @@ const InstructorRoutes = () => {
         <Route path="courses" element={<Courses />} />
         <Route path="users" element={<Users />} />
         <Route path="students" element={<Students />} />
+        <Route path="chat" element={<ChatPage></ChatPage>}></Route>
         <Route path="add-course" element={<AddCourse></AddCourse>}></Route>
         <Route
           path="coursedetails/:courseId"
