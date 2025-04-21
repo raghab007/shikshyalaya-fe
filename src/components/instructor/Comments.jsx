@@ -10,6 +10,15 @@ export default function InstructorCommentsPage() {
   const [courseFilter, setCourseFilter] = useState("");
   const [replying, setReplying] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
+  const [expandedReplies, setExpandedReplies] = useState({}); // Track which replies are expanded
+
+  // Toggle reply visibility
+  const toggleReplies = (commentId) => {
+    setExpandedReplies((prev) => ({
+      ...prev,
+      [commentId]: !prev[commentId],
+    }));
+  };
 
   // Fetch comments from API
   useEffect(() => {
@@ -159,11 +168,6 @@ export default function InstructorCommentsPage() {
               <p className="text-blue-100 text-lg">
                 Review and respond to your students' comments
               </p>
-            </div>
-            <div className="mt-4 md:mt-0 bg-white bg-opacity-20 rounded-lg p-1">
-              <div className="text-white text-sm font-medium px-3 py-1">
-                Instructor Dashboard
-              </div>
             </div>
           </div>
         </div>
@@ -409,7 +413,10 @@ export default function InstructorCommentsPage() {
                 {/* Replies Section */}
                 {comment.replies && comment.replies.length > 0 && (
                   <div className="bg-gray-50 p-5 border-t border-gray-100">
-                    <h4 className="text-sm font-medium text-gray-700 mb-3 flex items-center">
+                    <h4
+                      className="text-sm font-medium text-gray-700 mb-3 flex items-center cursor-pointer"
+                      onClick={() => toggleReplies(comment.commentId)}
+                    >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         className="h-4 w-4 mr-1 text-blue-500"
@@ -425,43 +432,59 @@ export default function InstructorCommentsPage() {
                         />
                       </svg>
                       Replies ({comment.replies.length})
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className={`h-4 w-4 ml-2 transition-transform ${expandedReplies[comment.commentId] ? "transform rotate-180" : ""}`}
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M19 9l-7 7-7-7"
+                        />
+                      </svg>
                     </h4>
-                    <div className="space-y-3">
-                      {comment.replies.map((reply) => (
-                        <div
-                          key={reply.id}
-                          className="bg-white p-4 rounded-lg border-l-2 border-blue-400 shadow-sm"
-                        >
-                          <div className="flex items-center gap-2 mb-2">
-                            <div className="bg-blue-100 rounded-full p-1">
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                className="h-4 w-4 text-blue-600"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                stroke="currentColor"
-                              >
-                                <path
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  strokeWidth={2}
-                                  d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                                />
-                              </svg>
+                    {expandedReplies[comment.commentId] && (
+                      <div className="space-y-3">
+                        {comment.replies.map((reply) => (
+                          <div
+                            key={reply.id}
+                            className="bg-white p-4 rounded-lg border-l-2 border-blue-400 shadow-sm"
+                          >
+                            <div className="flex items-center gap-2 mb-2">
+                              <div className="bg-blue-100 rounded-full p-1">
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  className="h-4 w-4 text-blue-600"
+                                  fill="none"
+                                  viewBox="0 0 24 24"
+                                  stroke="currentColor"
+                                >
+                                  <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                                  />
+                                </svg>
+                              </div>
+                              <span className="font-medium text-blue-700">
+                                {reply.userFirstName} {reply.userLastName}
+                              </span>
+                              <span className="text-xs text-gray-500">
+                                {reply.date
+                                  ? new Date(reply.date).toLocaleString()
+                                  : "No date"}
+                              </span>
                             </div>
-                            <span className="font-medium text-blue-700">
-                              {reply.userFirstName} {reply.userLastName}
-                            </span>
-                            <span className="text-xs text-gray-500">
-                              {reply.date
-                                ? new Date(reply.date).toLocaleString()
-                                : "No date"}
-                            </span>
+                            <p className="text-gray-800 pl-7">{reply.reply}</p>
                           </div>
-                          <p className="text-gray-800 pl-7">{reply.reply}</p>
-                        </div>
-                      ))}
-                    </div>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 )}
 

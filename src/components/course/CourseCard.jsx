@@ -118,17 +118,6 @@ const CourseCard = ({
     </div>
   );
 
-  const BookmarkButton = () => (
-    <button
-      onClick={toggleBookmark}
-      className="absolute top-3 right-3 p-2 bg-white/90 backdrop-blur-sm rounded-full shadow-sm hover:bg-white transition-colors"
-    >
-      <FaBookmark
-        className={`w-4 h-4 ${isBookmarked ? "text-[#2D9EEB]" : "text-gray-500"}`}
-      />
-    </button>
-  );
-
   const CourseInfo = () => (
     <div className="absolute bottom-3 left-3 right-3 text-white font-medium">
       <h2 className="text-lg font-bold text-white line-clamp-2 drop-shadow-md">
@@ -160,7 +149,6 @@ const CourseCard = ({
 
       <CategoryBadges />
       <BadgesSection />
-      <BookmarkButton />
       <CourseInfo />
     </div>
   );

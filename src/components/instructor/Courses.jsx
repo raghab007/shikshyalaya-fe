@@ -114,7 +114,15 @@ function Courses() {
 
   return (
     <main className="min-h-screen bg-gradient-to-br from-orange-50 to-orange-100 pb-12">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8">
+        {/* Header */}
+        <div className="bg-gradient-to-r from-blue-600 to-blue-500 rounded-xl shadow-lg p-6 mb-8">
+          <h1 className="text-3xl font-bold text-white mb-2">My Courses</h1>
+          <p className="text-blue-100">
+            Manage and track all your teaching courses in one place
+          </p>
+        </div>
+
         {/* Action bar */}
         <div className="flex flex-col sm:flex-row justify-between items-center gap-4 mb-8 bg-white rounded-xl p-4 shadow-sm">
           <Tooltip title="Create a new course" arrow>
@@ -168,109 +176,277 @@ function Courses() {
         {/* Dashboard stats */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
           <div className="bg-white rounded-xl p-4 shadow-sm">
-            <p className="text-gray-500 text-sm">Total Courses</p>
-            <p className="text-2xl font-bold">{courses ? courses.length : 0}</p>
+            <div className="flex items-center">
+              <div className="bg-blue-100 p-3 rounded-full">
+                <svg
+                  className="h-6 w-6 text-blue-600"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
+                  />
+                </svg>
+              </div>
+              <div className="ml-4">
+                <p className="text-sm font-medium text-gray-500">
+                  Total Courses
+                </p>
+                <p className="text-2xl font-bold text-gray-900">
+                  {courses ? courses.length : 0}
+                </p>
+              </div>
+            </div>
           </div>
           <div className="bg-white rounded-xl p-4 shadow-sm">
-            <p className="text-gray-500 text-sm">Average Price</p>
-            <p className="text-2xl font-bold">
-              {courses
-                ? `Rs ${Math.round(courses.reduce((acc, course) => acc + course.coursePrice, 0) / courses.length)}`
-                : "N/A"}
-            </p>
+            <div className="flex items-center">
+              <div className="bg-green-100 p-3 rounded-full">
+                <svg
+                  className="h-6 w-6 text-green-600"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
+                </svg>
+              </div>
+              <div className="ml-4">
+                <p className="text-sm font-medium text-gray-500">
+                  Average Price
+                </p>
+                <p className="text-2xl font-bold text-gray-900">
+                  {courses && courses.length > 0
+                    ? `Rs ${Math.round(courses.reduce((acc, course) => acc + course.coursePrice, 0) / courses.length)}`
+                    : "N/A"}
+                </p>
+              </div>
+            </div>
+          </div>
+          <div className="bg-white rounded-xl p-4 shadow-sm">
+            <div className="flex items-center">
+              <div className="bg-purple-100 p-3 rounded-full">
+                <svg
+                  className="h-6 w-6 text-purple-600"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"
+                  />
+                </svg>
+              </div>
+              <div className="ml-4">
+                <p className="text-sm font-medium text-gray-500">
+                  Total Students
+                </p>
+                <p className="text-2xl font-bold text-gray-900">
+                  {courses
+                    ? courses.reduce(
+                        (acc, course) => acc + (course.totalEnrollments || 0),
+                        0
+                      )
+                    : 0}
+                </p>
+              </div>
+            </div>
+          </div>
+          <div className="bg-white rounded-xl p-4 shadow-sm">
+            <div className="flex items-center">
+              <div className="bg-yellow-100 p-3 rounded-full">
+                <svg
+                  className="h-6 w-6 text-yellow-600"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z"
+                  />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z"
+                  />
+                </svg>
+              </div>
+              <div className="ml-4">
+                <p className="text-sm font-medium text-gray-500">
+                  Search Results
+                </p>
+                <p className="text-2xl font-bold text-gray-900">
+                  {processedCourses.length}
+                </p>
+              </div>
+            </div>
           </div>
         </div>
 
-        {/* Course grid */}
+        {/* Course table */}
         {currentCourses.length > 0 ? (
           <>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {currentCourses.map((course) => (
-                <div
-                  key={course.courseID}
-                  className="bg-white border border-gray-100 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden group"
-                >
-                  <div className="relative h-48 w-full overflow-hidden">
-                    {course.imageUrl ? (
-                      <img
-                        src={`http://localhost:8085/files/course/images/${course.imageUrl}`}
-                        alt={course.courseName}
-                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                      />
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center bg-gray-100 text-gray-400">
-                        <svg
-                          className="w-12 h-12"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth="2"
-                            d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
-                          ></path>
-                        </svg>
-                      </div>
-                    )}
-                    <Chip
-                      label={`Rs ${course.coursePrice}`}
-                      className="absolute top-3 right-3 bg-white shadow-md"
-                      size="small"
-                    />
-                  </div>
-                  <div className="p-4">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-2 line-clamp-2 h-14">
-                      {course.courseName}
-                    </h3>
-                    <div className="flex items-center text-gray-500 text-sm mb-4">
-                      <span className="flex items-center">
-                        <svg
-                          className="w-4 h-4 mr-1"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth="2"
-                            d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-                          ></path>
-                        </svg>
-                        {course.courseDuration || "Not specified"}
-                      </span>
-                      <span className="flex items-center ml-4">
-                        <svg
-                          className="w-4 h-4 mr-1"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth="2"
-                            d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                          ></path>
-                        </svg>
-                        {course.totalEnrollments ? course.totalEnrollments : 0}{" "}
-                        students
-                      </span>
-                    </div>
-                    <Link
-                      to={`/instructor/coursedetails/${course.courseID}`}
-                      className="w-full inline-block text-center px-4 py-2.5 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors duration-300 shadow-sm hover:shadow-md"
-                    >
-                      Manage Course
-                    </Link>
-                  </div>
-                </div>
-              ))}
+            <div className="bg-white rounded-xl shadow-md overflow-hidden mb-8 border border-blue-100">
+              <div className="overflow-x-auto">
+                <table className="min-w-full divide-y divide-gray-200">
+                  <thead className="bg-gray-50">
+                    <tr>
+                      <th
+                        scope="col"
+                        className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                      >
+                        Course
+                      </th>
+                      <th
+                        scope="col"
+                        className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                      >
+                        Duration
+                      </th>
+                      <th
+                        scope="col"
+                        className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                      >
+                        Students
+                      </th>
+                      <th
+                        scope="col"
+                        className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                      >
+                        Price
+                      </th>
+                      <th
+                        scope="col"
+                        className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider"
+                      >
+                        Action
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody className="bg-white divide-y divide-gray-200">
+                    {currentCourses.map((course) => (
+                      <tr
+                        key={course.courseID}
+                        className="hover:bg-blue-50 transition-colors duration-150"
+                      >
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="flex items-center">
+                            <div className="flex-shrink-0 h-16 w-16 rounded-md overflow-hidden">
+                              {course.imageUrl ? (
+                                <img
+                                  src={`http://localhost:8085/files/course/images/${course.imageUrl}`}
+                                  alt={course.courseName}
+                                  className="h-full w-full object-cover"
+                                />
+                              ) : (
+                                <div className="h-full w-full flex items-center justify-center bg-gray-100 text-gray-400">
+                                  <svg
+                                    className="w-8 h-8"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                  >
+                                    <path
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
+                                      strokeWidth="2"
+                                      d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+                                    ></path>
+                                  </svg>
+                                </div>
+                              )}
+                            </div>
+                            <div className="ml-4">
+                              <div className="text-sm font-medium text-gray-900">
+                                {course.courseName}
+                              </div>
+                              <div className="text-sm text-gray-500">
+                                #{course.courseID}
+                              </div>
+                            </div>
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="flex items-center">
+                            <svg
+                              className="w-4 h-4 mr-1 text-blue-500"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                              xmlns="http://www.w3.org/2000/svg"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth="2"
+                                d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                              ></path>
+                            </svg>
+                            <span className="text-sm text-gray-700">
+                              {course.courseDuration || "Not specified"}
+                            </span>
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="flex items-center">
+                            <svg
+                              className="w-4 h-4 mr-1 text-purple-500"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                              xmlns="http://www.w3.org/2000/svg"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth="2"
+                                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                              ></path>
+                            </svg>
+                            <span className="text-sm text-gray-700">
+                              {course.totalEnrollments
+                                ? course.totalEnrollments
+                                : 0}{" "}
+                              students
+                            </span>
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <Chip
+                            label={`Rs ${course.coursePrice}`}
+                            className="bg-green-100 text-green-800"
+                            size="small"
+                          />
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-right">
+                          <Link
+                            to={`/instructor/coursedetails/${course.courseID}`}
+                            className="inline-block px-3 py-1.5 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700 transition-colors duration-300"
+                          >
+                            Manage
+                          </Link>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </div>
 
             {/* Pagination */}
