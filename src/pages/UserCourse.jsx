@@ -22,9 +22,7 @@ const UserCourse = () => {
         }
       );
       setSections(response.data.sections);
-      
-    
-      
+
       // Expand first section by default if exists
       if (response.data.length > 0) {
         setExpandedSection(response.data[0].id);
@@ -35,7 +33,6 @@ const UserCourse = () => {
       setLoading(false);
     }
   };
-
 
   useEffect(() => {
     getSections();
@@ -50,7 +47,7 @@ const UserCourse = () => {
   }
 
   return (
-    <div className="flex min-h-screen bg-gray-50 p-8 space-x-8">
+    <div className="flex min-h-screen bg-gray-50 p-8 space-x-8 mt-10">
       <VideoList
         sections={sections}
         onSelectVideo={setSelectedVideo}
@@ -62,12 +59,12 @@ const UserCourse = () => {
 
       <div className="flex-1">
         {selectedVideo ? (
-          <VideoPlayer
-            selectedVideo={selectedVideo}
-          />
+          <VideoPlayer selectedVideo={selectedVideo} />
         ) : (
           <div className="flex items-center justify-center h-full bg-white rounded-xl shadow-lg p-8">
-            <p className="text-gray-600 text-xl">Select a section to view lectures</p>
+            <p className="text-gray-600 text-xl">
+              Select a section to view lectures
+            </p>
           </div>
         )}
       </div>
@@ -75,4 +72,4 @@ const UserCourse = () => {
   );
 };
 
-export default UserCourse
+export default UserCourse;

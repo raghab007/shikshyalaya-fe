@@ -163,7 +163,7 @@ export default function InstructorCommentsPage() {
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center">
             <div>
               <h1 className="text-3xl font-bold text-white mb-2">
-                Student Feedback Center
+                Student Feedbacks
               </h1>
               <p className="text-blue-100 text-lg">
                 Review and respond to your students' comments
@@ -198,35 +198,6 @@ export default function InstructorCommentsPage() {
                 </div>
                 <div className="text-3xl font-bold text-gray-800">
                   {comments.length}
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-white rounded-xl shadow-md p-6 border-l-4 border-green-500 transition-all hover:shadow-lg">
-            <div className="flex items-center">
-              <div className="bg-green-100 p-3 rounded-lg mr-4">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-8 w-8 text-green-600"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-                  />
-                </svg>
-              </div>
-              <div>
-                <div className="text-gray-500 text-sm font-medium">
-                  Responded
-                </div>
-                <div className="text-3xl font-bold text-gray-800">
-                  {comments.length - unrespondedComments}
                 </div>
               </div>
             </div>

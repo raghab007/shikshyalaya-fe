@@ -254,9 +254,6 @@ function ChatPage() {
           >
             <div className="max-w-4xl mx-auto flex justify-between items-center">
               <div>
-                <h2 className="text-xl font-bold text-white">
-                  {getCourseName(selectedCourse)}
-                </h2>
                 <div className="text-sm text-blue-100 mt-1 flex items-center">
                   <span
                     className={`inline-block w-2 h-2 rounded-full mr-2 ${

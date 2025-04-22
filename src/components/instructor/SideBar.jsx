@@ -1,3 +1,5 @@
+import { User } from "lucide-react";
+import { Profiler } from "react";
 import {
   FaTachometerAlt,
   FaBook,
@@ -95,8 +97,8 @@ export default function Sidebar() {
           <div className="space-y-1">
             <NavItem
               to="/instructor/profile"
-              icon={<FaCog />}
-              label="Settings"
+              icon={<User />}
+              label="Profile"
               isActive={location.pathname.includes("/instructor/settings")}
             />
           </div>

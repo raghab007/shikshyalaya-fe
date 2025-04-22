@@ -68,7 +68,11 @@ export default function Navbar() {
 
   return (
     <nav
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled ? "bg-sky-700 shadow-lg" : "bg-sky-600"}`}
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+        isScrolled
+          ? "bg-white shadow-md backdrop-blur-sm bg-opacity-90"
+          : "bg-white/80 backdrop-blur-sm"
+      }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
@@ -78,9 +82,9 @@ export default function Navbar() {
               <img
                 src={Logo}
                 alt="Sikshyalaya Logo"
-                className="h-9 w-9 object-contain rounded transition-transform duration-300 group-hover:scale-105"
+                className="h-8 w-8 object-contain rounded transition-transform duration-300 group-hover:scale-110"
               />
-              <span className="text-white font-bold text-xl tracking-tight transition-opacity duration-300 group-hover:opacity-90">
+              <span className="text-sky-600 font-bold text-xl tracking-tight transition-colors duration-300 group-hover:text-sky-700">
                 Sikshyalaya
               </span>
             </Link>
@@ -104,13 +108,13 @@ export default function Navbar() {
                 <input
                   type="search"
                   placeholder="Search courses..."
-                  className="w-64 py-2 pl-9 pr-4 rounded-full bg-white/10 border border-white/20 text-white placeholder-gray-200 focus:outline-none focus:bg-white/20 transition-all"
+                  className="w-64 py-1.5 pl-9 pr-4 rounded-full bg-gray-100 border border-gray-200 text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent transition-all text-sm"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                 />
                 <button
                   type="submit"
-                  className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white/70 hover:text-white"
+                  className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-sky-600"
                 >
                   <FiSearch size={16} />
                 </button>
@@ -122,13 +126,13 @@ export default function Navbar() {
               <div className="flex items-center space-x-3">
                 <Link
                   to="/login"
-                  className="px-5 py-1.5 text-sm font-medium rounded-full text-white hover:bg-white/20 transition-colors"
+                  className="px-4 py-1.5 text-sm font-medium rounded-full text-sky-600 border border-sky-200 hover:bg-sky-50 transition-colors"
                 >
                   Login
                 </Link>
                 <Link
                   to="/signup"
-                  className="px-5 py-1.5 text-sm font-medium bg-white rounded-full text-sky-600 hover:bg-sky-50 transition-colors"
+                  className="px-4 py-1.5 text-sm font-medium bg-sky-600 rounded-full text-white hover:bg-sky-700 transition-colors"
                 >
                   Sign Up
                 </Link>
@@ -137,25 +141,25 @@ export default function Navbar() {
               <div className="relative" ref={profileRef}>
                 <button
                   onClick={() => setIsProfileOpen(!isProfileOpen)}
-                  className="flex items-center space-x-2 px-3 py-1.5 rounded-full bg-white/10 hover:bg-white/20 transition-colors"
+                  className="flex items-center space-x-2 px-3 py-1.5 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors"
                   aria-expanded={isProfileOpen}
                   aria-haspopup="true"
                 >
-                  <div className="h-7 w-7 bg-white text-sky-700 rounded-full flex items-center justify-center font-medium">
+                  <div className="h-7 w-7 bg-sky-600 text-white rounded-full flex items-center justify-center font-medium shadow-sm">
                     {userState.userName?.charAt(0).toUpperCase() || "U"}
                   </div>
-                  <span className="text-sm text-white hidden sm:inline-block max-w-[100px] truncate">
+                  <span className="text-sm text-gray-700 hidden sm:inline-block max-w-[100px] truncate">
                     {userState.userName || "User"}
                   </span>
                   <FiChevronDown
-                    size={16}
-                    className={`text-white transition-transform duration-200 ${isProfileOpen ? "rotate-180" : ""}`}
+                    size={14}
+                    className={`text-gray-500 transition-transform duration-200 ${isProfileOpen ? "rotate-180" : ""}`}
                   />
                 </button>
 
                 {/* Profile Dropdown */}
                 {isProfileOpen && (
-                  <div className="absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-lg overflow-hidden py-1 border border-gray-100">
+                  <div className="absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-lg overflow-hidden py-1 border border-gray-100 animate-fadeIn">
                     <div className="px-4 py-3 border-b border-gray-100">
                       <p className="text-sm font-medium text-gray-900">
                         {userState.userName || "User"}
@@ -167,7 +171,7 @@ export default function Navbar() {
 
                     <Link
                       to="/profile"
-                      className="flex items-center px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50"
+                      className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
                       onClick={() => setIsProfileOpen(false)}
                     >
                       <FiUser size={16} className="mr-3 text-gray-500" />
@@ -176,7 +180,7 @@ export default function Navbar() {
 
                     <Link
                       to="/settings"
-                      className="flex items-center px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50"
+                      className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
                       onClick={() => setIsProfileOpen(false)}
                     >
                       <FiSettings size={16} className="mr-3 text-gray-500" />
@@ -187,7 +191,7 @@ export default function Navbar() {
 
                     <button
                       onClick={logout}
-                      className="flex items-center w-full text-left px-4 py-2.5 text-sm text-red-600 hover:bg-gray-50"
+                      className="flex items-center w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-50"
                     >
                       <FiLogOut size={16} className="mr-3" />
                       Log out
@@ -202,7 +206,7 @@ export default function Navbar() {
           <div className="flex md:hidden items-center space-x-1">
             <button
               onClick={() => setIsSearchExpanded(!isSearchExpanded)}
-              className="p-2 text-white rounded-full hover:bg-white/10"
+              className="p-2 text-gray-500 rounded-full hover:bg-gray-100"
               aria-label="Search"
             >
               {isSearchExpanded ? <FiX size={20} /> : <FiSearch size={20} />}
@@ -210,7 +214,7 @@ export default function Navbar() {
 
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="p-2 text-white rounded-full hover:bg-white/10"
+              className="p-2 text-gray-500 rounded-full hover:bg-gray-100"
               aria-label="Menu"
             >
               {isMobileMenuOpen ? <FiX size={20} /> : <FiMenu size={20} />}
@@ -221,19 +225,19 @@ export default function Navbar() {
 
       {/* Mobile Search Bar */}
       {isSearchExpanded && (
-        <div className="md:hidden py-3 px-4 bg-sky-800 animate-fadeDown">
+        <div className="md:hidden py-2 px-4 bg-white border-t border-gray-200 animate-fadeDown">
           <form onSubmit={handleSearch} className="relative">
             <input
               ref={searchInputRef}
               type="search"
               placeholder="Search courses..."
-              className="w-full py-2 pl-9 pr-4 rounded-lg bg-sky-700 text-white placeholder-gray-200 focus:outline-none focus:ring-1 focus:ring-white/30"
+              className="w-full py-2 pl-9 pr-4 rounded-lg bg-gray-100 text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-sky-500"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
             <button
               type="submit"
-              className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white/70"
+              className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
             >
               <FiSearch size={16} />
             </button>
@@ -243,7 +247,7 @@ export default function Navbar() {
 
       {/* Mobile Menu */}
       {isMobileMenuOpen && (
-        <div className="md:hidden bg-sky-700 shadow-lg animate-fadeDown">
+        <div className="md:hidden bg-white border-t border-gray-200 shadow-lg animate-fadeDown">
           <div className="px-3 pt-2 pb-3 space-y-1">
             <MobileNavItem
               to="/"
@@ -269,35 +273,35 @@ export default function Navbar() {
             )}
           </div>
 
-          <div className="px-4 py-3 border-t border-sky-600">
+          <div className="px-4 py-3 border-t border-gray-200">
             {!userState ? (
-              <div className="flex flex-col space-y-2">
+              <div className="flex space-x-2">
                 <Link
                   to="/login"
-                  className="block text-center py-2.5 text-sm font-medium rounded-lg bg-sky-600 text-white hover:bg-sky-500"
+                  className="flex-1 text-center py-2 text-sm font-medium rounded-lg border border-sky-200 text-sky-600 hover:bg-sky-50"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
                   Login
                 </Link>
                 <Link
                   to="/signup"
-                  className="block text-center py-2.5 text-sm font-medium rounded-lg bg-white text-sky-600 hover:bg-sky-50"
+                  className="flex-1 text-center py-2 text-sm font-medium rounded-lg bg-sky-600 text-white hover:bg-sky-700"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
                   Sign Up
                 </Link>
               </div>
             ) : (
-              <div className="space-y-3">
-                <div className="flex items-center space-x-3 pb-3">
-                  <div className="h-10 w-10 bg-white text-sky-700 rounded-full flex items-center justify-center font-medium text-lg">
+              <div className="space-y-2">
+                <div className="flex items-center space-x-3 pb-2">
+                  <div className="h-9 w-9 bg-sky-600 text-white rounded-full flex items-center justify-center font-medium text-lg shadow-sm">
                     {userState.userName?.charAt(0).toUpperCase() || "U"}
                   </div>
                   <div>
-                    <div className="text-white font-medium">
+                    <div className="text-gray-800 font-medium">
                       {userState.userName || "User"}
                     </div>
-                    <div className="text-sky-200 text-xs">
+                    <div className="text-gray-500 text-xs">
                       {userState.email || "student@example.com"}
                     </div>
                   </div>
@@ -305,7 +309,7 @@ export default function Navbar() {
 
                 <Link
                   to="/profile"
-                  className="flex items-center px-3 py-2 text-sm text-white rounded-lg hover:bg-sky-600"
+                  className="flex items-center px-3 py-2 text-sm text-gray-700 rounded-lg hover:bg-gray-100"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
                   <FiUser size={16} className="mr-3" />
@@ -314,18 +318,18 @@ export default function Navbar() {
 
                 <Link
                   to="/settings"
-                  className="flex items-center px-3 py-2 text-sm text-white rounded-lg hover:bg-sky-600"
+                  className="flex items-center px-3 py-2 text-sm text-gray-700 rounded-lg hover:bg-gray-100"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
                   <FiSettings size={16} className="mr-3" />
                   Settings
                 </Link>
 
-                <div className="border-t border-sky-600 pt-2 mt-2"></div>
+                <div className="border-t border-gray-200 pt-2 mt-2"></div>
 
                 <button
                   onClick={logout}
-                  className="flex items-center w-full px-3 py-2 text-sm text-white rounded-lg hover:bg-sky-600"
+                  className="flex items-center w-full px-3 py-2 text-sm text-red-600 rounded-lg hover:bg-gray-100"
                 >
                   <FiLogOut size={16} className="mr-3" />
                   Log out
@@ -345,13 +349,10 @@ function NavItem({ to, label }) {
     <NavLink
       to={to}
       className={({ isActive }) => `
-        px-3 py-2 text-sm font-medium rounded-lg transition-colors
-        ${
-          isActive
-            ? "bg-white/20 text-white"
-            : "text-white/80 hover:text-white hover:bg-white/10"
-        }
+        px-3 py-2 text-sm font-medium rounded-md transition-colors
+        ${isActive ? "text-sky-600" : "text-gray-600 hover:text-sky-600"}
       `}
+      end
     >
       {label}
     </NavLink>
@@ -365,13 +366,14 @@ function MobileNavItem({ to, label, onClick }) {
       to={to}
       onClick={onClick}
       className={({ isActive }) => `
-        block px-3 py-2.5 text-base font-medium rounded-lg transition-colors
+        block px-3 py-2 text-base font-medium rounded-lg transition-colors
         ${
           isActive
-            ? "bg-sky-600 text-white"
-            : "text-white/90 hover:bg-sky-600 hover:text-white"
+            ? "bg-gray-100 text-sky-600"
+            : "text-gray-700 hover:bg-gray-100 hover:text-sky-600"
         }
       `}
+      end
     >
       {label}
     </NavLink>

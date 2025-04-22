@@ -27,9 +27,9 @@ const Dashboard = () => {
 
   // Other static data
   const [recentEnrollments] = useState([
-    { id: 1, studentName: "John Doe", courseName: "React Fundamentals" },
-    { id: 2, studentName: "Jane Smith", courseName: "Advanced JavaScript" },
-    { id: 3, studentName: "Alice Johnson", courseName: "Node.js Backend" },
+    { id: 1, studentName: "Raghab Pokhrel", courseName: "React Fundamentals" },
+    { id: 2, studentName: "Aastha Aryal", courseName: "Complete springboot course" },
+    { id: 3, studentName: "Alish ", courseName: "Node.js Backend" },
   ]);
 
   const [notifications] = useState([
