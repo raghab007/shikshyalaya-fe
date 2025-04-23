@@ -11,7 +11,7 @@ import {
 } from "react-icons/fi";
 import { useRecoilState } from "recoil";
 import { userProfileSelector } from "../store/atoms/profle";
-import Logo from "../assets/logo2.png";
+import Logo from "../assets/logo2.jpg";
 
 export default function Navbar() {
   const [userState, setUserState] = useRecoilState(userProfileSelector);
@@ -67,72 +67,67 @@ export default function Navbar() {
   };
 
   return (
-    <nav
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isScrolled
-          ? "bg-white shadow-md backdrop-blur-sm bg-opacity-90"
-          : "bg-white/80 backdrop-blur-sm"
-      }`}
-    >
+    <nav className="fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-[#e6e8ec] shadow-md backdrop-blur-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
-          {/* Logo */}
-          <div className="flex-shrink-0 flex items-center">
+          {/* Logo - Moved more to the left */}
+          <div className="flex-shrink-0">
             <Link to="/" className="flex items-center space-x-2 group">
               <img
                 src={Logo}
                 alt="Sikshyalaya Logo"
                 className="h-8 w-8 object-contain rounded transition-transform duration-300 group-hover:scale-110"
               />
-              <span className="text-sky-600 font-bold text-xl tracking-tight transition-colors duration-300 group-hover:text-sky-700">
+              <span className="text-[#02084b] font-bold text-xl tracking-tight transition-colors duration-300 group-hover:text-[#3a4a8a]">
                 Sikshyalaya
               </span>
             </Link>
           </div>
 
-          {/* Desktop Navigation */}
+          {/* Desktop Navigation - Centered with better spacing */}
           <div className="hidden md:flex items-center justify-center flex-1 px-6">
-            <div className="flex space-x-1">
+            <div className="flex space-x-6">
               <NavItem to="/" label="Home" />
               <NavItem to="/courses" label="Courses" />
               <NavItem to="/about-us" label="About Us" />
+              <NavItem to="/contact-us" label="Contact Us" />
               {userState && <NavItem to="/enrolled" label="My Learning" />}
             </div>
           </div>
 
-          {/* Desktop Right Side: Search, Auth/Profile */}
-          <div className="hidden md:flex items-center space-x-4">
-            {/* Desktop Search */}
-            <div className="relative">
+          {/* Desktop Right Side: Search, Auth/Profile - Grouped together and moved right */}
+          <div className="hidden md:flex items-center">
+            {/* Desktop Search - Made smaller */}
+            <div className="relative mr-4">
               <form onSubmit={handleSearch} className="relative">
                 <input
                   type="search"
-                  placeholder="Search courses..."
-                  className="w-64 py-1.5 pl-9 pr-4 rounded-full bg-gray-100 border border-gray-200 text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent transition-all text-sm"
+                  placeholder="Search..."
+                  className="w-44 py-1 pl-8 pr-2 rounded-full bg-white border border-gray-200 text-[#02084b] placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-sky-500 focus:border-transparent transition-all text-sm"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                 />
                 <button
                   type="submit"
-                  className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-sky-600"
+                  className="absolute left-2 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-[#02084b]"
                 >
-                  <FiSearch size={16} />
+                  <FiSearch size={14} />
                 </button>
               </form>
             </div>
 
-            {/* Auth Buttons or Profile */}
+            {/* Auth Buttons - Positioned more to the right */}
             {!userState ? (
               <div className="flex items-center space-x-3">
                 <Link
                   to="/login"
-                  className="px-4 py-1.5 text-sm font-medium rounded-full text-sky-600 border border-sky-200 hover:bg-sky-50 transition-colors"
+                  className="px-4 py-1.5 text-sm font-medium rounded-full text-[#02084b] border border-[#02084b] hover:bg-sky-50 transition-colors"
                 >
                   Login
                 </Link>
                 <Link
                   to="/signup"
-                  className="px-4 py-1.5 text-sm font-medium bg-sky-600 rounded-full text-white hover:bg-sky-700 transition-colors"
+                  className="px-4 py-1.5 text-sm font-medium bg-[#02084b] rounded-full text-white hover:bg-sky-700 transition-colors"
                 >
                   Sign Up
                 </Link>
@@ -141,19 +136,19 @@ export default function Navbar() {
               <div className="relative" ref={profileRef}>
                 <button
                   onClick={() => setIsProfileOpen(!isProfileOpen)}
-                  className="flex items-center space-x-2 px-3 py-1.5 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors"
+                  className="flex items-center space-x-2 px-3 py-1.5 rounded-full bg-white hover:bg-gray-200 transition-colors"
                   aria-expanded={isProfileOpen}
                   aria-haspopup="true"
                 >
-                  <div className="h-7 w-7 bg-sky-600 text-white rounded-full flex items-center justify-center font-medium shadow-sm">
+                  <div className="h-7 w-7 bg-[#02084b] text-white rounded-full flex items-center justify-center font-medium shadow-sm">
                     {userState.userName?.charAt(0).toUpperCase() || "U"}
                   </div>
-                  <span className="text-sm text-gray-700 hidden sm:inline-block max-w-[100px] truncate">
+                  <span className="text-sm text-[#02084b] hidden sm:inline-block max-w-[100px] truncate">
                     {userState.userName || "User"}
                   </span>
                   <FiChevronDown
                     size={14}
-                    className={`text-gray-500 transition-transform duration-200 ${isProfileOpen ? "rotate-180" : ""}`}
+                    className={`text-[#02084b] transition-transform duration-200 ${isProfileOpen ? "rotate-180" : ""}`}
                   />
                 </button>
 
@@ -161,7 +156,7 @@ export default function Navbar() {
                 {isProfileOpen && (
                   <div className="absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-lg overflow-hidden py-1 border border-gray-100 animate-fadeIn">
                     <div className="px-4 py-3 border-b border-gray-100">
-                      <p className="text-sm font-medium text-gray-900">
+                      <p className="text-sm font-medium text-[#02084b]">
                         {userState.userName || "User"}
                       </p>
                       <p className="text-xs text-gray-500 mt-1 truncate">
@@ -171,19 +166,19 @@ export default function Navbar() {
 
                     <Link
                       to="/profile"
-                      className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                      className="flex items-center px-4 py-2 text-sm text-[#02084b] hover:bg-gray-50"
                       onClick={() => setIsProfileOpen(false)}
                     >
-                      <FiUser size={16} className="mr-3 text-gray-500" />
+                      <FiUser size={16} className="mr-3 text-[#02084b]" />
                       Your Profile
                     </Link>
 
                     <Link
                       to="/settings"
-                      className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                      className="flex items-center px-4 py-2 text-sm text-[#02084b] hover:bg-gray-50"
                       onClick={() => setIsProfileOpen(false)}
                     >
-                      <FiSettings size={16} className="mr-3 text-gray-500" />
+                      <FiSettings size={16} className="mr-3 text-[#02084b]" />
                       Settings
                     </Link>
 
@@ -206,7 +201,7 @@ export default function Navbar() {
           <div className="flex md:hidden items-center space-x-1">
             <button
               onClick={() => setIsSearchExpanded(!isSearchExpanded)}
-              className="p-2 text-gray-500 rounded-full hover:bg-gray-100"
+              className="p-2 text-[#02084b] rounded-full hover:bg-gray-100"
               aria-label="Search"
             >
               {isSearchExpanded ? <FiX size={20} /> : <FiSearch size={20} />}
@@ -214,7 +209,7 @@ export default function Navbar() {
 
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="p-2 text-gray-500 rounded-full hover:bg-gray-100"
+              className="p-2 text-[#02084b] rounded-full hover:bg-gray-100"
               aria-label="Menu"
             >
               {isMobileMenuOpen ? <FiX size={20} /> : <FiMenu size={20} />}
@@ -231,13 +226,13 @@ export default function Navbar() {
               ref={searchInputRef}
               type="search"
               placeholder="Search courses..."
-              className="w-full py-2 pl-9 pr-4 rounded-lg bg-gray-100 text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-sky-500"
+              className="w-full py-2 pl-9 pr-4 rounded-lg bg-gray-100 text-[#02084b] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-sky-500"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
             <button
               type="submit"
-              className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+              className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[#02084b]"
             >
               <FiSearch size={16} />
             </button>
@@ -264,6 +259,11 @@ export default function Navbar() {
               label="About Us"
               onClick={() => setIsMobileMenuOpen(false)}
             />
+            <MobileNavItem
+              to="/contact-us"
+              label="Contact Us"
+              onClick={() => setIsMobileMenuOpen(false)}
+            />
             {userState && (
               <MobileNavItem
                 to="/enrolled"
@@ -278,14 +278,14 @@ export default function Navbar() {
               <div className="flex space-x-2">
                 <Link
                   to="/login"
-                  className="flex-1 text-center py-2 text-sm font-medium rounded-lg border border-sky-200 text-sky-600 hover:bg-sky-50"
+                  className="flex-1 text-center py-2 text-sm font-medium rounded-lg border border-[#02084b] text-[#02084b] hover:bg-sky-50"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
                   Login
                 </Link>
                 <Link
                   to="/signup"
-                  className="flex-1 text-center py-2 text-sm font-medium rounded-lg bg-sky-600 text-white hover:bg-sky-700"
+                  className="flex-1 text-center py-2 text-sm font-medium rounded-lg bg-[#02084b] text-white hover:bg-sky-700"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
                   Sign Up
@@ -294,14 +294,14 @@ export default function Navbar() {
             ) : (
               <div className="space-y-2">
                 <div className="flex items-center space-x-3 pb-2">
-                  <div className="h-9 w-9 bg-sky-600 text-white rounded-full flex items-center justify-center font-medium text-lg shadow-sm">
+                  <div className="h-9 w-9 bg-[#02084b] text-white rounded-full flex items-center justify-center font-medium text-lg shadow-sm">
                     {userState.userName?.charAt(0).toUpperCase() || "U"}
                   </div>
                   <div>
-                    <div className="text-gray-800 font-medium">
+                    <div className="text-[#02084b] font-medium">
                       {userState.userName || "User"}
                     </div>
-                    <div className="text-gray-500 text-xs">
+                    <div className="text-[#02084b] text-xs">
                       {userState.email || "student@example.com"}
                     </div>
                   </div>
@@ -309,19 +309,19 @@ export default function Navbar() {
 
                 <Link
                   to="/profile"
-                  className="flex items-center px-3 py-2 text-sm text-gray-700 rounded-lg hover:bg-gray-100"
+                  className="flex items-center px-3 py-2 text-sm text-[#02084b] rounded-lg hover:bg-gray-100"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
-                  <FiUser size={16} className="mr-3" />
+                  <FiUser size={16} className="mr-3 text-[#02084b]" />
                   Your Profile
                 </Link>
 
                 <Link
                   to="/settings"
-                  className="flex items-center px-3 py-2 text-sm text-gray-700 rounded-lg hover:bg-gray-100"
+                  className="flex items-center px-3 py-2 text-sm text-[#02084b] rounded-lg hover:bg-gray-100"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
-                  <FiSettings size={16} className="mr-3" />
+                  <FiSettings size={16} className="mr-3 text-[#02084b]" />
                   Settings
                 </Link>
 
@@ -343,14 +343,23 @@ export default function Navbar() {
   );
 }
 
-// Desktop Nav Item
+// Desktop Nav Item - Updated with underline effect for active state
 function NavItem({ to, label }) {
   return (
     <NavLink
       to={to}
       className={({ isActive }) => `
-        px-3 py-2 text-sm font-medium rounded-md transition-colors
-        ${isActive ? "text-sky-600" : "text-gray-600 hover:text-sky-600"}
+        px-3 py-2 text-sm font-medium rounded-md transition-colors relative
+        ${
+          isActive
+            ? "text-[#02084b] font-medium"
+            : "text-[#02084b] hover:text-[#3a4a8a]"
+        }
+        ${
+          isActive
+            ? "after:content-[''] after:absolute after:left-0 after:right-0 after:bottom-0 after:h-0.5 after:bg-[#02084b] after:rounded-full"
+            : ""
+        }
       `}
       end
     >
@@ -359,7 +368,7 @@ function NavItem({ to, label }) {
   );
 }
 
-// Mobile Nav Item
+// Mobile Nav Item - Updated with underline/indicator for active state
 function MobileNavItem({ to, label, onClick }) {
   return (
     <NavLink
@@ -369,8 +378,8 @@ function MobileNavItem({ to, label, onClick }) {
         block px-3 py-2 text-base font-medium rounded-lg transition-colors
         ${
           isActive
-            ? "bg-gray-100 text-sky-600"
-            : "text-gray-700 hover:bg-gray-100 hover:text-sky-600"
+            ? "bg-gray-100 text-[#02084b] font-medium border-l-4 border-[#02084b]"
+            : "text-[#02084b] hover:bg-gray-100 hover:text-[#3a4a8a]"
         }
       `}
       end

@@ -86,43 +86,45 @@ export default function Home() {
   };
 
   return (
-    <div className="bg-white flex flex-col min-h-screen">
+    <div className="bg-[#e6e8ec] flex flex-col min-h-screen">
       <main>
-        {/* Hero Section - Matched with navbar color */}
-        <div className="w-full min-h-[85vh] bg-gradient-to-br from-[#2e7dad] to-[#1c5f8f] flex flex-col items-center justify-center p-12 relative overflow-hidden">
+        {/* Hero Section */}
+        <div className="w-full min-h-[85vh] bg-[#e6e8ec] flex flex-col mt-11 items-center justify-center p-12 relative overflow-hidden">
           <div className="absolute inset-0 bg-pattern opacity-10"></div>
           <div className="relative z-10 max-w-5xl animate-fadeIn">
-            <h1 className="text-7xl font-extrabold text-white text-center leading-tight mb-6">
+            <h1 className="text-7xl font-extrabold text-[#02084b] text-center leading-tight mb-6">
               Unlock Your Potential with{" "}
-              <span className="text-yellow-300">Sikshyalaya</span>
+              <span className="text-[#02084b]">Sikshyalaya</span>
             </h1>
-            <p className="mt-6 text-2xl text-gray-100 text-center max-w-4xl leading-relaxed mx-auto">
+            <p className="mt-6 text-2xl text-[#02084b] text-center max-w-4xl leading-relaxed mx-auto">
               Discover top-notch courses designed by industry experts. Learn new
               skills, enhance your career, and achieve your goals with ease.
             </p>
             <div className="mt-12 flex justify-center space-x-6">
               <Link to="/courses">
-                <button className="px-10 py-5 text-xl font-medium text-[#2e7dad] bg-white rounded-full shadow-xl hover:shadow-2xl transform hover:-translate-y-1 transition duration-300">
+                <button className="px-10 py-5 text-xl font-medium text-white bg-[#02084b] rounded-full shadow-xl hover:shadow-2xl transform hover:-translate-y-1 transition duration-300">
                   Explore Courses
                 </button>
               </Link>
               <Link to="/about-us">
-                <button className="px-10 py-5 text-xl font-medium text-white bg-transparent border-2 border-white rounded-full shadow-lg hover:bg-white hover:text-[#2e7dad] transform hover:-translate-y-1 transition duration-300">
+                <button className="px-10 py-5 text-xl font-medium text-[#02084b] bg-transparent border-2 border-[#02084b] rounded-full shadow-lg hover:bg-[#02084b] hover:text-white transform hover:-translate-y-1 transition duration-300">
                   Learn More
                 </button>
               </Link>
             </div>
           </div>
-          <div className="absolute bottom-0 left-0 w-full h-24 bg-gradient-to-t from-white to-transparent"></div>
         </div>
 
-        {/* Course Preview Video Section - Moved up for better engagement */}
-        <div className="py-20 px-6 bg-gradient-to-b from-white to-[#e8f1f8]">
+        {/* Course Preview Video Section */}
+        <div className="py-20 px-6 bg-[#e6e8ec]">
           <div className="max-w-6xl mx-auto">
-            <h2 className="text-5xl font-bold text-center text-gray-800 mb-12">
-              Experience <span className="text-[#2e7dad]">Learning</span> Like
-              Never Before
-            </h2>
+            {/* Blue box with white text */}
+            <div className="bg-[#02084b] rounded-xl p-8 mb-12 shadow-lg">
+              <h2 className="text-5xl font-bold text-center text-white mb-4">
+                Experience <span className="text-white">Learning</span> Like
+                Never Before
+              </h2>
+            </div>
             <div className="rounded-xl overflow-hidden shadow-2xl mx-auto">
               <video
                 ref={videoRef}
@@ -139,13 +141,13 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Course Categories Section - Enhanced with icons */}
-        <div className="bg-white py-20 px-6">
+        {/* Course Categories Section */}
+        <div className="bg-[#e6e8ec] py-20 px-6">
           <div className="max-w-6xl mx-auto">
-            <h2 className="text-5xl font-bold text-center text-gray-800 mb-4">
+            <h2 className="text-5xl font-bold text-center text-[#02084b] mb-4">
               Explore Our Categories
             </h2>
-            <p className="text-xl text-gray-600 text-center mb-12 max-w-3xl mx-auto">
+            <p className="text-xl text-[#02084b] text-center mb-12 max-w-3xl mx-auto">
               Dive into our diverse range of courses designed to help you master
               new skills and advance your career
             </p>
@@ -156,16 +158,16 @@ export default function Home() {
                   className="bg-white p-8 rounded-xl shadow-lg hover:shadow-2xl transition duration-300 transform hover:-translate-y-2 border border-gray-100"
                 >
                   <div className="text-4xl mb-4">{category.icon}</div>
-                  <h3 className="text-2xl font-bold text-gray-800 mb-3">
+                  <h3 className="text-2xl font-bold text-[#02084b] mb-3">
                     {category.name}
                   </h3>
-                  <p className="text-gray-600 mb-5">
+                  <p className="text-[#02084b] mb-5">
                     Explore our wide range of {category.name.toLowerCase()}{" "}
                     courses and learn from the best in the field.
                   </p>
                   <Link
                     to={`/category/${category.name.toLowerCase()}`}
-                    className="inline-flex items-center text-[#2e7dad] font-medium hover:text-[#1c5f8f] transition"
+                    className="inline-flex items-center text-[#02084b] font-medium hover:text-[#0a1e6f] transition"
                   >
                     View Courses <span className="ml-2">&rarr;</span>
                   </Link>
@@ -175,8 +177,8 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Statistics Section - Matched with navbar color */}
-        <div className="bg-[#2e7dad] text-white py-16 px-6">
+        {/* Statistics Section */}
+        <div className="bg-[#e6e8ec] text-[#02084b] py-16 px-6">
           <div className="max-w-6xl mx-auto">
             <div className="grid grid-cols-1 md:grid-cols-4 gap-8 text-center">
               <div className="p-6">
@@ -200,12 +202,12 @@ export default function Home() {
         </div>
 
         {/* Instructor Spotlight Section */}
-        <div className="bg-[#f1f7fb] py-20 px-6">
+        <div className="bg-[#e6e8ec] py-20 px-6">
           <div className="max-w-6xl mx-auto">
-            <h2 className="text-5xl font-bold text-center text-gray-800 mb-4">
+            <h2 className="text-5xl font-bold text-center text-[#02084b] mb-4">
               Learn From The Best
             </h2>
-            <p className="text-xl text-gray-600 text-center mb-12 max-w-3xl mx-auto">
+            <p className="text-xl text-[#02084b] text-center mb-12 max-w-3xl mx-auto">
               Our instructors are industry leaders passionate about sharing
               their expertise
             </p>
@@ -213,15 +215,15 @@ export default function Home() {
               {instructors.map((instructor, index) => (
                 <div
                   key={index}
-                  className="bg-white p-8 rounded-xl shadow-lg hover:shadow-xl transition duration-300"
+                  className="bg-white p-8 rounded-xl shadow-lg hover:shadow-xl transition duration-300 border border-gray-100"
                 >
-                  <div className="w-24 h-24 mx-auto mb-6 rounded-full bg-[#e8f1f8] flex items-center justify-center text-[#2e7dad] text-3xl font-bold">
+                  <div className="w-24 h-24 mx-auto mb-6 rounded-full bg-[#f0f2f8] flex items-center justify-center text-[#02084b] text-3xl font-bold">
                     {instructor.name.charAt(0)}
                   </div>
-                  <h3 className="text-2xl font-bold text-center text-gray-800 mb-3">
+                  <h3 className="text-2xl font-bold text-center text-[#02084b] mb-3">
                     {instructor.name}
                   </h3>
-                  <p className="text-gray-600 text-center">{instructor.bio}</p>
+                  <p className="text-[#02084b] text-center">{instructor.bio}</p>
                 </div>
               ))}
             </div>
@@ -229,46 +231,46 @@ export default function Home() {
         </div>
 
         {/* Testimonials Section */}
-        <div className="bg-[#e8f1f8] py-20 px-6">
+        <div className="bg-[#e6e8ec] py-20 px-6">
           <div className="max-w-6xl mx-auto">
-            <h2 className="text-5xl font-bold text-center text-gray-800 mb-4">
+            <h2 className="text-5xl font-bold text-center text-[#02084b] mb-4">
               What Our Students Say
             </h2>
-            <p className="text-xl text-gray-600 text-center mb-12 max-w-3xl mx-auto">
+            <p className="text-xl text-[#02084b] text-center mb-12 max-w-3xl mx-auto">
               Hear from our community of learners
             </p>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              <div className="bg-white p-8 rounded-xl shadow-md">
+              <div className="bg-white p-8 rounded-xl shadow-md border border-gray-100">
                 <div className="text-yellow-500 text-2xl mb-4">★★★★★</div>
-                <p className="text-gray-700 mb-6 italic">
+                <p className="text-[#02084b] mb-6 italic">
                   "The programming course exceeded my expectations. I went from
                   knowing nothing to building my own web applications in just 8
                   weeks!"
                 </p>
-                <div className="font-bold">Rajesh Sharma</div>
-                <div className="text-gray-500">Web Developer</div>
+                <div className="font-bold text-[#02084b]">Rajesh Sharma</div>
+                <div className="text-[#02084b]">Web Developer</div>
               </div>
-              <div className="bg-white p-8 rounded-xl shadow-md">
+              <div className="bg-white p-8 rounded-xl shadow-md border border-gray-100">
                 <div className="text-yellow-500 text-2xl mb-4">★★★★★</div>
-                <p className="text-gray-700 mb-6 italic">
+                <p className="text-[#02084b] mb-6 italic">
                   "The photography course helped me turn my hobby into a
                   profession. The instructor's guidance was invaluable and I now
                   have my own studio."
                 </p>
-                <div className="font-bold">Priya Patel</div>
-                <div className="text-gray-500">Professional Photographer</div>
+                <div className="font-bold text-[#02084b]">Priya Patel</div>
+                <div className="text-[#02084b]">Professional Photographer</div>
               </div>
             </div>
           </div>
         </div>
 
         {/* FAQ Section */}
-        <div className="bg-white py-20 px-6">
+        <div className="bg-[#e6e8ec] py-20 px-6">
           <div className="max-w-4xl mx-auto">
-            <h2 className="text-5xl font-bold text-center text-gray-800 mb-4">
+            <h2 className="text-5xl font-bold text-center text-[#02084b] mb-4">
               Frequently Asked Questions
             </h2>
-            <p className="text-xl text-gray-600 text-center mb-12 max-w-3xl mx-auto">
+            <p className="text-xl text-[#02084b] text-center mb-12 max-w-3xl mx-auto">
               Find answers to common questions about our platform
             </p>
             <div className="space-y-6">
@@ -278,13 +280,13 @@ export default function Home() {
                   className="border border-gray-200 rounded-xl overflow-hidden transition-shadow duration-300 hover:shadow-md"
                 >
                   <div
-                    className="flex justify-between items-center p-6 cursor-pointer bg-gray-50 hover:bg-gray-100 transition-colors duration-200"
+                    className="flex justify-between items-center p-6 cursor-pointer bg-white hover:bg-gray-50 transition-colors duration-200"
                     onClick={() => toggleAnswer(index)}
                   >
-                    <h3 className="text-xl font-medium text-gray-800">
+                    <h3 className="text-xl font-medium text-[#02084b]">
                       {item.question}
                     </h3>
-                    <span className="text-[#2e7dad] text-2xl">
+                    <span className="text-[#02084b] text-2xl">
                       {openIndex === index ? "−" : "+"}
                     </span>
                   </div>
@@ -295,7 +297,7 @@ export default function Home() {
                         : "max-h-0 opacity-0"
                     } overflow-hidden`}
                   >
-                    <p className="p-6 text-gray-600">{item.answer}</p>
+                    <p className="p-6 text-[#02084b]">{item.answer}</p>
                   </div>
                 </div>
               ))}
@@ -304,33 +306,33 @@ export default function Home() {
         </div>
 
         {/* Social Media Links Section */}
-        <div className="bg-[#f1f7fb] py-16 px-6">
+        <div className="bg-[#e6e8ec] py-16 px-6">
           <div className="max-w-4xl mx-auto text-center">
-            <h2 className="text-4xl font-bold text-gray-800 mb-8">
+            <h2 className="text-4xl font-bold text-[#02084b] mb-8">
               Connect With Us
             </h2>
             <div className="flex justify-center gap-8">
               <a
                 href="https://facebook.com/sikshyalaya"
-                className="p-4 bg-[#2e7dad] text-white rounded-full hover:bg-[#246890] transition-colors duration-300"
+                className="p-4 bg-[#02084b] text-white rounded-full hover:bg-[#0a1e6f] transition-colors duration-300"
               >
                 Facebook
               </a>
               <a
                 href="https://twitter.com/sikshyalaya"
-                className="p-4 bg-[#2e7dad] text-white rounded-full hover:bg-[#246890] transition-colors duration-300"
+                className="p-4 bg-[#02084b] text-white rounded-full hover:bg-[#0a1e6f] transition-colors duration-300"
               >
                 Twitter
               </a>
               <a
                 href="https://linkedin.com/company/sikshyalaya"
-                className="p-4 bg-[#2e7dad] text-white rounded-full hover:bg-[#246890] transition-colors duration-300"
+                className="p-4 bg-[#02084b] text-white rounded-full hover:bg-[#0a1e6f] transition-colors duration-300"
               >
                 LinkedIn
               </a>
               <a
                 href="https://instagram.com/sikshyalaya"
-                className="p-4 bg-[#2e7dad] text-white rounded-full hover:bg-[#246890] transition-colors duration-300"
+                className="p-4 bg-[#02084b] text-white rounded-full hover:bg-[#0a1e6f] transition-colors duration-300"
               >
                 Instagram
               </a>
@@ -338,8 +340,8 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Call-to-Action Section - Matched with navbar color */}
-        <div className="bg-[#2e7dad] text-white py-16 px-6">
+        {/* Call-to-Action Section */}
+        <div className="bg-[#e6e8ec] border-t border-gray-100 text-[#02084b] py-16 px-6">
           <div className="max-w-4xl mx-auto text-center">
             <h2 className="text-4xl font-bold mb-4">
               Start Your Learning Journey Today
@@ -357,12 +359,12 @@ export default function Home() {
                 placeholder="Enter your email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="px-6 py-4 rounded-full text-gray-800 focus:outline-none focus:ring-2 focus:ring-[#1c5f8f] flex-grow"
+                className="px-6 py-4 rounded-full text-[#02084b] border border-[#02084b] focus:outline-none focus:ring-2 focus:ring-[#0a1e6f] flex-grow"
                 required
               />
               <button
                 type="submit"
-                className="px-8 py-4 bg-white text-[#2e7dad] font-medium rounded-full hover:bg-[#f0f0f0] transition-colors duration-300 shadow-lg"
+                className="px-8 py-4 bg-[#02084b] text-white font-medium rounded-full hover:bg-[#0a1e6f] transition-colors duration-300 shadow-lg"
               >
                 Subscribe Now
               </button>
