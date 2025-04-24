@@ -103,7 +103,7 @@ export default function Home() {
             <div className="mt-12 flex justify-center space-x-6">
               <Link to="/courses">
                 <button className="px-10 py-5 text-xl font-medium text-white bg-[#02084b] rounded-full shadow-xl hover:shadow-2xl transform hover:-translate-y-1 transition duration-300">
-                  Explore Courses
+                  Explore more more  Courses
                 </button>
               </Link>
               <Link to="/about-us">
@@ -291,11 +291,10 @@ export default function Home() {
                     </span>
                   </div>
                   <div
-                    className={`transition-all duration-300 ease-in-out ${
-                      openIndex === index
-                        ? "max-h-96 opacity-100"
-                        : "max-h-0 opacity-0"
-                    } overflow-hidden`}
+                    className={`transition-all duration-300 ease-in-out ${openIndex === index
+                      ? "max-h-96 opacity-100"
+                      : "max-h-0 opacity-0"
+                      } overflow-hidden`}
                   >
                     <p className="p-6 text-[#02084b]">{item.answer}</p>
                   </div>
