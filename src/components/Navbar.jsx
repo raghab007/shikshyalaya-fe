@@ -63,7 +63,7 @@ export default function Navbar() {
     localStorage.removeItem("token");
     setUserState(null);
     setIsProfileOpen(false);
-    window.location.href = "/login";
+    window.location = "/login";
   };
 
   return (
@@ -90,7 +90,7 @@ export default function Navbar() {
               <NavItem to="/" label="Home" />
               <NavItem to="/courses" label="Courses" />
               <NavItem to="/about-us" label="About Us" />
-              <NavItem to="/contact-us" label="Contact Us" />
+              <NavItem to="/contact" label="Contact Us" />
               {userState && <NavItem to="/enrolled" label="My Learning" />}
             </div>
           </div>

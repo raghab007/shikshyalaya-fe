@@ -3,7 +3,7 @@ import { atom, selector } from "recoil";
 
 const userProfileState = atom({
   key: "userProfileState",
-  default:null
+  default: null
 });
 
 const userProfileSelector = selector({
@@ -17,15 +17,11 @@ const userProfileSelector = selector({
         return get(userProfileState); // Return default state if no token
       }
 
-      const response = await axios.get("http://localhost:8085/user", {
-
-
-        
+      const response = await axios.get("http://localhost:8085/profile", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
-      
 
       return response.data;
     } catch (error) {
@@ -34,7 +30,9 @@ const userProfileSelector = selector({
       return get(userProfileState); // Return default state if request fails
     }
   },
+  set: ({ set }, newValue) => {
+    set(userProfileState, newValue);
+  }
 });
-
 
 export { userProfileState, userProfileSelector };

@@ -75,6 +75,25 @@ const Users = () => {
   return (
     <div className="p-6">
       <h2 className="text-2xl font-semibold mb-6">Users Management</h2>
+      {/* Stats summary */}
+      <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="bg-white p-4 rounded-lg shadow">
+          <h3 className="text-lg font-medium text-gray-900">Total Users</h3>
+          <p className="text-2xl font-bold">{users.length}</p>
+        </div>
+        <div className="bg-white p-4 rounded-lg shadow">
+          <h3 className="text-lg font-medium text-gray-900">Active Users</h3>
+          <p className="text-2xl font-bold text-green-600">
+            {users.filter((user) => !user.blocked).length}
+          </p>
+        </div>
+        <div className="bg-white p-4 rounded-lg shadow">
+          <h3 className="text-lg font-medium text-gray-900">Blocked Users</h3>
+          <p className="text-2xl font-bold text-red-600">
+            {users.filter((user) => user.blocked).length}
+          </p>
+        </div>
+      </div>
       <div className="bg-white rounded-lg shadow overflow-hidden">
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-50">
@@ -153,26 +172,6 @@ const Users = () => {
             ))}
           </tbody>
         </table>
-      </div>
-
-      {/* Stats summary */}
-      <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="bg-white p-4 rounded-lg shadow">
-          <h3 className="text-lg font-medium text-gray-900">Total Users</h3>
-          <p className="text-2xl font-bold">{users.length}</p>
-        </div>
-        <div className="bg-white p-4 rounded-lg shadow">
-          <h3 className="text-lg font-medium text-gray-900">Active Users</h3>
-          <p className="text-2xl font-bold text-green-600">
-            {users.filter((user) => !user.blocked).length}
-          </p>
-        </div>
-        <div className="bg-white p-4 rounded-lg shadow">
-          <h3 className="text-lg font-medium text-gray-900">Blocked Users</h3>
-          <p className="text-2xl font-bold text-red-600">
-            {users.filter((user) => user.blocked).length}
-          </p>
-        </div>
       </div>
     </div>
   );

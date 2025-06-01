@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
+import axios from "axios";
 import video from "../assets/video.mp4";
 import logo from "../assets/logo.png";
 
@@ -7,16 +8,27 @@ export default function Home() {
   const [openIndex, setOpenIndex] = useState(null);
   const [email, setEmail] = useState("");
   const videoRef = useRef(null);
+  const [categories, setCategories] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  // Categories with icons
-  const categories = [
-    { name: "Programming", icon: "💻" },
-    { name: "Design", icon: "🎨" },
-    { name: "Business", icon: "📊" },
-    { name: "Marketing", icon: "📱" },
-    { name: "Photography", icon: "📷" },
-    { name: "Health", icon: "🏥" },
-  ];
+  // Fetch categories from backend
+  useEffect(() => {
+    const getCategories = async () => {
+      try {
+        const response = await axios.get('http://localhost:8085/course/course_category');
+        setCategories(response.data);
+        setError(null);
+      } catch (error) {
+        console.error('Error fetching categories:', error);
+        setError('Failed to load categories. Please try again later.');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    getCategories();
+  }, []);
 
   // Instructors with better descriptions
   const instructors = [
@@ -151,29 +163,45 @@ export default function Home() {
               Dive into our diverse range of courses designed to help you master
               new skills and advance your career
             </p>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-              {categories.map((category, index) => (
-                <div
-                  key={index}
-                  className="bg-white p-8 rounded-xl shadow-lg hover:shadow-2xl transition duration-300 transform hover:-translate-y-2 border border-gray-100"
+            {isLoading ? (
+              <div className="flex justify-center items-center min-h-[200px]">
+                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#02084b]"></div>
+              </div>
+            ) : error ? (
+              <div className="text-center text-red-600">
+                <p>{error}</p>
+                <button 
+                  onClick={() => window.location.reload()} 
+                  className="mt-4 px-4 py-2 bg-[#02084b] text-white rounded-lg hover:bg-[#02084b]/90"
                 >
-                  <div className="text-4xl mb-4">{category.icon}</div>
-                  <h3 className="text-2xl font-bold text-[#02084b] mb-3">
-                    {category.name}
-                  </h3>
-                  <p className="text-[#02084b] mb-5">
-                    Explore our wide range of {category.name.toLowerCase()}{" "}
-                    courses and learn from the best in the field.
-                  </p>
-                  <Link
-                    to={`/category/${category.name.toLowerCase()}`}
-                    className="inline-flex items-center text-[#02084b] font-medium hover:text-[#0a1e6f] transition"
+                  Try Again
+                </button>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                {categories.map((category) => (
+                  <div
+                    key={category.courseCategoryId}
+                    className="bg-white p-8 rounded-xl shadow-lg hover:shadow-2xl transition duration-300 transform hover:-translate-y-2 border border-gray-100"
                   >
-                    View Courses <span className="ml-2">&rarr;</span>
-                  </Link>
-                </div>
-              ))}
-            </div>
+                    <div className="text-4xl mb-4">📚</div>
+                    <h3 className="text-2xl font-bold text-[#02084b] mb-3">
+                      {category.courseCategoryName}
+                    </h3>
+                    <p className="text-[#02084b] mb-5">
+                      Explore our wide range of {category.courseCategoryName.toLowerCase()}{" "}
+                      courses and learn from the best in the field.
+                    </p>
+                    <Link
+                      to={`/category/${category.courseCategoryId}`}
+                      className="inline-flex items-center text-[#02084b] font-medium hover:text-[#0a1e6f] transition"
+                    >
+                      View Courses <span className="ml-2">&rarr;</span>
+                    </Link>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         </div>
 

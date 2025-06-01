@@ -14,6 +14,7 @@ export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [openSnackbar, setOpenSnackbar] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -21,6 +22,13 @@ export default function Login() {
       location.href = "/";
     }
   }, []);
+
+  const handleCloseSnackbar = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setOpenSnackbar(false);
+  };
 
   async function handleLogin() {
     let response;
@@ -48,24 +56,26 @@ export default function Login() {
       if (token) {
         localStorage.setItem("token", token);
         setUserState(true);
+        setOpenSnackbar(true);
 
-        // Using a snackbar instead of an alert for better UX
-        // alert("Login successful");
-
-        if (ROLE == "USER") {
-          location.href = "/";
-        } else if (ROLE == "INSTRUCTOR") {
-          location.href = "/instructor";
-        } else if (ROLE == "ADMIN") {
-          location.href = "/admin";
+        if (ROLE === "USER") {
+          setTimeout(() => {
+            location.href = "/";
+            setTimeout(() => {
+              navigate("/my-learning");
+            }, 100);
+          }, 1500);
+        } else if (ROLE === "INSTRUCTOR") {
+          setTimeout(() => (location.href = "/instructor"), 1500);
+        } else if (ROLE === "ADMIN") {
+          setTimeout(() => (location.href = "/admin"), 1500);
         }
       } else {
-        setError(response.data.message);
+        setError(response.data.message || "Login failed");
       }
     } catch (err) {
-      console.log(err);
-      console.log(response);
-      setError("Server error.");
+      console.error("Login error:", err);
+      setError(err.response?.data?.message || "Server error. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -80,21 +90,21 @@ export default function Login() {
   return (
     <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-sky-50 to-cyan-50 p-6 font-sans">
       {/* Decorative elements */}
-      <div className="absolute top-0 left-0 w-64 h-64 bg-[#2192b9]/10 rounded-full -translate-x-1/2 -translate-y-1/2 opacity-70"></div>
-      <div className="absolute bottom-0 right-0 w-80 h-80 bg-[#2192b9]/10 rounded-full translate-x-1/3 translate-y-1/3 opacity-70"></div>
+      <div className="absolute top-0 left-0 w-64 h-64 bg-[#02084b]/10 rounded-full -translate-x-1/2 -translate-y-1/2 opacity-70"></div>
+      <div className="absolute bottom-0 right-0 w-80 h-80 bg-[#02084b]/10 rounded-full translate-x-1/3 translate-y-1/3 opacity-70"></div>
 
       {/* Login Card */}
       <div className="w-full max-w-md bg-white shadow-xl rounded-2xl transform transition-all duration-300 hover:shadow-2xl relative z-10 overflow-hidden">
         {/* Top colored accent bar */}
-        <div className="h-2 bg-[#2192b9]"></div>
+        <div className="h-2 bg-[#02084b]"></div>
 
         <div className="p-8">
           {/* Logo or Brand Icon */}
           <div className="flex justify-center mb-6">
-            <div className="w-16 h-16 rounded-full bg-[#2192b9]/10 flex items-center justify-center">
+            <div className="w-16 h-16 rounded-full bg-[#02084b]/10 flex items-center justify-center">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                className="h-8 w-8 text-[#2192b9]"
+                className="h-8 w-8 text-[#02084b]"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -132,7 +142,7 @@ export default function Login() {
               Username
             </label>
             <div className="relative group">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400 group-focus-within:text-[#2192b9] transition-colors">
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400 group-focus-within:text-[#02084b] transition-colors">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   className="h-5 w-5"
@@ -152,7 +162,7 @@ export default function Login() {
                 type="text"
                 id="username"
                 placeholder="Enter your username"
-                className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#2192b9] focus:border-transparent transition-all"
+                className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#02084b] focus:border-transparent transition-all"
                 required
                 ref={userName}
                 onKeyPress={handleKeyPress}
@@ -171,13 +181,13 @@ export default function Login() {
               </label>
               <Link
                 to="/forgotpassword"
-                className="text-xs text-[#2192b9] hover:text-[#1a7595] font-medium transition-colors"
+                className="text-xs text-[#02084b] hover:text-[#02084b]/80 font-medium transition-colors"
               >
                 Forgot Password?
               </Link>
             </div>
             <div className="relative group">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400 group-focus-within:text-[#2192b9] transition-colors">
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400 group-focus-within:text-[#02084b] transition-colors">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   className="h-5 w-5"
@@ -197,7 +207,7 @@ export default function Login() {
                 type={showPassword ? "text" : "password"}
                 id="password"
                 placeholder="Enter your password"
-                className="w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#2192b9] focus:border-transparent transition-all"
+                className="w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#02084b] focus:border-transparent transition-all"
                 required
                 ref={password}
                 onKeyPress={handleKeyPress}
@@ -205,7 +215,7 @@ export default function Login() {
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute inset-y-0 right-0 pr-3 flex items-center text-sm text-gray-400 hover:text-[#2192b9] focus:outline-none transition-colors"
+                className="absolute inset-y-0 right-0 pr-3 flex items-center text-sm text-gray-400 hover:text-[#02084b] focus:outline-none transition-colors"
                 aria-label={showPassword ? "Hide password" : "Show password"}
               >
                 {showPassword ? (
@@ -253,7 +263,7 @@ export default function Login() {
           <button
             onClick={handleLogin}
             disabled={loading}
-            className="w-full py-3 bg-[#2192b9] text-white font-semibold rounded-lg hover:bg-[#1a7595] transition duration-300 transform hover:-translate-y-0.5 active:translate-y-0 shadow-md hover:shadow-lg disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center"
+            className="w-full py-3 bg-[#02084b] text-white font-semibold rounded-lg hover:bg-[#02084b]/90 transition duration-300 transform hover:-translate-y-0.5 active:translate-y-0 shadow-md hover:shadow-lg disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center"
           >
             {loading ? (
               <>
@@ -290,7 +300,7 @@ export default function Login() {
               Don't have an account?{" "}
               <Link
                 to="/signup"
-                className="text-[#2192b9] hover:text-[#1a7595] font-medium transition-colors"
+                className="text-[#02084b] hover:text-[#02084b]/80 font-medium transition-colors"
               >
                 Sign Up
               </Link>
@@ -299,15 +309,24 @@ export default function Login() {
         </div>
 
         {/* Bottom decorative wave */}
-        <div className="w-full h-2 bg-[#2192b9]"></div>
+        <div className="w-full h-2 bg-[#02084b]"></div>
       </div>
 
-      {/* Snackbar for success message */}
+      {/* Success Snackbar */}
       <Snackbar
-        open={false} // This would be controlled by state in a real implementation
-        autoHideDuration={6000}
-        message="Login successful"
-        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+        open={openSnackbar}
+        autoHideDuration={3000}
+        onClose={handleCloseSnackbar}
+        message="Login successful!"
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+        ContentProps={{
+          style: {
+            backgroundColor: "#02084b",
+            color: "white",
+            fontWeight: "500",
+            textAlign: "center",
+          },
+        }}
       />
     </div>
   );

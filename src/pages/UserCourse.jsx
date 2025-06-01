@@ -47,7 +47,7 @@ const UserCourse = () => {
   }
 
   return (
-    <div className="flex min-h-screen bg-gray-50 p-8 space-x-8 mt-10">
+    <div className="flex min-h-screen bg-gray-50 p-8 space-x-8 mt-16">
       <VideoList
         sections={sections}
         onSelectVideo={setSelectedVideo}

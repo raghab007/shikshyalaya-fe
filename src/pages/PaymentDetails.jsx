@@ -60,9 +60,9 @@ const PaymentPage = () => {
       } catch (error) {
         console.error("Enrollment error:", error);
         setError(
-          error.response?.data?.message || 
-          error.message || 
-          "Failed to complete enrollment"
+          error.response?.data?.message ||
+            error.message ||
+            "Failed to complete enrollment"
         );
         setEnrollmentSuccess(false);
       } finally {
@@ -84,8 +84,12 @@ const PaymentPage = () => {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50">
         <Loader className="h-12 w-12 text-blue-600 animate-spin mb-4" />
-        <h1 className="text-xl font-semibold text-gray-800">Processing your enrollment...</h1>
-        <p className="text-gray-600 mt-2">Please wait while we enroll you in the course</p>
+        <h1 className="text-xl font-semibold text-gray-800">
+          Processing your enrollment...
+        </h1>
+        <p className="text-gray-600 mt-2">
+          Please wait while we enroll you in the course
+        </p>
       </div>
     );
   }
@@ -98,28 +102,36 @@ const PaymentPage = () => {
             <div className="bg-green-100 p-3 rounded-full mb-4">
               <CheckCircle className="h-16 w-16 text-green-600" />
             </div>
-            
-            <h1 className="text-2xl font-bold text-gray-800 mb-2">Enrollment Successful!</h1>
+
+            <h1 className="text-2xl font-bold text-gray-800 mb-2">
+              Enrollment Successful!
+            </h1>
             <p className="text-gray-600 mb-6">
               You have been successfully enrolled in the course.
             </p>
-            
+
             <div className="bg-gray-50 p-4 rounded-lg w-full mb-6">
               <div className="flex justify-between mb-2">
                 <span className="text-gray-600">Course:</span>
-                <span className="font-medium">{purchaseOrderName || "Your course"}</span>
+                <span className="font-medium">
+                  {purchaseOrderName || "Your course"}
+                </span>
               </div>
               <div className="flex justify-between mb-2">
                 <span className="text-gray-600">Transaction ID:</span>
-                <span className="font-medium">{transactionId || txnId || tidx || "N/A"}</span>
+                <span className="font-medium">
+                  {transactionId || txnId || tidx || "N/A"}
+                </span>
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-600">Amount:</span>
-                <span className="font-medium">Rs. {totalAmount || amount || "N/A"}</span>
+                <span className="font-medium">
+                  Rs. {totalAmount / 100 || amount / 100 || "N/A"}
+                </span>
               </div>
             </div>
-            
-            <button 
+
+            <button
               onClick={() => navigate("/enrolled")}
               className="w-full bg-green-600 hover:bg-green-700 text-white font-medium py-3 px-4 rounded-lg transition duration-300 ease-in-out flex items-center justify-center"
             >
@@ -139,19 +151,20 @@ const PaymentPage = () => {
           <div className="bg-red-100 p-3 rounded-full mb-4">
             <XCircle className="h-16 w-16 text-red-600" />
           </div>
-          
+
           <h1 className="text-2xl font-bold text-gray-800 mb-2">
-            {status?.toLowerCase() === "completed" 
-              ? "Enrollment Failed" 
+            {status?.toLowerCase() === "completed"
+              ? "Enrollment Failed"
               : "Payment Failed"}
           </h1>
-          
+
           <p className="text-gray-600 mb-6">
-            {error || (status?.toLowerCase() === "completed" 
-              ? "We couldn't complete your enrollment." 
-              : "We couldn't complete your payment.")}
+            {error ||
+              (status?.toLowerCase() === "completed"
+                ? "We couldn't complete your enrollment."
+                : "We couldn't complete your payment.")}
           </p>
-          
+
           <div className="bg-gray-50 p-4 rounded-lg w-full mb-6">
             <p className="text-gray-700 mb-2">Transaction details:</p>
             <div className="text-left text-gray-600">
@@ -161,23 +174,23 @@ const PaymentPage = () => {
               <p>Status: {status || "N/A"}</p>
             </div>
           </div>
-          
+
           <div className="w-full space-y-3">
             {purchaseOrderId && (
-              <button 
+              <button
                 onClick={() => navigate(`/course/${purchaseOrderId}`)}
                 className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-4 rounded-lg transition duration-300 ease-in-out"
               >
                 Try Again
               </button>
             )}
-            <button 
+            <button
               onClick={() => navigate("/courses")}
               className="w-full bg-gray-600 hover:bg-gray-700 text-white font-medium py-3 px-4 rounded-lg transition duration-300 ease-in-out"
             >
               Browse Other Courses
             </button>
-            <button 
+            <button
               onClick={() => navigate("/support")}
               className="w-full bg-yellow-600 hover:bg-yellow-700 text-white font-medium py-3 px-4 rounded-lg transition duration-300 ease-in-out"
             >

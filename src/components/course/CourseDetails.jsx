@@ -4,6 +4,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import userRecoilState from "../../store/atoms/user";
 import { useRecoilState } from "recoil";
 import { format } from "date-fns";
+import { FaStar } from "react-icons/fa";
 
 export default function CourseDetails() {
   const { courseId } = useParams();
@@ -13,14 +14,16 @@ export default function CourseDetails() {
   const [userState, setUserState] = useRecoilState(userRecoilState);
   const [isLoading, setIsLoading] = useState(true);
   const [isProcessingPayment, setIsProcessingPayment] = useState(false);
+  const [reviews, setReviews] = useState([]);
+  const [isLoadingReviews, setIsLoadingReviews] = useState(true);
   const navigate = useNavigate();
 
-  // Theme colors
+  // Updated theme colors with #02084b
   const themeColors = {
-    primary: "#42ACD0", // Main theme color
-    primaryLight: "#8ACEE0", // Lighter variant
-    primaryDark: "#2E7D9A", // Darker variant
-    primaryBg: "#E6F4F9", // Background tint
+    primary: "#02084b", // Main theme color (dark blue)
+    primaryLight: "#1a237e", // Lighter variant
+    primaryDark: "#000022", // Darker variant
+    primaryBg: "#e8eaf6", // Light background tint
   };
 
   useEffect(() => {
@@ -38,8 +41,32 @@ export default function CourseDetails() {
         setIsLoading(false);
       }
     };
+
+    const getReviews = async () => {
+      try {
+        setIsLoadingReviews(true);
+        const token = localStorage.getItem("token");
+        const headers = token ? { Authorization: `Bearer ${token}` } : {};
+        
+        const response = await axios.get(
+          `http://localhost:8085/api/rating-reviews/course/${courseId}`,
+          { headers }
+        );
+        setReviews(response.data);
+      } catch (error) {
+        console.error("Error fetching reviews:", error);
+        if (error.response?.status !== 403) {
+          setReviews([]);
+        }
+      } finally {
+        setIsLoadingReviews(false);
+      }
+    };
+
     getCourseDetails();
+    getReviews();   
   }, [courseId]);
+
 
   async function enrollCourse() {
     if (!userState) {
@@ -55,6 +82,8 @@ export default function CourseDetails() {
             },
           }
         );
+
+        console.log("Payment response:", response.data);
         window.location.href = response.data.payment_url;
       } catch (error) {
         console.error("Error enrolling in course:", error);
@@ -69,7 +98,32 @@ export default function CourseDetails() {
 
   const formatDate = (dateString) => {
     if (!dateString) return "N/A";
-    return format(new Date(dateString), "MMM dd, yyyy");
+    try {
+      const date = new Date(dateString);
+      if (isNaN(date.getTime())) return "N/A";
+      return format(date, "MMM dd, yyyy");
+    } catch (error) {
+      console.error("Error formatting date:", error);
+      return "N/A";
+    }
+  };
+
+  const renderStars = (rating) => {
+    return (
+      <div className="flex items-center gap-1">
+        {[...Array(5)].map((_, index) => (
+          <FaStar
+            key={index}
+            className={`w-4 h-4 ${
+              index < rating ? "text-yellow-400" : "text-gray-300"
+            }`}
+          />
+        ))}
+        <span className="text-sm font-medium text-gray-700 ml-1">
+          {rating.toFixed(1)}
+        </span>
+      </div>
+    );
   };
 
   if (isLoading) {
@@ -289,7 +343,7 @@ export default function CourseDetails() {
                                     style={{
                                       color:
                                         expandedSection === section.sectionId
-                                          ? themeColors.primaryDark
+                                          ? themeColors.primary
                                           : "inherit",
                                     }}
                                   >
@@ -368,6 +422,47 @@ export default function CourseDetails() {
                 )}
               </div>
             </div>
+
+            {/* Reviews Section */}
+            <div className="bg-white rounded-lg shadow-sm p-5">
+              <h2 className="text-xl font-semibold mb-4 text-gray-800">
+                Student Reviews
+              </h2>
+              {isLoadingReviews ? (
+                <div className="flex justify-center items-center py-8">
+                  <div
+                    className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2"
+                    style={{ borderColor: themeColors.primary }}
+                  ></div>
+                </div>
+              ) : reviews.length > 0 ? (
+                <div className="space-y-6">
+                  {reviews.map((review) => (
+                    <div key={review.id} className="border-b border-gray-200 pb-6 last:border-b-0 last:pb-0">
+                      <div className="flex items-start justify-between mb-2">
+                        <div>
+                          <h3 className="font-medium text-gray-900">{review.userName}</h3>
+                          <div className="flex items-center gap-2 mt-1">
+                            {renderStars(review.rating)}
+                            <span className="text-sm text-gray-500">
+                              {formatDate(review.createdAt)}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                      <p className="text-gray-600 mt-2">{review.review}</p>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center py-8">
+                  <div className="inline-block p-4 rounded-full bg-gray-100 mb-4">
+                    <FaStar className="w-8 h-8 text-gray-400" />
+                  </div>
+                  <p className="text-gray-500">No reviews yet. Be the first to review this course!</p>
+                </div>
+              )}
+            </div>
           </div>
 
           {/* Right Column */}
@@ -382,7 +477,7 @@ export default function CourseDetails() {
                     background: `linear-gradient(135deg, ${themeColors.primary}, ${themeColors.primaryDark})`,
                   }}
                 >
-                  Enroll Now - ₹{course.coursePrice}
+                  Enroll Now - {course.coursePrice}
                 </button>
               </div>
 
@@ -485,7 +580,7 @@ export default function CourseDetails() {
                 </div>
               </div>
 
-              {/* Instructor Card (now integrated into the enrollment card) */}
+              {/* Instructor Card */}
               <div className="border-t mt-4 pt-4">
                 <h3 className="text-sm font-semibold text-gray-800 flex items-center gap-2 mb-3">
                   <svg

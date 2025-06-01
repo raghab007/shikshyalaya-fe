@@ -21,7 +21,7 @@ function EnrolledCoursesPage() {
     <div className="font-sans bg-[#f5f9fc] min-h-screen pt-16">
       {" "}
       {/* Added pt-16 to account for navbar */}
-      <div className="bg-[rgb(45,158,235)] py-10 px-6 shadow-md">
+      <div className="bg-[#02084b] py-10 px-6 shadow-md">
         <div className="max-w-6xl mx-auto">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between">
             <div className="mb-4 md:mb-0">
@@ -71,7 +71,7 @@ function EnrolledCourses() {
   if (isLoading) {
     return (
       <div className="flex justify-center items-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-[#2D9EEB]"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-[#02084b]"></div>
       </div>
     );
   }
@@ -99,7 +99,7 @@ function EnrolledCourses() {
           <div className="bg-blue-50 p-4 rounded-full mb-4">
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              className="h-14 w-14 text-[#2D9EEB]"
+              className="h-14 w-14 text-[#02084b]"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -120,7 +120,7 @@ function EnrolledCourses() {
           </p>
           <Link
             to="/courses"
-            className="bg-[#2D9EEB] hover:bg-[#2488D1] text-white py-2.5 px-6 rounded-lg font-medium"
+            className="bg-[#02084b] hover:bg-[#0a1e6f] text-white py-2.5 px-6 rounded-lg font-medium"
           >
             Browse Courses
           </Link>
@@ -155,7 +155,7 @@ function EnrollCourseTab() {
     <div className="inline-flex bg-white/20 rounded-lg p-1">
       <Link
         to="/enrolled"
-        className="flex items-center py-2 px-6 rounded-md text-sm bg-white text-[#2D9EEB] font-medium"
+        className="flex items-center py-2 px-6 rounded-md text-sm bg-white text-[#02084b] font-medium"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"

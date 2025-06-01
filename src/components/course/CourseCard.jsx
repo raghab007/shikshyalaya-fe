@@ -13,26 +13,26 @@ import {
   FaCertificate,
 } from "react-icons/fa";
 
-// Theme colors
+// Shiskhyalaya theme colors with #02084b as primary
 const theme = {
-  primary: "#2D9EEB", // Main blue
-  primaryLight: "#E6F4F9", // Light blue background
-  primaryDark: "#1C5F8F", // Dark blue
-  secondary: "#42ACD0", // Secondary blue
-  accent: "#FFB800", // Yellow for highlights
+  primary: "#02084b", // Main dark blue
+  primaryLight: "#e6e7f0", // Light blue background
+  primaryDark: "#010530", // Darker blue
+  secondary: "#3a3f73", // Secondary blue
+  accent: "#FF9800", // Orange for highlights
   text: {
-    primary: "#1F2937", // Dark gray for main text
-    secondary: "#4B5563", // Medium gray for secondary text
-    light: "#6B7280", // Light gray for subtle text
+    primary: "#212121", // Dark gray for main text
+    secondary: "#616161", // Medium gray for secondary text
+    light: "#9E9E9E", // Light gray for subtle text
   },
   background: {
-    light: "#F9FAFB", // Light background
+    light: "#F5F5F5", // Light background
     white: "#FFFFFF", // White background
   },
   status: {
-    success: "#10B981", // Green for success
-    warning: "#F59E0B", // Yellow for warning
-    error: "#EF4444", // Red for error
+    success: "#4CAF50", // Green for success
+    warning: "#FF9800", // Orange for warning
+    error: "#F44336", // Red for error
   },
 };
 
@@ -49,6 +49,7 @@ const CourseCard = ({
   categories = [],
   duration = "10h 30m",
   level = "Beginner",
+  totalRatings,
 }) => {
   const [isBookmarked, setIsBookmarked] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
@@ -79,11 +80,11 @@ const CourseCard = ({
 
     for (let i = 0; i < 5; i++) {
       if (i < fullStars) {
-        stars.push(<FaStar key={i} className="text-yellow-400" />);
+        stars.push(<FaStar key={i} className="text-amber-500" />);
       } else if (i === fullStars && hasHalfStar) {
-        stars.push(<FaStarHalfAlt key={i} className="text-yellow-400" />);
+        stars.push(<FaStarHalfAlt key={i} className="text-amber-500" />);
       } else {
-        stars.push(<FaRegStar key={i} className="text-yellow-400" />);
+        stars.push(<FaRegStar key={i} className="text-amber-500" />);
       }
     }
 
@@ -106,12 +107,12 @@ const CourseCard = ({
   const BadgesSection = () => (
     <div className="absolute top-3 right-3 flex flex-col gap-2">
       {isBestseller && (
-        <span className="px-2 py-1 bg-[#FFB800] text-white text-xs font-bold rounded-full shadow-sm">
+        <span className="px-2 py-1 bg-amber-500 text-white text-xs font-bold rounded-full shadow-sm">
           Bestseller
         </span>
       )}
       {calculateDiscount() && (
-        <span className="px-2 py-1 bg-[#EF4444] text-white text-xs font-bold rounded-full shadow-sm">
+        <span className="px-2 py-1 bg-red-500 text-white text-xs font-bold rounded-full shadow-sm">
           {calculateDiscount()}% OFF
         </span>
       )}
@@ -125,11 +126,9 @@ const CourseCard = ({
       </h2>
 
       <div className="flex items-center mt-2 gap-2 text-xs text-gray-200">
-        <span className="px-2 py-0.5 bg-gray-700/60 rounded-full">{level}</span>
-        {/* <span className="flex items-center">
-          <FaClock className="mr-1" size={10} />
-          {duration}
-        </span> */}
+        <span className="px-2 py-0.5 bg-[#02084b]/70 rounded-full">
+          {level}
+        </span>
       </div>
     </div>
   );
@@ -154,14 +153,19 @@ const CourseCard = ({
   );
 
   const RatingAndStudentsSection = () => (
-    <div className="flex items-center justify-between mt-3 bg-[#E6F4F9] p-2 rounded-lg">
-      <div className="flex items-center">
+    <div className="flex items-center justify-between mt-3 bg-[#e6e7f0] p-2 rounded-lg">
+      <div className="flex items-center gap-2">
         {rating ? (
           <>
-            <span className="text-[#F59E0B] font-bold mr-1">
-              {rating.toFixed(1)}
+            <div className="flex items-center bg-white px-2 py-1 rounded">
+              <span className="text-amber-500 font-bold mr-1">
+                {rating.toFixed(1)}
+              </span>
+              <RatingStars rating={rating} />
+            </div>
+            <span className="text-xs text-gray-600">
+              ({totalRatings} {totalRatings === 1 ? 'rating' : 'ratings'})
             </span>
-            <RatingStars rating={rating} />
           </>
         ) : (
           <span className="text-sm text-gray-500">Not rated yet</span>
@@ -169,7 +173,7 @@ const CourseCard = ({
       </div>
 
       <div className="flex items-center text-gray-600 bg-white px-2 py-1 rounded">
-        <FaUsers className="mr-1 text-[#2D9EEB]" size={12} />
+        <FaUsers className="mr-1 text-[#02084b]" size={12} />
         <span className="text-xs font-medium">
           {formatStudentCount(studentsEnrolled)}
         </span>
@@ -179,7 +183,7 @@ const CourseCard = ({
 
   const PriceSection = () => (
     <div className="mt-4 flex items-end">
-      <p className="text-xl font-bold text-[#1F2937]">
+      <p className="text-xl font-bold text-gray-900">
         {price ? `Rs ${price}` : "Free"}
       </p>
       {originalPrice && (
@@ -197,15 +201,15 @@ const CourseCard = ({
       animate={{ opacity: 1, y: 0 }}
       whileHover={{ y: -5 }}
       className="w-72 bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl 
-                   transition-all duration-300 flex flex-col h-full"
+                   transition-all duration-300 flex flex-col h-full border border-gray-100"
     >
       <CourseImageSection />
 
       <div className="p-4 flex-grow">
         <div className="flex items-center justify-between mb-2">
           <div className="flex items-center">
-            <FaChalkboardTeacher className="text-[#4B5563] mr-1" size={14} />
-            <p className="text-sm text-[#4B5563] font-medium truncate">
+            <FaChalkboardTeacher className="text-gray-500 mr-1" size={14} />
+            <p className="text-sm text-gray-600 font-medium truncate">
               {instructorName || "Instructor"}
             </p>
           </div>
@@ -220,8 +224,8 @@ const CourseCard = ({
           <motion.button
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
-            className="w-full bg-[#2D9EEB] hover:bg-[#1C5F8F] text-white px-4 py-2.5 rounded-lg 
-                          text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#2D9EEB] 
+            className="w-full bg-[#02084b] hover:bg-[#010530] text-white px-4 py-2.5 rounded-lg 
+                          text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#02084b] 
                           focus:ring-offset-2 transition-colors shadow-sm"
           >
             View Details

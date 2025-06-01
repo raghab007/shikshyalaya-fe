@@ -1,44 +1,105 @@
+import axios from "axios";
+import { useState, useEffect } from "react";
+
 const Instructors = () => {
-  const instructors = [
-    {
-      id: 1,
-      name: "Sarah Johnson",
-      email: "sarah@example.com",
-      courses: 5,
-      rating: 4.8,
-    },
-    {
-      id: 2,
-      name: "Mike Peterson",
-      email: "mike@example.com",
-      courses: 3,
-      rating: 4.5,
-    },
-    {
-      id: 3,
-      name: "Emily Davis",
-      email: "emily@example.com",
-      courses: 7,
-      rating: 4.9,
-    },
-    {
-      id: 4,
-      name: "David Wilson",
-      email: "david@example.com",
-      courses: 2,
-      rating: 4.2,
-    },
-  ];
+  // State to manage users
+  const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [currentUserRole] = useState("Admin"); // Assuming current user is Admin
+
+  // Fetch users from API
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const response = await axios.get("http://localhost:8085/admin/instructors", {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        });
+
+        console.log(response.data);
+        const data = response.data;
+        setUsers(data);
+        setLoading(false);
+      } catch (err) {
+        setError(err.message);
+        setLoading(false);
+      }
+    };
+
+    fetchUsers();
+  }, []);
+
+  // Function to toggle user status (block/unblock)
+  const toggleUserStatus = async (userName) => {
+    try {
+      const userToUpdate = users.find((user) => user.userName === userName);
+      const newBlockedStatus = !userToUpdate.blocked;
+
+      const response = await axios.put(
+        `http://localhost:8085/admin/users/${userName}`,
+        { blocked: newBlockedStatus },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+
+      // Update local state
+      setUsers(
+        users.map((user) =>
+          user.userName === userName
+            ? { ...user, blocked: newBlockedStatus }
+            : user
+        )
+      );
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+
+  // Check if current user is admin
+  const isAdmin = currentUserRole === "Admin";
+
+  if (loading) {
+    return <div className="p-6">Loading users...</div>;
+  }
+
+  if (error) {
+    return <div className="p-6 text-red-500">Error: {error}</div>;
+  }
 
   return (
-    <div>
-      <h2 className="text-2xl font-semibold mb-6">Instructors Management</h2>
+    <div className="p-6">
+      <h2 className="text-2xl font-semibold mb-6">Users Management</h2>
+      {/* Stats summary */}
+      <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="bg-white p-4 rounded-lg shadow">
+          <h3 className="text-lg font-medium text-gray-900">Total Users</h3>
+          <p className="text-2xl font-bold">{users.length}</p>
+        </div>
+        <div className="bg-white p-4 rounded-lg shadow">
+          <h3 className="text-lg font-medium text-gray-900">Active Users</h3>
+          <p className="text-2xl font-bold text-green-600">
+            {users.filter((user) => !user.blocked).length}
+          </p>
+        </div>
+        <div className="bg-white p-4 rounded-lg shadow">
+          <h3 className="text-lg font-medium text-gray-900">Blocked Users</h3>
+          <p className="text-2xl font-bold text-red-600">
+            {users.filter((user) => user.blocked).length}
+          </p>
+        </div>
+      </div>
       <div className="bg-white rounded-lg shadow overflow-hidden">
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-50">
             <tr>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                ID
+                Username
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Name
@@ -47,45 +108,66 @@ const Instructors = () => {
                 Email
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Courses
+                Contact
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Rating
+                Role
               </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Status
+              </th>
+              {isAdmin && (
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Actions
+                </th>
+              )}
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
-            {instructors.map((instructor) => (
-              <tr key={instructor.id}>
+            {users.map((user) => (
+              <tr key={user.userName}>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  {instructor.id}
+                  {user.userName}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                  {instructor.name}
+                  {user.firstName} {user.lastName}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  {instructor.email}
+                  {user.email}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  {instructor.courses}
+                  {user.contactNumber}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  <div className="flex items-center">
-                    <span className="mr-2">{instructor.rating}</span>
-                    <div className="flex">
-                      {[...Array(5)].map((_, i) => (
-                        <svg
-                          key={i}
-                          className={`h-4 w-4 ${i < Math.floor(instructor.rating) ? "text-yellow-400" : "text-gray-300"}`}
-                          fill="currentColor"
-                          viewBox="0 0 20 20"
-                        >
-                          <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                        </svg>
-                      ))}
-                    </div>
-                  </div>
+                  {user.role}
                 </td>
+                <td className="px-6 py-4 whitespace-nowrap">
+                  <span
+                    className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                      !user.blocked
+                        ? "bg-green-100 text-green-800"
+                        : "bg-red-100 text-red-800"
+                    }`}
+                  >
+                    {!user.blocked ? "Active" : "Blocked"}
+                  </span>
+                </td>
+                {isAdmin && (
+                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                    {user.role !== "ADMIN" && (
+                      <button
+                        onClick={() => toggleUserStatus(user.userName)}
+                        className={`px-3 py-1 rounded text-white ${
+                          !user.blocked
+                            ? "bg-red-500 hover:bg-red-600"
+                            : "bg-green-500 hover:bg-green-600"
+                        }`}
+                      >
+                        {!user.blocked ? "Block" : "Unblock"}
+                      </button>
+                    )}
+                  </td>
+                )}
               </tr>
             ))}
           </tbody>

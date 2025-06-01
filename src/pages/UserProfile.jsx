@@ -5,13 +5,19 @@ import {
   FaHome,
   FaUserEdit,
   FaLock,
-  FaCog,
-  FaSignOutAlt,
   FaCreditCard,
   FaCamera,
   FaUser,
+  FaPhone,
+  FaEnvelope,
+  FaCog,
+  FaSignOutAlt,
+  FaMailBulk,
 } from "react-icons/fa";
 import { userProfileSelector } from "../store/atoms/profle";
+import { Mail } from "lucide-react";
+import axios from "axios";
+import { toast } from "react-hot-toast";
 
 const UserProfile = () => {
   const [state, setState] = useRecoilState(userProfileSelector);
@@ -19,12 +25,19 @@ const UserProfile = () => {
   const navigate = useNavigate();
   const fileInputRef = useRef(null);
 
-  useEffect(function () {
+  // Default profile image URLs
+  const defaultProfileImages = [
+    "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60",
+    "https://images.unsplash.com/photo-1542103749-8ef59b94f47e?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60",
+    "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60",
+    "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60",
+  ];
+
+  useEffect(() => {
     if (!state) {
-      console.log("state");
       window.location.href = "/login";
     }
-  });
+  }, [state]);
 
   if (!state) {
     return null;
@@ -44,9 +57,44 @@ const UserProfile = () => {
     confirmPassword: "",
   });
 
-  const [profileImage, setProfileImage] = useState(state.profileImage || null);
+  const [profileImage, setProfileImage] = useState(
+    state.profileImage ||
+      defaultProfileImages[
+        Math.floor(Math.random() * defaultProfileImages.length)
+      ]
+  );
   const [formError, setFormError] = useState("");
   const [formSuccess, setFormSuccess] = useState("");
+
+  const [transactions, setTransactions] = useState([]);
+  const [loadingTransactions, setLoadingTransactions] = useState(false);
+
+  useEffect(() => {
+    if (activeTab === "transactions") {
+      fetchTransactions();
+    }
+  }, [activeTab]);
+
+  const fetchTransactions = async () => {
+    setLoadingTransactions(true);
+    try {
+      const response = await axios.get(
+        "http://localhost:8085/profile/transactions",
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+          },
+        }
+      );
+      console.log(response.data);
+      setTransactions(response.data);
+    } catch (error) {
+      console.error('Error fetching transactions:', error);
+      toast.error('Failed to load transactions');
+    } finally {
+      setLoadingTransactions(false);
+    }
+  };
 
   const logout = () => {
     localStorage.removeItem("token");
@@ -69,60 +117,121 @@ const UserProfile = () => {
     }));
   };
 
-  const handleProfileUpdate = (e) => {
+  const handleProfileUpdate = async (e) => {
     e.preventDefault();
     setFormError("");
-    setFormSuccess("Profile updated successfully!");
-
-    // Update state with new profile information
-    setState((prev) => ({
-      ...prev,
-      firstName: profileForm.firstName,
-      lastName: profileForm.lastName,
-      email: profileForm.email,
-      contactNumber: profileForm.contactNumber,
-    }));
+    try {
+      const response = await axios.put(
+        "http://localhost:8085/profile",
+        profileForm,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+          },
+        }
+      );
+      
+      setState(response.data);
+      toast.success('Profile updated successfully');
+    } catch (error) {
+      console.error('Error updating profile:', error);
+      toast.error(error.response?.data || 'Failed to update profile');
+    }
   };
 
-  const handlePasswordUpdate = (e) => {
+  const handlePasswordUpdate = async (e) => {
     e.preventDefault();
     setFormError("");
 
     if (passwordForm.newPassword !== passwordForm.confirmPassword) {
-      setFormError("New passwords do not match");
+      toast.error("New passwords do not match");
       return;
     }
 
     if (passwordForm.newPassword.length < 8) {
-      setFormError("Password must be at least 8 characters");
+      toast.error("Password must be at least 8 characters");
       return;
     }
 
-    setFormSuccess("Password updated successfully!");
-    setPasswordForm({
-      currentPassword: "",
-      newPassword: "",
-      confirmPassword: "",
-    });
+    try {
+      await axios.put(
+        "http://localhost:8085/profile/password",
+        {
+          currentPassword: passwordForm.currentPassword,
+          newPassword: passwordForm.newPassword
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+          },
+        }
+      );
+      
+      toast.success('Password updated successfully');
+      setPasswordForm({
+        currentPassword: "",
+        newPassword: "",
+        confirmPassword: "",
+      });
+    } catch (error) {
+      console.error('Error updating password:', error);
+      toast.error(error.response?.data || 'Failed to update password');
+    }
   };
 
   const handleProfilePicture = () => {
     fileInputRef.current.click();
   };
 
-  const handleFileChange = (e) => {
+  const handleFileChange = async (e) => {
     const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        setProfileImage(e.target.result);
-        setState((prev) => ({
-          ...prev,
-          profileImage: e.target.result,
-        }));
-      };
-      reader.readAsDataURL(file);
+    if (!file) return;
+
+    // Validate file type
+    if (!file.type.startsWith('image/')) {
+      toast.error('Please select an image file');
+      return;
     }
+
+    // Validate file size (5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error('Image size should be less than 5MB');
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('image', file);
+
+    try {
+      const response = await axios.post(
+        "http://localhost:8085/profile/image",
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+            Authorization: `Bearer ${localStorage.getItem('token')}`
+          }
+        }
+      );
+
+      if (response.data) {
+        setState(prev => ({
+          ...prev,
+          profileImage: response.data.profileImage
+        }));
+        toast.success('Profile image updated successfully');
+      }
+    } catch (error) {
+      console.error('Error uploading profile image:', error);
+      toast.error(error.response?.data || 'Failed to upload profile image');
+    }
+  };
+
+  const getProfileImageUrl = () => {
+    if (state.profileImage) {
+      return `http://localhost:8085/files/profile/images/${state.profileImage}`;
+    }
+    return `https://ui-avatars.com/api/?name=${state.firstName}+${state.lastName}&background=random`;
   };
 
   // Content for different tabs
@@ -130,308 +239,318 @@ const UserProfile = () => {
     switch (activeTab) {
       case "overview":
         return (
-          <div className="space-y-4">
-            <h2 className="text-xl font-bold">Welcome, {state.firstName}!</h2>
-            <div className="bg-white p-6 rounded-lg shadow">
-              <h3 className="font-medium mb-4">Personal Information</h3>
-              <div className="space-y-3">
-                <p>
-                  <span className="text-gray-600 font-medium">Name:</span>{" "}
-                  {state.firstName} {state.lastName}
-                </p>
-                <p>
-                  <span className="text-gray-600 font-medium">Email:</span>{" "}
-                  {state.email}
-                </p>
-                <p>
-                  <span className="text-gray-600 font-medium">Phone:</span>{" "}
-                  {state.contactNumber || "Not provided"}
-                </p>
+          <div className="space-y-6">
+            <div className="flex items-center justify-between"></div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="bg-white rounded-xl shadow-sm p-6">
+                <h3 className="text-lg font-semibold text-gray-700 mb-4">
+                  Personal Information
+                </h3>
+                <div className="space-y-4">
+                  <div className="flex items-center">
+                    <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center mr-3">
+                      <FaUser className="text-blue-500" />
+                    </div>
+                    <div>
+                      <p className="text-sm text-gray-500">Full Name</p>
+                      <p className="font-medium">
+                        {state.firstName} {state.lastName}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex items-center">
+                    <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center mr-3">
+                      <Mail className="text-blue-500" />
+                    </div>
+                    <div>
+                      <p className="text-sm text-gray-500">Email</p>
+                      <p className="font-medium">{state.email}</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center">
+                    <div className="w-10 h-10 rounded-full bg-purple-100 flex items-center justify-center mr-3">
+                      <FaPhone className="text-purple-500" />
+                    </div>
+                    <div>
+                      <p className="text-sm text-gray-500">Phone</p>
+                      <p className="font-medium">
+                        {state.contactNumber || "Not provided"}
+                      </p>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
         );
       case "profile":
         return (
-          <div className="space-y-4">
-            <h2 className="text-xl font-bold">Profile Management</h2>
+          <div className="space-y-6">
+            <h2 className="text-2xl font-bold text-gray-800">
+              Profile Settings
+            </h2>
 
             {formSuccess && (
-              <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded">
+              <div className="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg">
                 {formSuccess}
               </div>
             )}
             {formError && (
-              <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
+              <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
                 {formError}
               </div>
             )}
 
-            <div className="bg-white p-6 rounded-lg shadow">
-              <div className="flex flex-col items-center mb-6">
-                <div className="relative inline-block">
-                  <div className="w-32 h-32 rounded-full bg-gray-200 overflow-hidden border-4 border-white shadow-lg">
-                    {profileImage ? (
+            <div className="bg-white rounded-xl shadow-sm overflow-hidden">
+              <div className="p-6">
+                <div className="flex flex-col items-center mb-8">
+                  <div className="relative mb-4">
+                    <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-white shadow-lg">
                       <img
-                        src={profileImage}
+                        src={getProfileImageUrl()}
                         alt="Profile"
                         className="w-full h-full object-cover"
                       />
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center bg-blue-500 text-white text-4xl font-bold">
-                        {state.firstName?.charAt(0) || "U"}
-                      </div>
-                    )}
+                    </div>
+                    <button
+                      onClick={handleProfilePicture}
+                      className="absolute bottom-0 right-0 bg-blue-500 text-white p-2 rounded-full hover:bg-blue-600 shadow-md transform transition-transform hover:scale-110"
+                    >
+                      <FaCamera size={14} />
+                    </button>
+                    <input
+                      type="file"
+                      ref={fileInputRef}
+                      onChange={handleFileChange}
+                      accept="image/*"
+                      className="hidden"
+                    />
                   </div>
-                  <button
-                    onClick={handleProfilePicture}
-                    className="absolute bottom-2 right-2 bg-blue-500 text-white p-2 rounded-full hover:bg-blue-600 shadow-lg"
-                    style={{ zIndex: 10 }}
-                  >
-                    <FaCamera />
-                  </button>
-                  <input
-                    type="file"
-                    ref={fileInputRef}
-                    onChange={handleFileChange}
-                    accept="image/*"
-                    className="hidden"
-                  />
+                  <h3 className="text-lg font-semibold">
+                    {state.firstName} {state.lastName}
+                  </h3>
+                  <p className="text-gray-500 text-sm">{state.email}</p>
                 </div>
-                <p className="text-sm text-gray-600 mt-2">
-                  Click the camera icon to change your profile picture
-                </p>
-              </div>
 
-              <form onSubmit={handleProfileUpdate}>
-                <div className="space-y-4">
-                  <div>
-                    <label className="block text-gray-700 text-sm font-medium mb-1">
-                      First Name
-                    </label>
-                    <input
-                      type="text"
-                      name="firstName"
-                      className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      value={profileForm.firstName}
-                      onChange={handleProfileChange}
-                      placeholder="First Name"
-                      required
-                    />
+                <form onSubmit={handleProfileUpdate} className="space-y-5">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        First Name
+                      </label>
+                      <input
+                        type="text"
+                        name="firstName"
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
+                        value={profileForm.firstName}
+                        onChange={handleProfileChange}
+                        required
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Last Name
+                      </label>
+                      <input
+                        type="text"
+                        name="lastName"
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
+                        value={profileForm.lastName}
+                        onChange={handleProfileChange}
+                        required
+                      />
+                    </div>
                   </div>
+
                   <div>
-                    <label className="block text-gray-700 text-sm font-medium mb-1">
-                      Last Name
-                    </label>
-                    <input
-                      type="text"
-                      name="lastName"
-                      className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      value={profileForm.lastName}
-                      onChange={handleProfileChange}
-                      placeholder="Last Name"
-                      required
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-gray-700 text-sm font-medium mb-1">
-                      Email
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Email Address
                     </label>
                     <input
                       type="email"
                       name="email"
-                      className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
                       value={profileForm.email}
                       onChange={handleProfileChange}
-                      placeholder="Email"
                       required
                     />
                   </div>
+
                   <div>
-                    <label className="block text-gray-700 text-sm font-medium mb-1">
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
                       Phone Number
                     </label>
                     <input
                       type="tel"
                       name="contactNumber"
-                      className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
                       value={profileForm.contactNumber}
                       onChange={handleProfileChange}
-                      placeholder="Phone Number"
                     />
                   </div>
+
                   <div className="pt-2">
                     <button
                       type="submit"
-                      className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded transition-colors"
+                      className="px-6 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition"
                     >
-                      Update Profile
+                      Save Changes
                     </button>
                   </div>
-                </div>
-              </form>
+                </form>
+              </div>
             </div>
           </div>
         );
       case "password":
         return (
-          <div className="space-y-4">
-            <h2 className="text-xl font-bold">Change Password</h2>
+          <div className="space-y-6">
+            <h2 className="text-2xl font-bold text-gray-800">
+              Change Password
+            </h2>
 
             {formSuccess && (
-              <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
+              <div className="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg">
                 {formSuccess}
               </div>
             )}
             {formError && (
-              <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+              <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
                 {formError}
               </div>
             )}
 
-            <div className="bg-white p-6 rounded-lg shadow">
-              <form onSubmit={handlePasswordUpdate}>
-                <div className="space-y-4">
+            <div className="bg-white rounded-xl shadow-sm overflow-hidden">
+              <div className="p-6">
+                <form onSubmit={handlePasswordUpdate} className="space-y-5">
                   <div>
-                    <label className="block text-gray-700 text-sm font-medium mb-1">
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
                       Current Password
                     </label>
                     <input
                       type="password"
                       name="currentPassword"
-                      className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
                       value={passwordForm.currentPassword}
                       onChange={handlePasswordChange}
                       required
                     />
                   </div>
-                  <div>
-                    <label className="block text-gray-700 text-sm font-medium mb-1">
-                      New Password
-                    </label>
-                    <input
-                      type="password"
-                      name="newPassword"
-                      className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      value={passwordForm.newPassword}
-                      onChange={handlePasswordChange}
-                      required
-                    />
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        New Password
+                      </label>
+                      <input
+                        type="password"
+                        name="newPassword"
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
+                        value={passwordForm.newPassword}
+                        onChange={handlePasswordChange}
+                        required
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Confirm New Password
+                      </label>
+                      <input
+                        type="password"
+                        name="confirmPassword"
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
+                        value={passwordForm.confirmPassword}
+                        onChange={handlePasswordChange}
+                        required
+                      />
+                    </div>
                   </div>
-                  <div>
-                    <label className="block text-gray-700 text-sm font-medium mb-1">
-                      Confirm New Password
-                    </label>
-                    <input
-                      type="password"
-                      name="confirmPassword"
-                      className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      value={passwordForm.confirmPassword}
-                      onChange={handlePasswordChange}
-                      required
-                    />
-                  </div>
+
                   <div className="pt-2">
                     <button
                       type="submit"
-                      className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded transition-colors"
+                      className="px-6 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition"
                     >
                       Update Password
                     </button>
                   </div>
-                </div>
-              </form>
+                </form>
+              </div>
             </div>
           </div>
         );
       case "transactions":
         return (
-          <div>
-            <h2 className="text-xl font-bold mb-4">Your Transactions</h2>
-            <div className="bg-white p-6 rounded-lg shadow">
-              <div className="flex justify-between border-b pb-3 font-medium">
-                <span>Date</span>
-                <span>Course</span>
-                <span>Amount</span>
-              </div>
-              <div className="flex justify-between py-3 border-b">
-                <span>2023-10-15</span>
-                <span>Java</span>
-                <span>₹2,100</span>
-              </div>
-              <div className="flex justify-between py-3">
-                <span>2023-09-01</span>
-                <span>Python</span>
-                <span>₹4,099</span>
-              </div>
-            </div>
-          </div>
-        );
-      case "settings":
-        return (
-          <div className="space-y-4">
-            <h2 className="text-xl font-bold">Account Settings</h2>
-            <div className="bg-white p-6 rounded-lg shadow">
-              <div className="space-y-6">
-                <div className="border-b pb-4">
-                  <h3 className="font-medium mb-3">Notification Preferences</h3>
-                  <div className="space-y-2">
-                    <div className="flex items-center">
-                      <input
-                        type="checkbox"
-                        id="emailNotifications"
-                        className="mr-2"
-                      />
-                      <label htmlFor="emailNotifications">
-                        Email notifications
-                      </label>
-                    </div>
-                    <div className="flex items-center">
-                      <input
-                        type="checkbox"
-                        id="smsNotifications"
-                        className="mr-2"
-                      />
-                      <label htmlFor="smsNotifications">
-                        SMS notifications
-                      </label>
-                    </div>
-                  </div>
-                </div>
+          <div className="space-y-6">
+            <h2 className="text-2xl font-bold text-gray-800">
+              Transaction History
+            </h2>
 
-                <div>
-                  <h3 className="font-medium mb-3">Privacy Settings</h3>
-                  <div className="space-y-2">
-                    <div className="flex items-center">
-                      <input
-                        type="checkbox"
-                        id="profileVisibility"
-                        className="mr-2"
-                      />
-                      <label htmlFor="profileVisibility">
-                        Make profile public
-                      </label>
-                    </div>
-                    <div className="flex items-center">
-                      <input
-                        type="checkbox"
-                        id="activityTracking"
-                        className="mr-2"
-                      />
-                      <label htmlFor="activityTracking">
-                        Allow activity tracking
-                      </label>
-                    </div>
-                  </div>
+            <div className="bg-white rounded-xl shadow-sm overflow-hidden">
+              {loadingTransactions ? (
+                <div className="p-6 text-center">
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mx-auto"></div>
+                  <p className="mt-2 text-gray-600">Loading transactions...</p>
                 </div>
-
-                <div className="pt-4 border-t mt-4">
-                  <h3 className="font-medium mb-3 text-red-600">Danger Zone</h3>
-                  <button className="bg-red-100 text-red-600 border border-red-300 px-4 py-2 rounded hover:bg-red-200">
-                    Delete Account
-                  </button>
+              ) : transactions.length === 0 ? (
+                <div className="p-6 text-center">
+                  <p className="text-gray-600">No transactions found</p>
                 </div>
-              </div>
+              ) : (
+                <div className="overflow-x-auto">
+                  <table className="min-w-full divide-y divide-gray-200">
+                    <thead className="bg-gray-50">
+                      <tr>
+                        <th
+                          scope="col"
+                          className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                        >
+                          Date
+                        </th>
+                        <th
+                          scope="col"
+                          className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                        >
+                          Course
+                        </th>
+                        <th
+                          scope="col"
+                          className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                        >
+                          Amount
+                        </th>
+                        <th
+                          scope="col"
+                          className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                        >
+                          Status
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody className="bg-white divide-y divide-gray-200">
+                      {transactions.map((transaction) => (
+                        <tr key={transaction.paymentId} className="hover:bg-gray-50">
+                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                            {new Date(transaction.dateTime).toLocaleDateString()}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            {transaction.course?.courseName || "N/A"}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            ₹{transaction.amount}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                              Completed
+                            </span>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
             </div>
           </div>
         );
@@ -441,105 +560,104 @@ const UserProfile = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100  mt-12">
-      {/* Header with profile summary */}
-      <header className="bg-white shadow">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-6">
-            <div className="flex items-center space-x-4">
-              <div className="relative">
-                <div className="w-16 h-16 rounded-full overflow-hidden border-4 border-white shadow-xl">
-                  {profileImage ? (
-                    <img
-                      src={profileImage}
-                      alt="Profile"
-                      className="w-full h-full object-cover"
-                    />
-                  ) : (
-                    <div className="w-full h-full bg-blue-500 flex items-center justify-center text-white text-xl font-bold">
-                      {state.firstName?.charAt(0) || "U"}
-                    </div>
-                  )}
-                </div>
-                <button
-                  onClick={handleProfilePicture}
-                  className="absolute -bottom-1 -right-1 bg-blue-500 text-white p-1 rounded-full hover:bg-blue-600 shadow-md"
-                  style={{ zIndex: 10 }}
-                >
-                  <FaCamera size={12} />
-                </button>
-              </div>
-              <div>
-                <h1 className="text-xl font-bold">
-                  {state.firstName} {state.lastName}
-                </h1>
-                <p className="text-gray-600">{state.email}</p>
-              </div>
-            </div>
+    <div className="min-h-screen bg-gray-50">
+      {/* Header */}
+      <header className="bg-white shadow-sm">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+          <div className="flex justify-between items-center">
+            <h1 className="text-xl font-bold text-gray-800">My Account</h1>
             <button
               onClick={logout}
-              className="flex items-center text-red-600 hover:text-red-800"
+              className="flex items-center text-gray-600 hover:text-gray-900"
             >
-              <FaSignOutAlt className="mr-1" /> Logout
+              <FaSignOutAlt className="mr-2" />
+              <span>Logout</span>
             </button>
           </div>
         </div>
       </header>
 
-      {/* Main content area with tabs */}
-      <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="flex flex-col lg:flex-row gap-6">
-          {/* Navigation Tabs */}
+      {/* Main Content */}
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="flex flex-col lg:flex-row gap-8">
+          {/* Sidebar Navigation */}
           <div className="w-full lg:w-64 flex-shrink-0">
-            <div className="bg-white shadow rounded-lg overflow-hidden">
-              {/* Tab Navigation */}
-              <nav className="flex flex-col">
+            <div className="bg-white rounded-xl shadow-sm overflow-hidden">
+              <div className="p-4 border-b">
+                <div className="flex items-center space-x-4">
+                  <div className="relative">
+                    <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-white shadow-md">
+                      <img
+                        src={getProfileImageUrl()}
+                        alt="Profile"
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                    <span className="absolute bottom-0 right-0 block h-3 w-3 rounded-full "></span>
+                  </div>
+                  <div>
+                    <h3 className="font-medium">
+                      {state.firstName} {state.lastName}
+                    </h3>
+                  </div>
+                </div>
+              </div>
+
+              <nav className="p-2">
                 <button
                   onClick={() => setActiveTab("overview")}
-                  className={`flex items-center px-4 py-3 border-l-4 ${
+                  className={`flex items-center w-full px-4 py-3 rounded-lg ${
                     activeTab === "overview"
-                      ? "border-blue-500 bg-blue-50 text-blue-700 font-medium"
-                      : "border-transparent hover:bg-gray-50"
+                      ? "bg-blue-50 text-blue-600 font-medium"
+                      : "text-gray-600 hover:bg-gray-50"
                   }`}
                 >
-                  <FaHome className="mr-3 text-gray-500" /> Overview
+                  <FaHome className="mr-3" />
+                  Overview
                 </button>
                 <button
                   onClick={() => setActiveTab("profile")}
-                  className={`flex items-center px-4 py-3 border-l-4 ${
+                  className={`flex items-center w-full px-4 py-3 rounded-lg ${
                     activeTab === "profile"
-                      ? "border-blue-500 bg-blue-50 text-blue-700 font-medium"
-                      : "border-transparent hover:bg-gray-50"
+                      ? "bg-blue-50 text-blue-600 font-medium"
+                      : "text-gray-600 hover:bg-gray-50"
                   }`}
                 >
-                  <FaUserEdit className="mr-3 text-gray-500" /> Edit Profile
+                  <FaUserEdit className="mr-3" />
+                  Edit Profile
                 </button>
                 <button
                   onClick={() => setActiveTab("password")}
-                  className={`flex items-center px-4 py-3 border-l-4 ${
+                  className={`flex items-center w-full px-4 py-3 rounded-lg ${
                     activeTab === "password"
-                      ? "border-blue-500 bg-blue-50 text-blue-700 font-medium"
-                      : "border-transparent hover:bg-gray-50"
+                      ? "bg-blue-50 text-blue-600 font-medium"
+                      : "text-gray-600 hover:bg-gray-50"
                   }`}
                 >
-                  <FaLock className="mr-3 text-gray-500" /> Change Password
+                  <FaLock className="mr-3" />
+                  Change Password
                 </button>
                 <button
                   onClick={() => setActiveTab("transactions")}
-                  className={`flex items-center px-4 py-3 border-l-4 ${
+                  className={`flex items-center w-full px-4 py-3 rounded-lg ${
                     activeTab === "transactions"
-                      ? "border-blue-500 bg-blue-50 text-blue-700 font-medium"
-                      : "border-transparent hover:bg-gray-50"
+                      ? "bg-blue-50 text-blue-600 font-medium"
+                      : "text-gray-600 hover:bg-gray-50"
                   }`}
                 >
-                  <FaCreditCard className="mr-3 text-gray-500" /> Transactions
+                  <FaCreditCard className="mr-3" />
+                  Transactions
                 </button>
               </nav>
             </div>
           </div>
 
-          {/* Content Area */}
-          <div className="flex-grow">{renderContent()}</div>
+          {/* Main Content Area */}
+          <div className="flex-1">
+            <div className="bg-white rounded-xl shadow-sm p-6">
+              {renderContent()}
+            </div>
+          </div>
         </div>
       </main>
     </div>

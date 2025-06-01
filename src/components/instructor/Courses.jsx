@@ -86,8 +86,8 @@ function Courses() {
 
   if (isLoading) {
     return (
-      <div className="flex flex-col justify-center items-center min-h-screen bg-gradient-to-br from-orange-50 to-orange-100">
-        <CircularProgress color="primary" size={60} thickness={4} />
+      <div className="flex flex-col justify-center items-center min-h-screen bg-gradient-to-br from-[#02084b]/10 to-[#02084b]/20">
+        <CircularProgress sx={{ color: "#02084b" }} size={60} thickness={4} />
         <p className="mt-4 text-gray-600">Loading your courses...</p>
       </div>
     );
@@ -95,13 +95,13 @@ function Courses() {
 
   if (error) {
     return (
-      <div className="flex flex-col justify-center items-center min-h-screen bg-gradient-to-br from-orange-50 to-orange-100">
+      <div className="flex flex-col justify-center items-center min-h-screen bg-gradient-to-br from-[#02084b]/10 to-[#02084b]/20">
         <div className="bg-red-50 border border-red-200 rounded-lg p-6 max-w-lg">
           <h2 className="text-2xl font-bold text-red-700 mb-2">Oops!</h2>
           <p className="text-red-600">{error}</p>
           <Button
             variant="contained"
-            color="primary"
+            sx={{ bgcolor: "#02084b", "&:hover": { bgcolor: "#02084b/90" } }}
             className="mt-4"
             onClick={() => window.location.reload()}
           >
@@ -113,12 +113,12 @@ function Courses() {
   }
 
   return (
-    <main className="min-h-screen bg-gradient-to-br from-orange-50 to-orange-100 pb-12">
+    <main className="min-h-screen bg-gradient-to-br from-[#02084b]/10 to-[#02084b]/20 pb-12">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8">
         {/* Header */}
-        <div className="bg-gradient-to-r from-blue-600 to-blue-500 rounded-xl shadow-lg p-6 mb-8">
+        <div className="bg-gradient-to-r from-[#02084b] to-[#02084b]/80 rounded-xl shadow-lg p-6 mb-8">
           <h1 className="text-3xl font-bold text-white mb-2">My Courses</h1>
-          <p className="text-blue-100">
+          <p className="text-[#02084b]/50 text-white/80">
             Manage and track all your teaching courses in one place
           </p>
         </div>
@@ -128,11 +128,11 @@ function Courses() {
           <Tooltip title="Create a new course" arrow>
             <Button
               variant="contained"
-              color="primary"
+              sx={{ bgcolor: "#02084b", "&:hover": { bgcolor: "#02084b/90" } }}
               component={Link}
               to="/instructor/add-course"
               startIcon={<AddIcon />}
-              className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2.5 px-6 rounded-lg shadow-sm hover:shadow-md transition-all"
+              className="bg-[#02084b] hover:bg-[#02084b]/90 text-white font-medium py-2.5 px-6 rounded-lg shadow-sm hover:shadow-md transition-all"
             >
               New Course
             </Button>
@@ -153,6 +153,13 @@ function Courses() {
                   ),
                   className: "bg-white rounded-lg pr-2",
                 }}
+                sx={{
+                  "& .MuiOutlinedInput-root": {
+                    "&.Mui-focused fieldset": {
+                      borderColor: "#02084b",
+                    },
+                  },
+                }}
               />
             </div>
             <Tooltip
@@ -161,7 +168,14 @@ function Courses() {
             >
               <Button
                 variant="outlined"
-                color="primary"
+                sx={{
+                  borderColor: "#02084b",
+                  color: "#02084b",
+                  "&:hover": {
+                    borderColor: "#02084b",
+                    backgroundColor: "#02084b/10",
+                  },
+                }}
                 onClick={toggleSortOrder}
                 className="min-w-[50px]"
               >
@@ -177,9 +191,9 @@ function Courses() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
           <div className="bg-white rounded-xl p-4 shadow-sm">
             <div className="flex items-center">
-              <div className="bg-blue-100 p-3 rounded-full">
+              <div className="bg-[#02084b]/10 p-3 rounded-full">
                 <svg
-                  className="h-6 w-6 text-blue-600"
+                  className="h-6 w-6 text-[#02084b]"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -233,9 +247,9 @@ function Courses() {
           </div>
           <div className="bg-white rounded-xl p-4 shadow-sm">
             <div className="flex items-center">
-              <div className="bg-purple-100 p-3 rounded-full">
+              <div className="bg-[#02084b]/10 p-3 rounded-full">
                 <svg
-                  className="h-6 w-6 text-purple-600"
+                  className="h-6 w-6 text-[#02084b]"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -265,9 +279,9 @@ function Courses() {
           </div>
           <div className="bg-white rounded-xl p-4 shadow-sm">
             <div className="flex items-center">
-              <div className="bg-yellow-100 p-3 rounded-full">
+              <div className="bg-[#02084b]/10 p-3 rounded-full">
                 <svg
-                  className="h-6 w-6 text-yellow-600"
+                  className="h-6 w-6 text-[#02084b]"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -301,7 +315,7 @@ function Courses() {
         {/* Course table */}
         {currentCourses.length > 0 ? (
           <>
-            <div className="bg-white rounded-xl shadow-md overflow-hidden mb-8 border border-blue-100">
+            <div className="bg-white rounded-xl shadow-md overflow-hidden mb-8 border border-[#02084b]/10">
               <div className="overflow-x-auto">
                 <table className="min-w-full divide-y divide-gray-200">
                   <thead className="bg-gray-50">
@@ -342,7 +356,7 @@ function Courses() {
                     {currentCourses.map((course) => (
                       <tr
                         key={course.courseID}
-                        className="hover:bg-blue-50 transition-colors duration-150"
+                        className="hover:bg-[#02084b]/5 transition-colors duration-150"
                       >
                         <td className="px-6 py-4 whitespace-nowrap">
                           <div className="flex items-center">
@@ -376,16 +390,14 @@ function Courses() {
                               <div className="text-sm font-medium text-gray-900">
                                 {course.courseName}
                               </div>
-                              <div className="text-sm text-gray-500">
-                                #{course.courseID}
-                              </div>
+                             
                             </div>
                           </div>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
                           <div className="flex items-center">
                             <svg
-                              className="w-4 h-4 mr-1 text-blue-500"
+                              className="w-4 h-4 mr-1 text-[#02084b]"
                               fill="none"
                               stroke="currentColor"
                               viewBox="0 0 24 24"
@@ -406,7 +418,7 @@ function Courses() {
                         <td className="px-6 py-4 whitespace-nowrap">
                           <div className="flex items-center">
                             <svg
-                              className="w-4 h-4 mr-1 text-purple-500"
+                              className="w-4 h-4 mr-1 text-[#02084b]"
                               fill="none"
                               stroke="currentColor"
                               viewBox="0 0 24 24"
@@ -437,7 +449,7 @@ function Courses() {
                         <td className="px-6 py-4 whitespace-nowrap text-right">
                           <Link
                             to={`/instructor/coursedetails/${course.courseID}`}
-                            className="inline-block px-3 py-1.5 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700 transition-colors duration-300"
+                            className="inline-block px-3 py-1.5 bg-[#02084b] text-white text-sm font-medium rounded-md hover:bg-[#02084b]/90 transition-colors duration-300"
                           >
                             Manage
                           </Link>
@@ -456,7 +468,15 @@ function Courses() {
                   count={pageCount}
                   page={currentPage}
                   onChange={handlePageChange}
-                  color="primary"
+                  sx={{
+                    "& .MuiPaginationItem-root": {
+                      color: "#02084b",
+                    },
+                    "& .Mui-selected": {
+                      backgroundColor: "#02084b !important",
+                      color: "white !important",
+                    },
+                  }}
                   size="large"
                   showFirstButton
                   showLastButton
@@ -466,9 +486,9 @@ function Courses() {
           </>
         ) : (
           <div className="bg-white rounded-xl shadow-sm p-10 text-center">
-            <div className="inline-block p-6 rounded-full bg-gray-100 mb-4">
+            <div className="inline-block p-6 rounded-full bg-[#02084b]/10 mb-4">
               <svg
-                className="w-12 h-12 text-gray-400"
+                className="w-12 h-12 text-[#02084b]"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -494,11 +514,10 @@ function Courses() {
             </p>
             <Button
               variant="contained"
-              color="primary"
+              sx={{ bgcolor: "#02084b", "&:hover": { bgcolor: "#02084b/90" } }}
               component={Link}
               to="/instructor/add-course"
               startIcon={<AddIcon />}
-              className="bg-blue-600 hover:bg-blue-700"
             >
               Create Your First Course
             </Button>

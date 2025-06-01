@@ -11,6 +11,8 @@ import {
   FaMoneyBill,
   FaComment,
   FaComments,
+  FaVideo,
+  FaStar,
 } from "react-icons/fa";
 import { Link, useLocation } from "react-router-dom";
 
@@ -63,6 +65,12 @@ export default function Sidebar() {
               label="Chat"
               isActive={location.pathname.includes("/instructor/chat")}
             />
+            <NavItem
+              to="/instructor/video-feedbacks"
+              icon={<FaVideo />}
+              label="Video Feedbacks"
+              isActive={location.pathname.includes("/instructor/video-feedbacks")}
+            />
           </div>
         </div>
 
@@ -76,15 +84,19 @@ export default function Sidebar() {
               to="/instructor/comments"
               icon={<FaComment />}
               label="Comments"
-              isActive={location.pathname.includes("/instructor/reports")}
+              isActive={location.pathname.includes("/instructor/comments")}
+            />
+            <NavItem
+              to="/instructor/ratings"
+              icon={<FaStar />}
+              label="Ratings & Reviews"
+              isActive={location.pathname.includes("/instructor/ratings")}
             />
             <NavItem
               to="/instructor/payment-history"
               icon={<FaMoneyBill />}
               label="Payment History"
-              isActive={location.pathname.includes(
-                "/instructor/payment-history"
-              )}
+              isActive={location.pathname.includes("/instructor/payment-history")}
             />
           </div>
         </div>

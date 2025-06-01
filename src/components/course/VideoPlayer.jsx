@@ -78,7 +78,7 @@ const VideoPlayer = ({ selectedVideo }) => {
       <div className="bg-black rounded-xl shadow-md overflow-hidden">
         <div className="aspect-w-16 aspect-h-9">
           <ReactPlayer
-            url={`http://localhost:8085/videos/course/${selectedVideo.videoUrl}`}
+            url={`http://localhost:8085/files/course/videos/${selectedVideo.videoUrl}`}
             controls={true}
             width="100%"
             height="100%"

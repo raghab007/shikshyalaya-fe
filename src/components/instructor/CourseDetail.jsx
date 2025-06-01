@@ -1,6 +1,7 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
+import { FaTrash, FaEdit, FaPlus } from "react-icons/fa";
 
 export default function CourseDetails() {
   const { courseId } = useParams();
@@ -10,6 +11,9 @@ export default function CourseDetails() {
   const [isEditingCourse, setIsEditingCourse] = useState(false);
   const [isDeleteConfirmationOpen, setIsDeleteConfirmationOpen] =
     useState(false);
+  const [isDeleteSectionConfirmationOpen, setIsDeleteSectionConfirmationOpen] =
+    useState(false);
+  const [sectionToDelete, setSectionToDelete] = useState(null);
   const [sectionName, setSectionName] = useState("");
   const [sectionDescription, setSectionDescription] = useState("");
   const [course, setCourse] = useState(null);
@@ -46,6 +50,7 @@ export default function CourseDetails() {
       const response = await axios.get(
         `http://localhost:8085/course/${courseId}`
       );
+      console.log(response.data);
       setCourse(response.data);
       setSections(response.data.sections || []);
       setTotalEnrollments(response.data.totalEnrollments || 0);
@@ -97,6 +102,39 @@ export default function CourseDetails() {
       showErrorMessage("Failed to add section. Please try again.");
     }
   }
+
+  async function deleteSection() {
+    if (!sectionToDelete) return;
+
+    try {
+      await axios.delete(
+        `http://localhost:8085/instructor/section/${sectionToDelete.sectionId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      // Update the sections list by filtering out the deleted section
+      setSections(
+        sections.filter(
+          (section) => section.sectionId !== sectionToDelete.sectionId
+        )
+      );
+      setIsDeleteSectionConfirmationOpen(false);
+      setSectionToDelete(null);
+      showSuccessMessage("Section deleted successfully");
+    } catch (error) {
+      console.error("Error deleting section:", error);
+      showErrorMessage("Failed to delete section. Please try again.");
+    }
+  }
+
+  const handleDeleteSectionClick = (section) => {
+    setSectionToDelete(section);
+    setIsDeleteSectionConfirmationOpen(true);
+  };
 
   const handleEditCourseClick = () => {
     setIsEditingCourse(true);
@@ -289,7 +327,7 @@ export default function CourseDetails() {
             <p className="text-gray-600 mb-4">{course.courseDescription}</p>
             <div className="flex items-center gap-4">
               <span className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium">
-                Price: ${course.coursePrice}
+                Price: {course.coursePrice}
               </span>
               <span className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-medium">
                 {course.courseDifficulty}
@@ -307,9 +345,10 @@ export default function CourseDetails() {
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-lg font-semibold">Course Sections</h2>
               <button
-                className="bg-blue-500 text-white px-3 py-1 rounded text-sm hover:bg-blue-600"
+                className="bg-blue-500 text-white px-3 py-1 rounded text-sm hover:bg-blue-600 flex items-center gap-1"
                 onClick={() => setIsAddingSection(true)}
               >
+                <FaPlus size={12} />
                 Add Section
               </button>
             </div>
@@ -334,12 +373,32 @@ export default function CourseDetails() {
                           {section.description}
                         </p>
                       </div>
-                      <Link
-                        to={`/instructor/videos/${section.sectionId}`}
-                        className="bg-blue-500 text-white py-1 px-3 rounded hover:bg-blue-600 text-sm"
-                      >
-                        Manage
-                      </Link>
+                      <div className="flex space-x-2">
+                        <Link
+                          to={`/instructor/videos/${section.sectionId}`}
+                          className="bg-blue-500 text-white py-1 px-3 rounded hover:bg-blue-600 text-sm flex items-center gap-1"
+                        >
+                          Manage
+                        </Link>
+                        <button
+                          onClick={() => handleDeleteSectionClick(section)}
+                          className="bg-red-500 text-white p-2 rounded hover:bg-red-600 text-sm flex items-center justify-center"
+                          title="Delete Section"
+                        >
+                          <FaTrash size={12} />
+                        </button>
+                        <button
+                          onClick={() => {
+                            // Add your update section logic here
+                            // For example, you might want to open a modal to edit the section
+                            console.log("Update section:", section);
+                          }}
+                          className="bg-yellow-500 text-white p-2 rounded hover:bg-yellow-600 text-sm flex items-center justify-center"
+                          title="Edit Section"
+                        >
+                          <FaEdit size={12} />
+                        </button>
+                      </div>
                     </div>
                   </div>
                 ))}
@@ -355,15 +414,17 @@ export default function CourseDetails() {
             <h2 className="text-lg font-semibold mb-4">Course Actions</h2>
             <div className="space-y-3">
               <button
-                className="w-full px-3 py-2 border border-blue-500 text-blue-500 rounded hover:bg-blue-50 text-sm font-medium"
+                className="w-full px-3 py-2 border border-blue-500 text-blue-500 rounded hover:bg-blue-50 text-sm font-medium flex items-center justify-center gap-2"
                 onClick={handleEditCourseClick}
               >
+                <FaEdit size={14} />
                 Edit Course Details
               </button>
               <button
-                className="w-full px-3 py-2 border border-red-500 text-red-500 rounded hover:bg-red-50 text-sm font-medium"
+                className="w-full px-3 py-2 border border-red-500 text-red-500 rounded hover:bg-red-50 text-sm font-medium flex items-center justify-center gap-2"
                 onClick={() => setIsDeleteConfirmationOpen(true)}
               >
+                <FaTrash size={14} />
                 Delete Course
               </button>
             </div>
@@ -448,8 +509,9 @@ export default function CourseDetails() {
                   </button>
                   <button
                     type="submit"
-                    className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+                    className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 flex items-center gap-2"
                   >
+                    <FaPlus size={12} />
                     Save Section
                   </button>
                 </div>
@@ -557,8 +619,9 @@ export default function CourseDetails() {
                   </button>
                   <button
                     type="submit"
-                    className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+                    className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 flex items-center gap-2"
                   >
+                    <FaEdit size={12} />
                     Save Changes
                   </button>
                 </div>
@@ -568,7 +631,7 @@ export default function CourseDetails() {
         </div>
       )}
 
-      {/* Delete Confirmation Modal */}
+      {/* Delete Course Confirmation Modal */}
       {isDeleteConfirmationOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white rounded shadow p-6 w-full max-w-md">
@@ -588,8 +651,43 @@ export default function CourseDetails() {
               </button>
               <button
                 onClick={handleDeleteCourse}
-                className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+                className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 flex items-center gap-2"
               >
+                <FaTrash size={12} />
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Delete Section Confirmation Modal */}
+      {isDeleteSectionConfirmationOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded shadow p-6 w-full max-w-md">
+            <h3 className="text-lg font-semibold text-red-600 mb-4">
+              Delete Section
+            </h3>
+            <p className="text-gray-700 mb-6">
+              Are you sure you want to delete the section "
+              {sectionToDelete?.name}"? This action cannot be undone, and all
+              videos in this section will also be deleted.
+            </p>
+            <div className="flex justify-end gap-2">
+              <button
+                onClick={() => {
+                  setIsDeleteSectionConfirmationOpen(false);
+                  setSectionToDelete(null);
+                }}
+                className="px-4 py-2 border border-gray-300 rounded text-gray-700 bg-white hover:bg-gray-50"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={deleteSection}
+                className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 flex items-center gap-2"
+              >
+                <FaTrash size={12} />
                 Delete
               </button>
             </div>

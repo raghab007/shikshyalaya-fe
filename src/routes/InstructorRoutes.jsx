@@ -11,6 +11,8 @@ import PaymentHistory from "../components/instructor/PaymentHistory";
 import InstructorCommentsPage from "../components/instructor/Comments";
 import InstructorProfilePage from "../components/instructor/Settings";
 import ChatPage from "../components/instructor/ChatPage";
+import VideoFeedbacks from "../components/instructor/VideoFeedbacks";
+import CourseRatings from "../components/instructor/CourseRatings";
 
 const InstructorRoutes = () => {
   return (
@@ -35,6 +37,10 @@ const InstructorRoutes = () => {
           element={<InstructorCommentsPage></InstructorCommentsPage>}
         ></Route>
         <Route
+          path="ratings"
+          element={<CourseRatings></CourseRatings>}
+        ></Route>
+        <Route
           path="videos/:sectionId"
           element={<UploadLecture></UploadLecture>}
         ></Route>
@@ -45,6 +51,10 @@ const InstructorRoutes = () => {
         <Route
           path="payment-history"
           element={<PaymentHistory></PaymentHistory>}
+        ></Route>
+        <Route
+          path="video-feedbacks"
+          element={<VideoFeedbacks></VideoFeedbacks>}
         ></Route>
       </Route>
       <Route path="/instructor/settings" element={<Settings />} />

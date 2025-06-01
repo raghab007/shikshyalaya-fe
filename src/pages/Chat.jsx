@@ -181,7 +181,7 @@ function ChatPage() {
   };
 
   return (
-    <div className="flex flex-col h-screen bg-gray-50 mt-16">
+    <div className="flex flex-col h-[calc(100vh-4rem)] mt-16 bg-gray-50">
       {/* Header */}
       <div
         className="p-4 shadow-sm border-b border-gray-200"
@@ -290,8 +290,8 @@ function ChatPage() {
         </div>
       </div>
 
-      {/* Input Area */}
-      <div className="p-4 bg-white border-t border-gray-200 shadow-sm">
+      {/* Input Area - Fixed at bottom */}
+      <div className="sticky bottom-0 p-4 bg-white border-t border-gray-200 shadow-sm">
         <div className="max-w-4xl mx-auto flex items-center">
           <input
             ref={messageRef}

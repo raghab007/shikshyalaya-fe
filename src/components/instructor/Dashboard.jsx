@@ -24,14 +24,10 @@ const Dashboard = () => {
   const [totalRevenue, setTotalRevenue] = useState(0);
   const [courses, setCourses] = useState([]);
   const [chartData, setChartData] = useState([]);
+  const [recentEnrollments, setRecentEnrollments] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   // Other static data
-  const [recentEnrollments] = useState([
-    { id: 1, studentName: "Raghab Pokhrel", courseName: "React Fundamentals" },
-    { id: 2, studentName: "Aastha Aryal", courseName: "Complete springboot course" },
-    { id: 3, studentName: "Alish ", courseName: "Node.js Backend" },
-  ]);
-
   const [notifications] = useState([
     {
       id: 1,
@@ -97,6 +93,7 @@ const Dashboard = () => {
             },
           }
         );
+        console.log(response.data);
         setCourses(response.data);
       } catch (error) {
         console.error("Error fetching courses:", error);
@@ -119,9 +116,32 @@ const Dashboard = () => {
       }
     }
 
+    async function fetchEnrollments() {
+      try {
+        const response = await axios.get(
+          "http://localhost:8085/instructor/enrollments",
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
+        );
+        // Sort enrollments by date and take the 5 most recent
+        const sortedEnrollments = response.data
+          .sort((a, b) => new Date(b.enrollmentDate) - new Date(a.enrollmentDate))
+          .slice(0, 5);
+        setRecentEnrollments(sortedEnrollments);
+      } catch (error) {
+        console.error("Error fetching enrollments:", error);
+      } finally {
+        setLoading(false);
+      }
+    }
+
     fetchStats();
     fetchCourses();
     fetchChartData();
+    fetchEnrollments();
   }, []);
 
   // Initialize Charts with dynamic data
@@ -386,18 +406,30 @@ const Dashboard = () => {
               Recent Enrollments
             </h2>
             <div className="divide-y">
-              {recentEnrollments.map((enrollment) => (
-                <div key={enrollment.id} className="py-3">
-                  <p className="font-medium text-gray-800">
-                    {enrollment.studentName}
-                  </p>
-                  <p className="text-sm text-gray-500">
-                    Enrolled in {enrollment.courseName}
-                  </p>
-                </div>
-              ))}
+              {loading ? (
+                <div className="py-3 text-center text-gray-500">Loading...</div>
+              ) : recentEnrollments.length > 0 ? (
+                recentEnrollments.map((enrollment) => (
+                  <div key={enrollment.id} className="py-3">
+                    <p className="font-medium text-gray-800">
+                      {enrollment.user?.firstName} {enrollment.user?.lastName}
+                    </p>
+                    <p className="text-sm text-gray-500">
+                      Enrolled in {enrollment.course?.courseName}
+                    </p>
+                    <p className="text-xs text-gray-400 mt-1">
+                      {new Date(enrollment.enrollmentDate).toLocaleDateString()}
+                    </p>
+                  </div>
+                ))
+              ) : (
+                <div className="py-3 text-center text-gray-500">No recent enrollments</div>
+              )}
             </div>
-            <button className="mt-4 w-full py-2 bg-blue-50 hover:bg-blue-100 rounded text-sm font-medium text-blue-700 flex items-center justify-center">
+            <button 
+              onClick={() => navigate('/instructor/students')}
+              className="mt-4 w-full py-2 bg-[#02084b] hover:bg-[#02084b]/90 rounded text-sm font-medium text-white flex items-center justify-center transition-colors"
+            >
               <Eye className="mr-2" /> View All Enrollments
             </button>
           </div>
@@ -417,9 +449,7 @@ const Dashboard = () => {
                   <th className="text-left py-3 px-6 text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Course Name
                   </th>
-                  <th className="text-left py-3 px-6 text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Description
-                  </th>
+                 
                   <th className="text-left py-3 px-6 text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Students
                   </th>
@@ -440,17 +470,15 @@ const Dashboard = () => {
                     <td className="py-4 px-6 whitespace-nowrap font-medium text-gray-800">
                       {course.courseName}
                     </td>
+                   
                     <td className="py-4 px-6 whitespace-nowrap text-gray-600">
-                      {course.courseDescription}
+                      {course.totalEnrollments}
                     </td>
                     <td className="py-4 px-6 whitespace-nowrap text-gray-600">
-                      {course.students}
+                      {formatNumber(course.coursePrice)}
                     </td>
                     <td className="py-4 px-6 whitespace-nowrap text-gray-600">
-                      ₹{formatNumber(course.coursePrice)}
-                    </td>
-                    <td className="py-4 px-6 whitespace-nowrap text-gray-600">
-                      ₹{formatNumber(course.coursePrice * course.students)}
+                     Rs {formatNumber(course.coursePrice * course.totalEnrollments)}
                     </td>
                     <td className="py-4 px-6 whitespace-nowrap">
                       <button

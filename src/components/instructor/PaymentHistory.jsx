@@ -7,14 +7,14 @@ export default function PaymentHistory() {
   
   // Sample payment data with payment method instead of status
   const paymentData = [
-    { id: 'TXN12345678', date: '2023-10-01', amount: '$100.00', paymentMethod: 'Khalti' },
-    { id: 'TXN12345679', date: '2023-10-02', amount: '$75.50', paymentMethod: 'Khalti' },
-    { id: 'TXN12345680', date: '2023-10-03', amount: '$210.25', paymentMethod: 'Khalti' },
-    { id: 'TXN12345681', date: '2023-10-04', amount: '$50.00', paymentMethod: 'Khalti' },
-    { id: 'TXN12345682', date: '2023-10-05', amount: '$125.75', paymentMethod: 'Khalti' },
-    { id: 'TXN12345683', date: '2023-10-06', amount: '$300.00', paymentMethod: 'Khalti' },
-    { id: 'TXN12345684', date: '2023-10-07', amount: '$85.25', paymentMethod: 'Khalti' },
-    { id: 'TXN12345685', date: '2023-10-08', amount: '$150.00', paymentMethod: 'Khalti' },
+    { id: 'TXN12345678', date: '2023-10-01', amount: 'Rs 100.00', paymentMethod: 'Khalti' },
+    { id: 'TXN12345679', date: '2023-10-02', amount: 'Rs 75.50', paymentMethod: 'Khalti' },
+    { id: 'TXN12345680', date: '2023-10-03', amount: 'Rs 210.25', paymentMethod: 'Khalti' },
+    { id: 'TXN12345681', date: '2023-10-04', amount: 'Rs 50.00', paymentMethod: 'Khalti' },
+    { id: 'TXN12345682', date: '2023-10-05', amount: 'Rs 125.75', paymentMethod: 'Khalti' },
+    { id: 'TXN12345683', date: '2023-10-06', amount: 'Rs 300.00', paymentMethod: 'Khalti' },
+    { id: 'TXN12345684', date: '2023-10-07', amount: 'Rs 85.25', paymentMethod: 'Khalti' },
+    { id: 'TXN12345685', date: '2023-10-08', amount: 'Rs 150.00', paymentMethod: 'Khalti' },
   ];
 
   // Filter payments based on search date

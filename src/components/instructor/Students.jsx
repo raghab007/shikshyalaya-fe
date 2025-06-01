@@ -142,8 +142,8 @@ const EnrolledStudentsTable = () => {
   if (loading) {
     return (
       <div className="flex justify-center items-center h-64">
-        <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-indigo-600"></div>
-        <span className="ml-4 text-lg font-medium text-indigo-600">
+        <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-[#02084b]"></div>
+        <span className="ml-4 text-lg font-medium text-[#02084b]">
           Loading students data...
         </span>
       </div>
@@ -188,20 +188,20 @@ const EnrolledStudentsTable = () => {
 
   return (
     <div className="container mx-auto px-4 py-8 bg-gray-50 min-h-screen">
-      <div className="bg-gradient-to-r from-indigo-600 to-blue-500 rounded-lg shadow-lg p-6 mb-8">
+      <div className="bg-gradient-to-r from-[#02084b] to-[#071480] rounded-lg shadow-lg p-6 mb-8">
         <h1 className="text-3xl font-bold text-white mb-2">
           Student Enrollments
         </h1>
-        <p className="text-indigo-100">
+        <p className="text-blue-100">
           Track and manage all your course participants in one place
         </p>
       </div>
 
       {/* Filters */}
-      <div className="bg-white p-6 rounded-xl shadow-lg mb-8 border border-indigo-100">
+      <div className="bg-white p-6 rounded-xl shadow-lg mb-8 border border-[#02084b]/20">
         <h2 className="text-xl font-semibold text-gray-800 mb-4 flex items-center">
           <svg
-            className="h-5 w-5 mr-2 text-indigo-500"
+            className="h-5 w-5 mr-2 text-[#02084b]"
             viewBox="0 0 20 20"
             fill="currentColor"
           >
@@ -242,7 +242,7 @@ const EnrolledStudentsTable = () => {
                 value={filters.search}
                 onChange={handleFilterChange}
                 placeholder="Name or email..."
-                className="pl-10 w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-300"
+                className="pl-10 w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#02084b] focus:border-[#02084b] transition-all duration-300"
               />
             </div>
           </div>
@@ -272,7 +272,7 @@ const EnrolledStudentsTable = () => {
                 name="course"
                 value={filters.course}
                 onChange={handleFilterChange}
-                className="pl-10 w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-300 appearance-none"
+                className="pl-10 w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#02084b] focus:border-[#02084b] transition-all duration-300 appearance-none"
               >
                 <option value="">All Courses</option>
                 {uniqueCourses.map((course, index) => (
@@ -325,7 +325,7 @@ const EnrolledStudentsTable = () => {
                 name="date"
                 value={filters.date}
                 onChange={handleFilterChange}
-                className="pl-10 w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-300"
+                className="pl-10 w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#02084b] focus:border-[#02084b] transition-all duration-300"
               />
             </div>
           </div>
@@ -356,12 +356,12 @@ const EnrolledStudentsTable = () => {
       </div>
 
       {/* Stats Card */}
-      <div className="bg-white rounded-xl shadow-lg p-6 mb-8 border border-indigo-100">
+      <div className="bg-white rounded-xl shadow-lg p-6 mb-8 border border-[#02084b]/20">
         <div className="flex flex-wrap justify-between items-center">
           <div className="flex items-center mb-4 md:mb-0">
-            <div className="bg-indigo-100 p-3 rounded-full">
+            <div className="bg-[#02084b]/10 p-3 rounded-full">
               <svg
-                className="h-6 w-6 text-indigo-600"
+                className="h-6 w-6 text-[#02084b]"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -411,9 +411,9 @@ const EnrolledStudentsTable = () => {
           </div>
 
           <div className="flex items-center">
-            <div className="bg-blue-100 p-3 rounded-full">
+            <div className="bg-[#02084b]/10 p-3 rounded-full">
               <svg
-                className="h-6 w-6 text-blue-600"
+                className="h-6 w-6 text-[#02084b]"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -439,71 +439,71 @@ const EnrolledStudentsTable = () => {
       </div>
 
       {/* Table */}
-      <div className="bg-white rounded-xl shadow-lg overflow-hidden border border-indigo-100">
+      <div className="bg-white rounded-xl shadow-lg overflow-hidden border border-[#02084b]/20">
         <div className="overflow-x-auto">
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-50">
               <tr>
                 <th
-                  className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-indigo-50 transition-colors duration-200"
+                  className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-[#02084b]/5 transition-colors duration-200"
                   onClick={() => requestSort("enrollmentId")}
                 >
                   <div className="flex items-center">
                     ID
                     {sortConfig.key === "enrollmentId" && (
-                      <span className="ml-1 text-indigo-600">
+                      <span className="ml-1 text-[#02084b]">
                         {sortConfig.direction === "asc" ? "↑" : "↓"}
                       </span>
                     )}
                   </div>
                 </th>
                 <th
-                  className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-indigo-50 transition-colors duration-200"
+                  className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-[#02084b]/5 transition-colors duration-200"
                   onClick={() => requestSort("user.firstName")}
                 >
                   <div className="flex items-center">
                     Student
                     {sortConfig.key === "user.firstName" && (
-                      <span className="ml-1 text-indigo-600">
+                      <span className="ml-1 text-[#02084b]">
                         {sortConfig.direction === "asc" ? "↑" : "↓"}
                       </span>
                     )}
                   </div>
                 </th>
                 <th
-                  className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-indigo-50 transition-colors duration-200"
+                  className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-[#02084b]/5 transition-colors duration-200"
                   onClick={() => requestSort("user.email")}
                 >
                   <div className="flex items-center">
                     Email
                     {sortConfig.key === "user.email" && (
-                      <span className="ml-1 text-indigo-600">
+                      <span className="ml-1 text-[#02084b]">
                         {sortConfig.direction === "asc" ? "↑" : "↓"}
                       </span>
                     )}
                   </div>
                 </th>
                 <th
-                  className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-indigo-50 transition-colors duration-200"
+                  className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-[#02084b]/5 transition-colors duration-200"
                   onClick={() => requestSort("course.courseName")}
                 >
                   <div className="flex items-center">
                     Course
                     {sortConfig.key === "course.courseName" && (
-                      <span className="ml-1 text-indigo-600">
+                      <span className="ml-1 text-[#02084b]">
                         {sortConfig.direction === "asc" ? "↑" : "↓"}
                       </span>
                     )}
                   </div>
                 </th>
                 <th
-                  className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-indigo-50 transition-colors duration-200"
+                  className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-[#02084b]/5 transition-colors duration-200"
                   onClick={() => requestSort("enrollmentDate")}
                 >
                   <div className="flex items-center">
                     Enrollment Date
                     {sortConfig.key === "enrollmentDate" && (
-                      <span className="ml-1 text-indigo-600">
+                      <span className="ml-1 text-[#02084b]">
                         {sortConfig.direction === "asc" ? "↑" : "↓"}
                       </span>
                     )}
@@ -516,15 +516,15 @@ const EnrolledStudentsTable = () => {
                 filteredEnrollments.map((enrollment) => (
                   <tr
                     key={enrollment.enrollmentId}
-                    className="hover:bg-indigo-50 transition-colors duration-150"
+                    className="hover:bg-[#02084b]/5 transition-colors duration-150"
                   >
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-indigo-600">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-[#02084b]">
                       #{enrollment.enrollmentId}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center">
-                        <div className="flex-shrink-0 h-10 w-10 bg-indigo-100 rounded-full flex items-center justify-center">
-                          <span className="font-medium text-indigo-700">
+                        <div className="flex-shrink-0 h-10 w-10 bg-[#02084b]/10 rounded-full flex items-center justify-center">
+                          <span className="font-medium text-[#02084b]">
                             {enrollment.user.firstName.charAt(0)}
                             {enrollment.user.lastName.charAt(0)}
                           </span>
@@ -547,7 +547,7 @@ const EnrolledStudentsTable = () => {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex flex-col">
-                        <span className="px-3 py-1 inline-flex text-sm leading-5 font-semibold rounded-full bg-green-100 text-green-800 mb-1 w-fit">
+                        <span className="px-3 py-1 inline-flex text-sm leading-5 font-semibold rounded-full bg-[#02084b]/10 text-[#02084b] mb-1 w-fit">
                           {enrollment.course.courseName}
                         </span>
                         <span className="text-sm text-gray-500">
@@ -558,7 +558,7 @@ const EnrolledStudentsTable = () => {
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center text-sm text-gray-700">
                         <svg
-                          className="h-4 w-4 text-indigo-500 mr-1.5"
+                          className="h-4 w-4 text-[#02084b] mr-1.5"
                           fill="none"
                           viewBox="0 0 24 24"
                           stroke="currentColor"
@@ -600,7 +600,7 @@ const EnrolledStudentsTable = () => {
                       </p>
                       <button
                         onClick={resetFilters}
-                        className="mt-4 inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700"
+                        className="mt-4 inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-[#02084b] hover:bg-[#030c6b]"
                       >
                         Clear All Filters
                       </button>
