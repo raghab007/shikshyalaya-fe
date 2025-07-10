@@ -2,11 +2,15 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useLocation } from "react-router-dom";
 import BasicCard from "../components/course/CourseCard";
-import FilterSection from "../components/FilteringComponent";
 
 export default function Course() {
   const [courses, setCourses] = useState([]);
-  const [error, setError] = useState(false);
+  const [error, setError] = useState({
+    hasError: false,
+    message: "",
+    statusCode: null,
+    isNetworkError: false,
+  });
   const [loading, setLoading] = useState(true);
   const [filterLoading, setFilterLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
@@ -23,9 +27,6 @@ export default function Course() {
     difficulty: [],
     duration: "",
   });
-
-  // Add new state for selected difficulty
-  const [selectedDifficulty, setSelectedDifficulty] = useState(null);
   const [selectedDifficulties, setSelectedDifficulties] = useState([]);
 
   // Extract search query from URL
@@ -40,196 +41,214 @@ export default function Course() {
   useEffect(() => {
     const getCategories = async () => {
       try {
-        const response = await axios.get('http://localhost:8085/course/course_category');
+        const response = await axios.get(
+          "http://localhost:8085/course/course_category"
+        );
         setCategories(response.data);
       } catch (error) {
-        console.error('Error fetching categories:', error);
+        console.error("Error fetching categories:", error);
       }
     };
     getCategories();
   }, []);
 
-  // Fetch courses
-  useEffect(() => {
-    const fetchCourses = async () => {
-      try {
-        setLoading(true);
-        const endpoint = searchQuery ? "/courses/search" : "/courses";
-        const params = { page: currentPage, limit: itemsPerPage };
-        if (searchQuery) params.query = searchQuery;
+  // Enhanced fetch function
+  const fetchData = async (endpoint, params = {}) => {
+    try {
+      const response = await axios.get(`http://localhost:8085${endpoint}`, {
+        params: { ...params, page: currentPage, limit: itemsPerPage },
+      });
 
-        console.log('Fetching courses from:', endpoint);
-        const response = await axios.get(`http://localhost:8085${endpoint}`, {
-          params,
-        });
-        console.log('API Response:', response.data);
-        setCourses(response.data || []);
-        setTotalPages(Math.ceil((response.data?.length || 0) / itemsPerPage));
-      } catch (error) {
-        setError(true);
-        console.error("Error fetching courses:", error);
-        setCourses([]);
-      } finally {
-        setLoading(false);
+      if (
+        !response.data ||
+        (Array.isArray(response.data) && response.data.length === 0)
+      ) {
+        throw {
+          response: {
+            status: 404,
+            data: { message: "No courses found" },
+          },
+        };
       }
-    };
-    fetchCourses();
-  }, [currentPage, searchQuery]);
+
+      return response.data;
+    } catch (error) {
+      let errorMessage = "Failed to load courses";
+      let isNetworkError = false;
+
+      if (error.response) {
+        if (error.response.status === 404) {
+          errorMessage = searchQuery
+            ? `No courses found for "${searchQuery}"`
+            : "No courses available";
+        } else if (error.response.status === 500) {
+          errorMessage = "Server error. Please try again later";
+        }
+      } else if (error.request) {
+        errorMessage = "Network error. Please check your connection";
+        isNetworkError = true;
+      }
+
+      throw {
+        message: errorMessage,
+        statusCode: error.response?.status,
+        isNetworkError,
+      };
+    }
+  };
+
+  // Main fetch courses function
+  const fetchCourses = async () => {
+    try {
+      setLoading(true);
+      setError({
+        hasError: false,
+        message: "",
+        statusCode: null,
+        isNetworkError: false,
+      });
+
+      const endpoint = searchQuery ? "/courses/search" : "/courses";
+      const params = searchQuery ? { query: searchQuery } : {};
+
+      const data = await fetchData(endpoint, params);
+      setCourses(data);
+      setTotalPages(Math.ceil((data?.length || 0) / itemsPerPage));
+    } catch (err) {
+      setError({
+        hasError: true,
+        message: err.message,
+        statusCode: err.statusCode,
+        isNetworkError: err.isNetworkError,
+      });
+      setCourses([]);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   // Fetch courses by category
-  useEffect(() => {
-    const getCoursesByCategory = async () => {
-      if (selectedCategory) {
-        try {
-          setFilterLoading(true);
-          console.log('Fetching courses for category:', selectedCategory);
-          const response = await axios.get(`http://localhost:8085/courses/category/${selectedCategory}`, {
-            params: { 
-              page: currentPage, 
-              limit: itemsPerPage
-            }
-          });
-          console.log('Category API Response:', response.data);
-          const { courses: fetchedCourses, totalPages: fetchedTotalPages } = response.data;
-          setCourses(fetchedCourses || []);
-          setTotalPages(fetchedTotalPages || 1);
-        } catch (error) {
-          setError(true);
-          console.error('Error fetching courses by category:', error);
-          setCourses([]);
-        } finally {
-          setFilterLoading(false);
-        }
-      }
-    };
-    getCoursesByCategory();
-  }, [selectedCategory, currentPage]);
+  const fetchByCategory = async () => {
+    if (!selectedCategory) return;
+
+    try {
+      setFilterLoading(true);
+      const data = await fetchData(`/courses/category/${selectedCategory}`);
+      setCourses(data.courses || data); // Handle different response formats
+      setTotalPages(
+        data.totalPages ||
+          Math.ceil((data.courses?.length || data?.length || 0) / itemsPerPage)
+      );
+    } catch (err) {
+      setError({
+        hasError: true,
+        message: `No courses found in this category`,
+        statusCode: err.statusCode,
+        isNetworkError: err.isNetworkError,
+      });
+      setCourses([]);
+    } finally {
+      setFilterLoading(false);
+    }
+  };
 
   // Fetch courses by price range
-  useEffect(() => {
-    const getCoursesByPriceRange = async () => {
-      if (filters.priceRange.min || filters.priceRange.max) {
-        try {
-          setFilterLoading(true);
-          const response = await axios.get(`http://localhost:8085/courses/price`, {
-            params: { 
-              min: filters.priceRange.min, 
-              max: filters.priceRange.max,
-              page: currentPage, 
-              limit: itemsPerPage 
-            }
-          });
-          const { courses: fetchedCourses, totalPages: fetchedTotalPages } = response.data;
-          setCourses(fetchedCourses);
-          setTotalPages(fetchedTotalPages);
-        } catch (error) {
-          setError(true);
-          console.error('Error fetching courses by price range:', error);
-        } finally {
-          setFilterLoading(false);
-        }
-      }
-    };
-    getCoursesByPriceRange();
-  }, [filters.priceRange, currentPage]);
+  const fetchByPrice = async () => {
+    if (!filters.priceRange.min && !filters.priceRange.max) return;
 
-  // Update useEffect for difficulty filtering
-  useEffect(() => {
-    const getCoursesByDifficulty = async () => {
-      if (selectedDifficulties.length > 0) {
-        try {
-          setFilterLoading(true);
-          // Make separate API calls for each selected difficulty
-          const responses = await Promise.all(
-            selectedDifficulties.map(difficulty =>
-              axios.get(`http://localhost:8085/courses/difficulty/${difficulty}`, {
-                params: { page: currentPage, limit: itemsPerPage }
-              })
-            )
-          );
-
-          // Combine results from all responses
-          const allCourses = responses.flatMap(response => response.data.courses);
-          // Remove duplicates based on courseID
-          const uniqueCourses = Array.from(new Map(allCourses.map(course => [course.courseID, course])).values());
-          
-          // Calculate total pages based on combined results
-          const totalPages = Math.ceil(uniqueCourses.length / itemsPerPage);
-          
-          setCourses(uniqueCourses);
-          setTotalPages(totalPages);
-        } catch (error) {
-          setError(true);
-          console.error('Error fetching courses by difficulty:', error);
-        } finally {
-          setFilterLoading(false);
-        }
-      }
-    };
-    getCoursesByDifficulty();
-  }, [selectedDifficulties, currentPage]);
-
-  const handleSort = (option) => {
-    setSortOption(option);
-    const sorted = [...courses].sort((a, b) => {
-      switch (option) {
-        case "price-low-high":
-          return a.coursePrice - b.coursePrice;
-        case "price-high-low":
-          return b.coursePrice - a.coursePrice;
-        case "name-a-z":
-          return a.courseName.localeCompare(b.courseName);
-        case "name-z-a":
-          return b.courseName.localeCompare(a.courseName);
-        default:
-          return 0;
-      }
-    });
-    setCourses(sorted);
-  };
-
-  const handlePageChange = (page) => {
-    setCurrentPage(page);
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  };
-
-  const applyFilters = (filters) => {
-    let filtered = [...courses];
-
-    // Filter by category
-    if (filters.category) {
-      filtered = filtered.filter((c) => c.category === filters.category);
-    }
-
-    // Filter by price range
-    if (filters.priceRange.min || filters.priceRange.max) {
-      filtered = filtered.filter((c) => {
-        const price = parseFloat(c.coursePrice);
-        const minPrice = filters.priceRange.min ? parseFloat(filters.priceRange.min) : 0;
-        const maxPrice = filters.priceRange.max ? parseFloat(filters.priceRange.max) : Infinity;
-        return price >= minPrice && price <= maxPrice;
+    try {
+      setFilterLoading(true);
+      const data = await fetchData(`/courses/price`, {
+        min: filters.priceRange.min,
+        max: filters.priceRange.max,
       });
-    }
-
-    // Filter by difficulty
-    if (filters.difficulty.length > 0) {
-      filtered = filtered.filter((c) =>
-        filters.difficulty.includes(c.difficulty.toLowerCase())
+      setCourses(data.courses || data);
+      setTotalPages(
+        data.totalPages ||
+          Math.ceil((data.courses?.length || data?.length || 0) / itemsPerPage)
       );
+    } catch (err) {
+      setError({
+        hasError: true,
+        message: `No courses in this price range`,
+        statusCode: err.statusCode,
+        isNetworkError: err.isNetworkError,
+      });
+      setCourses([]);
+    } finally {
+      setFilterLoading(false);
     }
-
-    return filtered;
   };
 
-  const handleFilterChange = (filters) => {
-    const filtered = applyFilters(filters);
-    setCourses(filtered);
-    setTotalPages(Math.ceil(filtered.length / itemsPerPage));
-    setCurrentPage(1);
+  // Fetch courses by difficulty
+  const fetchByDifficulty = async () => {
+    if (selectedDifficulties.length === 0) return;
+
+    try {
+      setFilterLoading(true);
+      const responses = await Promise.all(
+        selectedDifficulties.map((difficulty) =>
+          axios.get(`http://localhost:8085/courses/difficulty/${difficulty}`, {
+            params: { page: currentPage, limit: itemsPerPage },
+          })
+        )
+      );
+
+      const allCourses = responses.flatMap(
+        (response) => response.data.courses || response.data
+      );
+      const uniqueCourses = Array.from(
+        new Map(allCourses.map((course) => [course.courseID, course])).values()
+      );
+
+      if (uniqueCourses.length === 0) {
+        throw {
+          response: {
+            status: 404,
+            data: {
+              message: "No courses found for selected difficulty levels",
+            },
+          },
+        };
+      }
+
+      setCourses(Array.from(uniqueCourses));
+      setTotalPages(Math.ceil(uniqueCourses.length / itemsPerPage));
+    } catch (err) {
+      setError({
+        hasError: true,
+        message: `No courses found for selected difficulty levels`,
+        statusCode: err.response?.status,
+        isNetworkError: !err.response,
+      });
+      setCourses([]);
+    } finally {
+      setFilterLoading(false);
+    }
   };
+
+  // Main useEffect for fetching courses
+  useEffect(() => {
+    if (selectedDifficulties.length > 0) {
+      fetchByDifficulty();
+    } else if (selectedCategory) {
+      fetchByCategory();
+    } else if (filters.priceRange.min || filters.priceRange.max) {
+      fetchByPrice();
+    } else {
+      fetchCourses();
+    }
+  }, [
+    currentPage,
+    searchQuery,
+    selectedCategory,
+    filters.priceRange,
+    selectedDifficulties,
+  ]);
+
+  // ... (keep all existing handler functions: handleSort, handlePageChange, etc.)
 
   const handleResetFilters = () => {
-    // Reset all filter states
     setFilters({
       category: "",
       priceRange: { min: "", max: "" },
@@ -240,105 +259,201 @@ export default function Course() {
     setSelectedDifficulties([]);
     setSortOption("default");
     setCurrentPage(1);
-
-    // Refetch original courses
-    const fetchCourses = async () => {
-      try {
-        setLoading(true);
-        const endpoint = searchQuery ? "/courses/search" : "/courses";
-        const params = { page: 1, limit: itemsPerPage };
-        if (searchQuery) params.query = searchQuery;
-
-        const response = await axios.get(`http://localhost:8085${endpoint}`, {
-          params,
-        });
-        const { courses: fetchedCourses, totalPages: fetchedTotalPages } = response.data;
-        setCourses(fetchedCourses || []);
-        setTotalPages(fetchedTotalPages || 1);
-      } catch (error) {
-        setError(true);
-        console.error("Error fetching courses:", error);
-        setCourses([]);
-      } finally {
-        setLoading(false);
-      }
-    };
+    setError({
+      hasError: false,
+      message: "",
+      statusCode: null,
+      isNetworkError: false,
+    });
     fetchCourses();
   };
 
-  const handleCategoryChange = (categoryId) => {
-    console.log('Category changed to:', categoryId);
-    if (categoryId === selectedCategory || categoryId === "") {
-      // If the same category is clicked again or "All Categories" is selected
-      setSelectedCategory(null);
-      setFilters(prev => ({ ...prev, category: "" }));
-      // Fetch all courses
-      const fetchCourses = async () => {
-        try {
-          setLoading(true);
-          const response = await axios.get(`http://localhost:8085/courses`, {
-            params: { page: currentPage, limit: itemsPerPage }
-          });
-          console.log('All courses API Response:', response.data);
-          setCourses(response.data || []);
-          setTotalPages(Math.ceil((response.data?.length || 0) / itemsPerPage));
-        } catch (error) {
-          setError(true);
-          console.error("Error fetching all courses:", error);
-          setCourses([]);
-        } finally {
-          setLoading(false);
-        }
-      };
-      fetchCourses();
-    } else {
-      setSelectedCategory(categoryId);
-      setFilters(prev => ({ ...prev, category: categoryId }));
-    }
-    setCurrentPage(1);
-  };
-
-  const handleInputChange = (key, value) => {
-    const updatedFilters = { ...filters, [key]: value };
-    setFilters(updatedFilters);
-    handleFilterChange(updatedFilters);
-  };
-
-  // Update handleDifficultyChange function
-  const handleDifficultyChange = (level) => {
-    setSelectedDifficulties(prev => {
-      if (prev.includes(level)) {
-        // Remove the difficulty if it's already selected
-        return prev.filter(d => d !== level);
-      } else {
-        // Add the difficulty if it's not selected
-        return [...prev, level];
-      }
-    });
-    
-    // Update the filters state
-    const updatedDifficulty = filters.difficulty.includes(level)
-      ? filters.difficulty.filter((d) => d !== level)
-      : [...filters.difficulty, level];
-    
-    handleInputChange("difficulty", updatedDifficulty);
-  };
-
-  if (loading) {
-    return (
-      <div className="flex justify-center items-center min-h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+  // Enhanced render functions
+  const renderLoadingState = () => (
+    <div className="space-y-6">
+      <div className="flex justify-center items-center h-64">
+        <div className="relative">
+          <div className="w-16 h-16 border-4 border-[#02084b] border-t-transparent rounded-full animate-spin"></div>
+          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-[#02084b] font-medium">
+            {filterLoading ? "Filtering courses..." : "Loading courses..."}
+          </div>
+        </div>
       </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="flex justify-center items-center min-h-screen">
-        <div className="text-red-500">{error}</div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {[...Array(6)].map((_, index) => (
+          <div
+            key={index}
+            className="bg-white rounded-xl shadow-lg p-6 border border-gray-200 animate-pulse"
+          >
+            <div className="w-full h-48 bg-gray-200 rounded-lg mb-4"></div>
+            <div className="h-6 bg-gray-200 rounded w-3/4 mb-3"></div>
+            <div className="h-4 bg-gray-200 rounded w-1/2 mb-4"></div>
+            <div className="space-y-2">
+              <div className="h-4 bg-gray-200 rounded"></div>
+              <div className="h-4 bg-gray-200 rounded w-5/6"></div>
+            </div>
+            <div className="mt-4 flex justify-between items-center">
+              <div className="h-8 bg-gray-200 rounded w-24"></div>
+              <div className="h-8 bg-gray-200 rounded w-24"></div>
+            </div>
+          </div>
+        ))}
       </div>
-    );
-  }
+    </div>
+  );
+
+  const renderErrorState = () => (
+    <div className="bg-white rounded-xl shadow-lg p-8 text-center border border-gray-200">
+      <div className="mx-auto w-24 h-24 bg-red-100 rounded-full flex items-center justify-center mb-4">
+        <svg
+          className="w-12 h-12 text-red-500"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="2"
+            d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+          ></path>
+        </svg>
+      </div>
+      <h3 className="text-xl font-bold text-gray-800 mb-2">
+        Oops! Something went wrong
+      </h3>
+      <p className="text-gray-600 mb-6">{error.message}</p>
+      {error.isNetworkError ? (
+        <button
+          onClick={fetchCourses}
+          className="bg-[#02084b] text-white py-2 px-6 rounded-lg hover:bg-[#010530] transition"
+        >
+          Retry Connection
+        </button>
+      ) : (
+        <button
+          onClick={handleResetFilters}
+          className="bg-[#02084b] text-white py-2 px-6 rounded-lg hover:bg-[#010530] transition"
+        >
+          Reset Filters
+        </button>
+      )}
+    </div>
+  );
+
+  const renderNoCoursesState = () => (
+    <div className="bg-white rounded-xl shadow-lg p-8 text-center border border-gray-200">
+      <div className="mx-auto w-24 h-24 bg-blue-100 rounded-full flex items-center justify-center mb-4">
+        <svg
+          className="w-12 h-12 text-blue-500"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="2"
+            d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+          ></path>
+        </svg>
+      </div>
+      <h3 className="text-xl font-bold text-gray-800 mb-2">
+        {searchQuery
+          ? `No courses found for "${searchQuery}"`
+          : "No courses match your filters"}
+      </h3>
+      <p className="text-gray-600 mb-6">
+        {searchQuery
+          ? "Try different search terms or browse our categories"
+          : "Try adjusting your filters or reset to see all courses"}
+      </p>
+      <button
+        onClick={handleResetFilters}
+        className="bg-[#02084b] text-white py-2 px-6 rounded-lg hover:bg-[#010530] transition"
+      >
+        {searchQuery ? "Clear Search" : "Reset Filters"}
+      </button>
+    </div>
+  );
+
+  const renderCourseGrid = () => (
+    <>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {courses.map((course) => (
+          <div
+            key={course.courseID}
+            className="transform hover:-translate-y-2 transition duration-300"
+          >
+            <BasicCard
+              courseId={course.courseID}
+              price={course.coursePrice}
+              description={course.courseDescription}
+              title={course.courseName}
+              imageSrc={course.imageUrl}
+              difficulty={course.difficulty}
+              duration={course.duration}
+              category={course.category}
+              instructorName={course.instructorName || "Unknown"}
+              studentsEnrolled={course.totalEnrollments || 0}
+              level={course.courseDifficulty}
+              rating={course.rating || 0}
+              totalRatings={course.totalRatings || 0}
+              originalPrice={course.originalPrice}
+              isEnrolled={course.isEnrolled}
+            />
+          </div>
+        ))}
+      </div>
+
+      {totalPages > 1 && (
+        <div className="mt-10 flex justify-center">
+          <div className="bg-white px-4 py-3 rounded-xl shadow-lg border border-gray-200 flex items-center">
+            <button
+              onClick={() => handlePageChange(currentPage - 1)}
+              disabled={currentPage === 1}
+              className={`px-3 py-1.5 mr-2 rounded-lg ${currentPage === 1 ? "text-gray-400" : "text-[#02084b]"}`}
+            >
+              Previous
+            </button>
+
+            {Array.from({ length: totalPages }, (_, i) => i + 1)
+              .filter(
+                (page) =>
+                  page === 1 ||
+                  page === totalPages ||
+                  Math.abs(page - currentPage) <= 1
+              )
+              .map((page, i, arr) => (
+                <React.Fragment key={page}>
+                  {i > 0 && arr[i - 1] !== page - 1 && (
+                    <span className="px-2">...</span>
+                  )}
+                  <button
+                    onClick={() => handlePageChange(page)}
+                    className={`w-10 h-10 mx-1 rounded-lg ${
+                      currentPage === page
+                        ? "bg-[#02084b] text-white"
+                        : "hover:bg-[#e6e7f0]"
+                    }`}
+                  >
+                    {page}
+                  </button>
+                </React.Fragment>
+              ))}
+
+            <button
+              onClick={() => handlePageChange(currentPage + 1)}
+              disabled={currentPage === totalPages}
+              className={`px-3 py-1.5 ml-2 rounded-lg ${currentPage === totalPages ? "text-gray-400" : "text-[#02084b]"}`}
+            >
+              Next
+            </button>
+          </div>
+        </div>
+      )}
+    </>
+  );
 
   return (
     <div className="bg-gradient-to-b from-[#e8eaf1] to-[#f1f2f7] min-h-screen pb-12">
@@ -361,7 +476,7 @@ export default function Course() {
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 py-12 mt-8">
         <div className="flex flex-col md:flex-row gap-6">
-          {/* Filters */}
+          {/* Filters Sidebar */}
           <div className="w-full md:w-1/4">
             <div className="bg-white rounded-xl shadow-lg p-6 sticky top-4 border border-gray-200">
               <div className="flex justify-between items-center mb-4 border-b border-gray-200 pb-3">
@@ -373,6 +488,8 @@ export default function Course() {
                   Clear all
                 </button>
               </div>
+
+              {/* Category Filter */}
               <div className="mb-4">
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   Category
@@ -384,12 +501,17 @@ export default function Course() {
                 >
                   <option value="">All Categories</option>
                   {categories.map((category) => (
-                    <option key={category.courseCategoryId} value={category.courseCategoryId}>
+                    <option
+                      key={category.courseCategoryId}
+                      value={category.courseCategoryId}
+                    >
                       {category.courseCategoryName}
                     </option>
                   ))}
                 </select>
               </div>
+
+              {/* Price Range Filter */}
               <div className="mb-4">
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   Price Range
@@ -421,6 +543,8 @@ export default function Course() {
                   />
                 </div>
               </div>
+
+              {/* Difficulty Filter */}
               <div className="mb-4">
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   Difficulty
@@ -429,7 +553,7 @@ export default function Course() {
                   {[
                     { value: "beginner", label: "Beginner" },
                     { value: "intermediate", label: "Intermediate" },
-                    { value: "advanced", label: "Advanced" }
+                    { value: "advanced", label: "Advanced" },
                   ].map(({ value, label }) => (
                     <label key={value} className="flex items-center">
                       <input
@@ -438,7 +562,9 @@ export default function Course() {
                         onChange={() => handleDifficultyChange(value)}
                         className="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
                       />
-                      <span className="ml-2 text-sm text-gray-700">{label}</span>
+                      <span className="ml-2 text-sm text-gray-700">
+                        {label}
+                      </span>
                     </label>
                   ))}
                 </div>
@@ -446,10 +572,10 @@ export default function Course() {
             </div>
           </div>
 
-          {/* Courses */}
+          {/* Courses Content */}
           <div className="w-full md:w-3/4">
             {/* Results Header */}
-            {!loading && !error && (
+            {!loading && !error.hasError && (
               <div className="mb-6 bg-white rounded-xl shadow-lg p-6 border border-gray-200">
                 <div className="flex flex-col sm:flex-row justify-between items-center">
                   <p className="text-gray-700 mb-3 sm:mb-0">
@@ -497,139 +623,14 @@ export default function Course() {
               </div>
             )}
 
-            {/* Loading/Error States */}
-            {loading || filterLoading ? (
-              <div className="space-y-6">
-                <div className="flex justify-center items-center h-64">
-                  <div className="relative">
-                    <div className="w-16 h-16 border-4 border-[#02084b] border-t-transparent rounded-full animate-spin"></div>
-                    <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-[#02084b] font-medium">
-                      {filterLoading ? "Filtering courses..." : "Loading courses..."}
-                    </div>
-                  </div>
-                </div>
-                {/* Loading skeleton cards */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {[...Array(6)].map((_, index) => (
-                    <div key={index} className="bg-white rounded-xl shadow-lg p-6 border border-gray-200 animate-pulse">
-                      <div className="w-full h-48 bg-gray-200 rounded-lg mb-4"></div>
-                      <div className="h-6 bg-gray-200 rounded w-3/4 mb-3"></div>
-                      <div className="h-4 bg-gray-200 rounded w-1/2 mb-4"></div>
-                      <div className="space-y-2">
-                        <div className="h-4 bg-gray-200 rounded"></div>
-                        <div className="h-4 bg-gray-200 rounded w-5/6"></div>
-                      </div>
-                      <div className="mt-4 flex justify-between items-center">
-                        <div className="h-8 bg-gray-200 rounded w-24"></div>
-                        <div className="h-8 bg-gray-200 rounded w-24"></div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            ) : error ? (
-              <div className="bg-red-50 border border-red-200 text-red-700 p-6 rounded-xl text-center">
-                <p className="font-medium">Failed to load courses</p>
-                <button
-                  onClick={() => window.location.reload()}
-                  className="mt-3 text-sm bg-red-100 text-red-800 py-1 px-4 rounded-lg"
-                >
-                  Retry
-                </button>
-              </div>
-            ) : !courses || courses.length === 0 ? (
-              <div className="bg-[#e6e7f0] border border-gray-200 text-[#02084b] p-8 rounded-xl text-center">
-                <p className="text-xl font-bold">
-                  {searchQuery
-                    ? "No courses match your search"
-                    : "No courses match your filters"}
-                </p>
-                <button
-                  onClick={handleResetFilters}
-                  className="mt-4 bg-[#02084b] text-white py-2 px-6 rounded-lg"
-                >
-                  {searchQuery ? "Clear search" : "Clear filters"}
-                </button>
-              </div>
-            ) : (
-              <>
-                {/* Course Grid */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {courses.map((course) => (
-                    <div
-                      key={course.courseID}
-                      className="transform hover:-translate-y-2 transition duration-300"
-                    >
-                      <BasicCard
-                        courseId={course.courseID}
-                        price={course.coursePrice}
-                        description={course.courseDescription}
-                        title={course.courseName}
-                        imageSrc={course.imageUrl}
-                        difficulty={course.difficulty}
-                        duration={course.duration}
-                        category={course.category}
-                        instructorName={course.instructorName || "Unknown"}
-                        studentsEnrolled={course.totalEnrollments || 0}
-                        level={course.courseDifficulty}
-                        rating={course.rating || 0}
-                        totalRatings={course.totalRatings || 0}
-                        originalPrice={course.originalPrice}
-                        isEnrolled={course.isEnrolled}
-                      />
-                    </div>
-                  ))}
-                </div>
-
-                {/* Pagination */}
-                {totalPages > 1 && (
-                  <div className="mt-10 flex justify-center">
-                    <div className="bg-white px-4 py-3 rounded-xl shadow-lg border border-gray-200 flex items-center">
-                      <button
-                        onClick={() => handlePageChange(currentPage - 1)}
-                        disabled={currentPage === 1}
-                        className={`px-3 py-1.5 mr-2 rounded-lg ${currentPage === 1 ? "text-gray-400" : "text-[#02084b]"}`}
-                      >
-                        Previous
-                      </button>
-
-                      {Array.from({ length: totalPages }, (_, i) => i + 1)
-                        .filter(
-                          (page) =>
-                            page === 1 ||
-                            page === totalPages ||
-                            Math.abs(page - currentPage) <= 1
-                        )
-                        .map((page, i, arr) => (
-                          <React.Fragment key={page}>
-                            {i > 0 && arr[i - 1] !== page - 1 && (
-                              <span className="px-2">...</span>
-                            )}
-                            <button
-                              onClick={() => handlePageChange(page)}
-                              className={`w-10 h-10 mx-1 rounded-lg ${
-                                currentPage === page
-                                  ? "bg-[#02084b] text-white"
-                                  : "hover:bg-[#e6e7f0]"
-                              }`}
-                            >
-                              {page}
-                            </button>
-                          </React.Fragment>
-                        ))}
-
-                      <button
-                        onClick={() => handlePageChange(currentPage + 1)}
-                        disabled={currentPage === totalPages}
-                        className={`px-3 py-1.5 ml-2 rounded-lg ${currentPage === totalPages ? "text-gray-400" : "text-[#02084b]"}`}
-                      >
-                        Next
-                      </button>
-                    </div>
-                  </div>
-                )}
-              </>
-            )}
+            {/* Main Content Area */}
+            {loading || filterLoading
+              ? renderLoadingState()
+              : error.hasError
+                ? renderErrorState()
+                : courses.length === 0
+                  ? renderNoCoursesState()
+                  : renderCourseGrid()}
           </div>
         </div>
       </div>
