@@ -29,7 +29,7 @@ const VideoCard = ({
       <div className="w-full h-44 rounded-lg overflow-hidden relative">
         {image ? (
           <img
-            src={"http://localhost:8085/files/course/thumbnails/" + image}
+            src={`http://localhost:8085/files/course/thumbnails/${image}`}
             alt={title}
             className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
           />
@@ -106,7 +106,7 @@ const VideoCard = ({
                 file: {
                   attributes: {
                     controlsList: "nodownload",
-                  },
+                  }
                 },
               }}
             />

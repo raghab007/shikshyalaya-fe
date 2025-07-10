@@ -86,7 +86,7 @@ const VideoPlayer = ({ selectedVideo }) => {
               file: {
                 attributes: {
                   controlsList: "nodownload",
-                },
+                }
               },
             }}
           />
